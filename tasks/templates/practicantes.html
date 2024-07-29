@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/estilos.css' %}">
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Include Bootstrap Icons CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <title>Expositores en Evaluación</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Expositores en Evaluación</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Fecha Ingreso</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for practicante in practicantes %}
+                <tr>
+                    <td>{{ practicante.id }}</td>
+                    <td>{{ practicante.nombre_usuario }} {{ practicante.apellidoP_usuario }} {{ practicante.apellidoM_usuario }}</td>
+                    <td>{{ practicante.fecha_ingreso }}</td>
+                    <td class="actions">
+                        <!-- Ver Modal Trigger -->
+                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#verModal{{ practicante.id }}">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <!-- Editar Modal Trigger -->
+                        <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editarModal{{ practicante.id }}">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <!-- Borrar Modal Trigger -->
+                        <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#borrarModal{{ practicante.id }}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        <!-- Evaluar Modal Trigger -->
+                        <a href="{% url 'frecuencia_cardiaca' %}" class="btn btn-success btn-sm">
+                            <i class="bi bi-check-circle"></i>
+                        </a>
+                    </td>
+                </tr>
+
+                <!-- Ver Modal -->
+                <div class="modal fade" id="verModal{{ practicante.id }}" tabindex="-1" role="dialog" aria-labelledby="verModalLabel{{ practicante.id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="verModalLabel{{ practicante.id }}">Detalles del Practicante</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>ID: {{ practicante.id }}</p>
+                                <p>Nombre: {{ practicante.nombre_usuario }} {{ practicante.apellidoP_usuario }} {{ practicante.apellidoM_usuario }}</p>
+                                <p>Fecha Ingreso: {{ practicante.fecha_ingreso }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editar Modal -->
+                <div class="modal fade" id="editarModal{{ practicante.id }}" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel{{ practicante.id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editarModalLabel{{ practicante.id }}">Editar Practicante</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form for editing a practitioner -->
+                                <form method="POST" action="{% url 'editar_practicante' practicante.id %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="nombre">Nombre:</label>
+                                        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ practicante.nombre_usuario }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="apellidoP">Apellido Paterno:</label>
+                                        <input type="text" class="form-control" id="apellidoP" name="apellidoP" value="{{ practicante.apellidoP_usuario }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="apellidoM">Apellido Materno:</label>
+                                        <input type="text" class="form-control" id="apellidoM" name="apellidoM" value="{{ practicante.apellidoM_usuario }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fecha_ingreso">Fecha Ingreso:</label>
+                                        <input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso" value="{{ practicante.fecha_ingreso }}" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Borrar Modal -->
+                <div class="modal fade" id="borrarModal{{ practicante.id }}" tabindex="-1" role="dialog" aria-labelledby="borrarModalLabel{{ practicante.id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="borrarModalLabel{{ practicante.id }}">Confirmar Borrado</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>¿Estás seguro de que deseas borrar al practicante {{ practicante.nombre_usuario }} {{ practicante.apellidoP_usuario }} {{ practicante.apellidoM_usuario }}?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form method="POST" action="{% url 'borrar_practicante' practicante.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Borrar</button>
+                                </form>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evaluar Modal -->
+                <div class="modal fade" id="evaluarModal{{ practicante.id }}" tabindex="-1" role="dialog" aria-labelledby="evaluarModalLabel{{ practicante.id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="evaluarModalLabel{{ practicante.id }}">Evaluar Practicante</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Aquí puedes agregar el contenido para la evaluación -->
+                                <p>Formulario de evaluación para {{ practicante.nombre_usuario }} {{ practicante.apellidoP_usuario }} {{ practicante.apellidoM_usuario }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- Button to trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarPracticanteModal">
+            Añadir Expositor
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="agregarPracticanteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Añadir Practicante</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form for adding a practitioner -->
+                    <!-- agregar_practicante.html -->
+                    <form method="POST" action="{% url 'agregar_practicante' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="apellidoP">Apellido Paterno:</label>
+                            <input type="text" class="form-control" id="apellidoP" name="apellidoP" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="apellidoM">Apellido Materno:</label>
+                            <input type="text" class="form-control" id="apellidoM" name="apellidoM" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_ingreso">Fecha Ingreso:</label>
+                            <input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <!-- AJAX Script to handle form submission -->
+    <script>
+        $(document).ready(function() {
+            $('#agregarPracticanteForm').submit(function(e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                // Serialize form data
+                var formData = $(this).serialize();
+
+                // Submit form data via AJAX
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "agregar_practicante" %}',
+                    data: formData,
+                    success: function(response) {
+                        // Close the modal
+                        $('#agregarPracticanteModal').modal('hide');
+
+                        // Optional: Reload or update the table with new data
+                        // Example: You might reload the entire page or update a specific part of it
+                        location.reload(); // Reload the page
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        // Handle errors here
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

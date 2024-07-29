@@ -1,0 +1,8 @@
+<!-- En app1/templates/agregar_practicante_modal.html -->
+<div id="modalAgregarPracticante" class="modal">
+    <form method="post" action="{% url 'agregar_practicante' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar</button>
+    </form>
+</div>

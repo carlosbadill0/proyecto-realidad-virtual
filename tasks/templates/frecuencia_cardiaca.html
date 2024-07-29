@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Frecuencia Cardíaca en Tiempo Real</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+  <style>
+    .main-container {
+      margin: 20px auto;
+    }
+    .header-logo {
+      max-width: 200px;
+    }
+    .header-text {
+      font-size: 1.5rem;
+      margin-left: 20px;
+    }
+    .content-left, .content-right {
+      padding: 20px;
+    }
+    .content-right {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+    .info-box {
+      margin-bottom: 20px;
+    }
+    .info-box p {
+      margin: 0;
+    }
+    .btn-evaluation {
+      width: 100%;
+    }
+    .chart-container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container main-container">
+    <div class="row mb-4">
+    <div class="row">
+      <div class="col-lg-8 content-left">
+        <img src="/static/mockup_image.png" alt="Virtual Classroom" class="img-fluid">
+        <div class="mt-3">
+          <label for="nombre_expositor" class="form-label">Nombre Expositor</label>
+          <input type="text" class="form-control" id="nombre_expositor" value="Luis Sanhueza">
+        </div>
+        <div class="mt-3">
+          <label for="tiempo_exposicion" class="form-label">Tiempo de exposición</label>
+          <input type="text" class="form-control" id="tiempo_exposicion" value="00:00.00">
+        </div>
+      </div>
+      <div class="col-lg-4 content-right">
+        <div class="info-box">
+          <label for="fecha_evaluacion" class="form-label">Fecha Evaluación</label>
+          <input type="date" class="form-control" id="fecha_evaluacion" value="2024-08-20">
+        </div>
+        <div class="info-box">
+          <label for="nombre_evaluador" class="form-label">Nombre Evaluador</label>
+          <input type="text" class="form-control" id="nombre_evaluador" value="Yasna Sandoval">
+        </div>
+        <div class="info-box">
+          <label for="observaciones" class="form-label">Observaciones</label>
+          <textarea class="form-control" id="observaciones" rows="3"></textarea>
+        </div>
+        <div class="info-box">
+          <label class="form-label">Evaluación de prueba</label>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary">Proyector no enciende - 20 segundos</button>
+            <button class="btn btn-warning">Distracción de la audiencia - 10 segundos</button>
+            <button class="btn btn-danger">Proyector se apaga - 20 segundos</button>
+            <button class="btn btn-success">Pregunta general - 25 segundos</button>
+          </div>
+        </div>
+        <div class="chart-container">
+          <label class="form-label">Monitoreo</label>
+          <canvas id="graficoFrecuencia"></canvas>
+        </div>
+        <div class="d-grid mt-3">
+          <button class="btn btn-secondary btn-evaluation">Iniciar evaluación</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="frecuencia_cardiaca">
+    <p>
+      Última frecuencia cardíaca recibida: <span id="frecuencia"></span> BPM
+    </p>
+  </div>
+  
+  <canvas id="graficoFrecuencia" width="600" height="400"></canvas>
+  <script>
+    // Inicializa el gráfico
+    const ctx = document.getElementById('graficoFrecuencia').getContext('2d')
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [], // Etiquetas de tiempo
+        datasets: [
+          {
+            label: 'Frecuencia Cardíaca (BPM)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            data: [], // Datos de frecuencia
+            fill: false
+          }
+        ]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'second'
+            },
+            realtime: {
+              duration: 20000,
+              refresh: 5000,
+              delay: 2000,
+              onRefresh: function (chart) {
+                obtenerFrecuencia()
+              }
+            }
+          },
+          y: {
+            beginAtZero: true,
+            suggestedMax: 150
+          }
+        }
+      }
+    })
+    
+    function obtenerFrecuencia() {
+      axios
+        .get('/api/ultima_frecuencia/')
+        .then(function (response) {
+          if (response.data.status === 'success') {
+            const frecuencia = response.data.frecuencia
+            const tiempoActual = new Date()
+    
+            document.getElementById('frecuencia').textContent = frecuencia + ' BPM'
+    
+            chart.data.labels.push(tiempoActual)
+            chart.data.datasets[0].data.push(frecuencia)
+            chart.update()
+    
+            // Limita el número de puntos en el gráfico
+            if (chart.data.labels.length > 20) {
+              chart.data.labels.shift()
+              chart.data.datasets[0].data.shift()
+            }
+          } else {
+            console.error('Error al obtener la frecuencia cardíaca:', response.data.message)
+          }
+        })
+        .catch(function (error) {
+          console.error('Error en la solicitud:', error)
+        })
+    }      
+    // Llama a la función para obtener la frecuencia inicialmente
+    obtenerFrecuencia()
+    
+    // Actualiza la frecuencia cada 5 segundos
+    setInterval(obtenerFrecuencia, 5000)
+  </script>
+</body>
+</html>
+{% endblock %}

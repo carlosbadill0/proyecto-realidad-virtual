@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/estilos.css' %}">
+    <title>Evaluaciones Diseñadas</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Evaluaciones Diseñadas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>evaluación 1</td>
+                    <td class="actions">
+                        <i class="bi bi-eye"></i>
+                        <img src="{% static 'img/edit.png' %}" alt="Edit">
+                        <img src="{% static 'img/delete.png' %}" alt="Delete">
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>evaluación 2</td>
+                    <td class="actions">
+                        <img src="{% static 'img/view.png' %}" alt="View">
+                        <img src="{% static 'img/edit.png' %}" alt="Edit">
+                        <img src="{% static 'img/delete.png' %}" alt="Delete">
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>evaluación 3</td>
+                    <td class="actions">
+                        <img src="{% static 'img/view.png' %}" alt="View">
+                        <img src="{% static 'img/edit.png' %}" alt="Edit">
+                        <img src="{% static 'img/delete.png' %}" alt="Delete">
+                    </td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>evaluación 4</td>
+                    <td class="actions">
+                        <img src="{% static 'img/view.png' %}" alt="View">
+                        <img src="{% static 'img/edit.png' %}" alt="Edit">
+                        <img src="{% static 'img/delete.png' %}" alt="Delete">
+                    </td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>evaluación 5</td>
+                    <td class="actions">
+                        <img src="{% static 'img/view.png' %}" alt="View">
+                        <img src="{% static 'img/edit.png' %}" alt="Edit">
+                        <img src="{% static 'img/delete.png' %}" alt="Delete">
+                    </td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>evaluación 6</td>
+                    <td class="actions">
+                        <img src="{% static 'img/view.png' %}" alt="View">
+                        <img src="{% static 'img/edit.png' %}" alt="Edit">
+                        <img src="{% static 'img/delete.png' %}" alt="Delete">
+                    </td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>evaluación 7</td>
+                    <td class="actions">
+                        <img src="{% static 'img/view.png' %}" alt="View">
+                        <img src="{% static 'img/edit.png' %}" alt="Edit">
+                        <img src="{% static 'img/delete.png' %}" alt="Delete">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="#" class="add-button">Crear evaluación</a>
+    </div>
+</body>
+</html>
+{% endblock %}

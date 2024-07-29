@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/estilos.css' %}">
+    <script src="{% static 'js/filtrar.js'%}"></script>
+    <title>Administrar Usuarios</title>
+</head>
+<body>
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Búsqueda">
+            <button type="button">Filtrar</button>
+        </div>
+        <h2>Administrar Usuarios</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Rol</th>
+                    <th>Correo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.nombre_usuario }} {{ usuario.apellidoP_usuario }} {{ usuario.apellidoM_usuario }}</td>
+                    <td>{{ usuario.id_rol.nombre_rol }}</td>
+                    <td>{{ usuario.email_usuario }}</td>
+                    <td class="actions">
+                        {% if usuario.id %}
+                            <a href="{% url 'editar_usuario' usuario.id %}">
+                                <img src="{% static 'img/edit.png' %}" alt="Edit">
+                            </a>
+                            <a href="{% url 'eliminar_usuario' usuario.id %}">
+                                <img src="{% static 'img/delete.png' %}" alt="Delete">
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'crear_usuario' %}" class="add-button">Añadir usuario</a>
+    </div>
+</body>
+</html>
+{% endblock %}
