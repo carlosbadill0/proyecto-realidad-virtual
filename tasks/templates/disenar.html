@@ -1,93 +1,219 @@
 {% extends 'base.html' %}
 {% block content %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/estilos.css' %}">
-    <title>Evaluaciones Diseñadas</title>
-</head>
-<body>
-    <div class="container">
-        <h2>Evaluaciones Diseñadas</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>evaluación 1</td>
-                    <td class="actions">
-                        <i class="bi bi-eye"></i>
-                        <img src="{% static 'img/edit.png' %}" alt="Edit">
-                        <img src="{% static 'img/delete.png' %}" alt="Delete">
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>evaluación 2</td>
-                    <td class="actions">
-                        <img src="{% static 'img/view.png' %}" alt="View">
-                        <img src="{% static 'img/edit.png' %}" alt="Edit">
-                        <img src="{% static 'img/delete.png' %}" alt="Delete">
-                    </td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>evaluación 3</td>
-                    <td class="actions">
-                        <img src="{% static 'img/view.png' %}" alt="View">
-                        <img src="{% static 'img/edit.png' %}" alt="Edit">
-                        <img src="{% static 'img/delete.png' %}" alt="Delete">
-                    </td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>evaluación 4</td>
-                    <td class="actions">
-                        <img src="{% static 'img/view.png' %}" alt="View">
-                        <img src="{% static 'img/edit.png' %}" alt="Edit">
-                        <img src="{% static 'img/delete.png' %}" alt="Delete">
-                    </td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>evaluación 5</td>
-                    <td class="actions">
-                        <img src="{% static 'img/view.png' %}" alt="View">
-                        <img src="{% static 'img/edit.png' %}" alt="Edit">
-                        <img src="{% static 'img/delete.png' %}" alt="Delete">
-                    </td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>evaluación 6</td>
-                    <td class="actions">
-                        <img src="{% static 'img/view.png' %}" alt="View">
-                        <img src="{% static 'img/edit.png' %}" alt="Edit">
-                        <img src="{% static 'img/delete.png' %}" alt="Delete">
-                    </td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>evaluación 7</td>
-                    <td class="actions">
-                        <img src="{% static 'img/view.png' %}" alt="View">
-                        <img src="{% static 'img/edit.png' %}" alt="Edit">
-                        <img src="{% static 'img/delete.png' %}" alt="Delete">
-                    </td>
-                </tr>
-            </tbody>
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Evaluaciones</title>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+      <div class="container">
+        <h1>Evaluaciones</h1>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#crearModal">Crear Evaluación</button>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Fecha</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for evaluacion in evaluaciones %}
+              <tr>
+                <td>{{ evaluacion.nombre }}</td>
+                <td>{{ evaluacion.descripcion }}</td>
+                <td>{{ evaluacion.fecha }}</td>
+                <td>
+                  <!-- Botones para editar y borrar -->
+                  <button data-id="{{ evaluacion.id }}" data-toggle="modal" data-target="#editarModal">Editar</button>
+                  <button data-id="{{ evaluacion.id }}" data-toggle="modal" data-target="#borrarModal">Borrar</button>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
         </table>
-        <a href="#" class="add-button">Crear evaluación</a>
-    </div>
-</body>
-</html>
+      </div>
+
+      <!-- Crear Modal -->
+      <div class="modal fade" id="crearModal" tabindex="-1" role="dialog" aria-labelledby="crearModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="crearModalLabel">Crear Evaluación</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+              <form id="crearForm">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="nombre">Nombre</label>
+                  <input type="text" class="form-control" id="nombre" name="nombre" />
+                </div>
+                <div class="form-group">
+                  <label for="descripcion">Descripción</label>
+                  <textarea class="form-control" id="descripcion" name="descripcion"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="fecha">Fecha</label>
+                  <input type="date" class="form-control" id="fecha" name="fecha" />
+                </div>
+                <button type="button" class="btn btn-primary" id="crearBtn">Guardar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editar Modal -->
+      <div class="modal fade" id="editarModal" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editarModalLabel">Editar Evaluación</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+              <form id="editarForm">
+                <input type="hidden" id="editarId" />
+                <div class="form-group">
+                  <label for="editarNombre">Nombre</label>
+                  <input type="text" class="form-control" id="editarNombre" name="nombre" />
+                </div>
+                <div class="form-group">
+                  <label for="editarDescripcion">Descripción</label>
+                  <textarea class="form-control" id="editarDescripcion" name="descripcion"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="editarFecha">Fecha</label>
+                  <input type="date" class="form-control" id="editarFecha" name="fecha" />
+                </div>
+                <button type="button" class="btn btn-primary" id="editarBtn">Guardar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Borrar Modal -->
+      <div class="modal fade" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="borrarModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="borrarModalLabel">Borrar Evaluación</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+              <p>¿Estás seguro de que quieres borrar esta evaluación?</p>
+              <button type="button" class="btn btn-danger" id="borrarBtn">Borrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        $(document).ready(function () {
+          function getCookie(name) {
+            let cookieValue = null
+            if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';')
+              for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim()
+                if (cookie.substring(0, name.length + 1) === name + '=') {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+                  break
+                }
+              }
+            }
+            return cookieValue
+          }
+          const csrftoken = getCookie('csrftoken')
+        
+          function csrfSafeMethod(method) {
+            return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method)
+          }
+        
+          $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken)
+              }
+            }
+          })
+        
+          $('#crearBtn').click(function () {
+            $.ajax({
+              url: '{% url "nueva_evaluacion" %}',
+              method: 'POST',
+              data: $('#crearForm').serialize(),
+              success: function (response) {
+                if (response.success) {
+                  location.reload()
+                } else {
+                  alert('Error al crear la evaluación.')
+                }
+              }
+            })
+          })
+        
+          $('#editarModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var id = button.data('id')
+            var url = "{% url 'detalle_evaluacion' 0 %}".replace('0', id)
+            $.ajax({
+              url: url,
+              method: 'GET',
+              success: function (data) {
+                $('#editarId').val(id)
+                $('#editarNombre').val(data.nombre)
+                $('#editarDescripcion').val(data.descripcion)
+                $('#editarFecha').val(data.fecha)
+              }
+            })
+          })
+        
+          $('#editarBtn').click(function () {
+            var id = $('#editarId').val()
+            var url = "{% url 'editar_evaluacion' 0 %}".replace('0', id)
+            $.ajax({
+              url: url,
+              method: 'POST',
+              data: $('#editarForm').serialize(),
+              success: function (response) {
+                if (response.success) {
+                  location.reload()
+                } else {
+                  alert('Error al editar la evaluación.')
+                }
+              }
+            })
+          })
+        
+          $('#borrarModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var id = button.data('id')
+            var url = "{% url 'borrar_evaluacion' 0 %}".replace('0', id)
+            $('#borrarBtn')
+              .off('click')
+              .on('click', function () {
+                $.ajax({
+                  url: url,
+                  method: 'POST',
+                  success: function (response) {
+                    if (response.success) {
+                      location.reload()
+                    } else {
+                      alert('Error al borrar la evaluación.')
+                    }
+                  }
+                })
+              })
+          })
+        })
+      </script>
+    </body>
+  </html>
 {% endblock %}

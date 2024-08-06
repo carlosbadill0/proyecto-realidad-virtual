@@ -55,6 +55,30 @@
                   <label for="fecha_ingreso">Fecha de Ingreso</label>
                   <input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso" />
                 </div>
+                <div class="form-group">
+                  <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+                  <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" />
+                </div>
+                <div class="form-group">
+                    <label for="edad">Edad</label>
+                    <input type="number" class="form-control" id="edad" name="edad" />
+                </div>
+                <div class="form-group">
+                    <label for="genero">Género</label>
+                    <input type="text" class="form-control" id="genero" name="genero" />
+                </div>
+                <div class="form-group">
+                    <label for="semestre_academico">Semestre Académico</label>
+                    <input type="number" class="form-control" id="semestre_academico" name="semestre_academico" />
+                </div>
+                <div class="form-group">
+                    <label for="carrera">Carrera</label>
+                    <input type="text" class="form-control" id="carrera" name="carrera" />
+                </div>
+                <div class="form-group">
+                    <label for="observacion_inicial">Observación Inicial</label>
+                    <textarea class="form-control" id="observacion_inicial" name="observacion_inicial"></textarea>
+                </div>
                 <button type="button" class="btn btn-primary" id="crearExpositorBtn">Guardar</button>
               </form>
             </div>
@@ -81,6 +105,30 @@
                   <label for="editarFechaIngreso">Fecha de Ingreso</label>
                   <input type="date" class="form-control" id="editarFechaIngreso" name="fecha_ingreso" />
                 </div>
+                <div class="form-group">
+                    <label for="editarFecha_nacimiento">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="editarFecha_nacimiento" name="fecha_nacimiento" />
+                  </div>
+                  <div class="form-group">
+                      <label for="EditarEdad">Edad</label>
+                      <input type="number" class="form-control" id="EditarEdad" name="edad" />
+                  </div>
+                  <div class="form-group">
+                      <label for="editarGenero">Género</label>
+                      <input type="text" class="form-control" id="editarGenero" name="genero" />
+                  </div>
+                  <div class="form-group">
+                      <label for="editarSemestre_academico">Semestre Académico</label>
+                      <input type="number" class="form-control" id="editarSemestre_academico" name="semestre_academico" />
+                  </div>
+                  <div class="form-group">
+                      <label for="editarCarrera">Carrera</label>
+                      <input type="text" class="form-control" id="editarCarrera" name="carrera" />
+                  </div>
+                  <div class="form-group">
+                      <label for="editarObservacion_inicial">Observación Inicial</label>
+                      <textarea class="form-control" id="editarObservacion_inicial" name="observacion_inicial"></textarea>
+                  </div>
                 <button type="button" class="btn btn-primary" id="editarExpositorBtn">Guardar</button>
               </form>
             </div>
@@ -103,7 +151,6 @@
           </div>
         </div>
       </div>
-
 
       <script>
         $(document).ready(function () {
@@ -182,11 +229,11 @@
             })
           })
         
-          $('#borrarModal').on('show.bs.modal', function (event) {
+          $('#borrarExpositorModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
             var id = button.data('id')
             var url = "{% url 'borrar_expositor' 0 %}".replace('0', id)
-            $('#borrarBtn')
+            $('#borrarExpositorBtn')
               .off('click')
               .on('click', function () {
                 $.ajax({

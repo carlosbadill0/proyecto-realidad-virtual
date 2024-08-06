@@ -32,18 +32,30 @@ urlpatterns = [
      path('api/guardar_evaluacion/', views.guardar_evaluacion, name='guardar_evaluacion'),
 #    path('frecuencia-cardiaca/', views.frecuencia_cardiaca, name='frecuencia_cardiaca'),
 #codigo lucho 
-    path('', views.index, name='index'),
-    #path('practicantes/', views.listar_practicantes, name='listar_practicantes'),
-    path('practicantes-agregar/', views.agregar_practicante, name='agregar_practicante'),
-    path('diseñar/', views.disenar,),
+    #path('', views.index, name='index'),
+#    path('practicantes/', views.listar_practicantes, name='listar_practicantes'),
+    # path('practicantes-agregar/', views.agregar_practicante, name='agregar_practicante'),
     path('administrar/', views.listar_usuarios, name='listar_usuarios'),
     path('usuarios/crear/', views.crear_usuario, name='crear_usuario'),
     path('usuarios/editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
     path('usuarios/eliminar/<int:id>/', views.eliminar_usuario, name='eliminar_usuario'),
     # urls para practicante
-    path('practicantes/', views.listar_practicantes, name='listar_practicantes'),
-    path('practicantes-agregar/', views.agregar_practicante, name='agregar_practicante'),
-    path('practicantes-editar/<int:id>/', views.editar_practicante, name='editar_practicante'),
-    path('practicantes-borrar/<int:id>/', views.borrar_practicante, name='borrar_practicante'),
-]
+    # path('practicantes/', views.listar_practicantes, name='listar_practicantes'),
+    # path('practicantes-agregar/', views.agregar_practicante, name='agregar_practicante'),
+    # path('practicantes-editar/<int:id>/', views.editar_practicante, name='editar_practicante'),
+    # path('practicantes-borrar/<int:id>/', views.borrar_practicante, name='borrar_practicante'),
+    #urls para evaluacion
+#     path('crear_evaluacion/', views.crear_evaluacion, name='crear_evaluacion'),
+    path('diseñar/', views.lista_evaluaciones, name='lista_evaluaciones'),
+    path('evaluacion/<int:pk>/', views.detalle_evaluacion, name='detalle_evaluacion'),
+    path('evaluacion/nueva/', views.nueva_evaluacion, name='nueva_evaluacion'),
+    path('evaluacion/<int:pk>/editar/', views.editar_evaluacion, name='editar_evaluacion'),
+    path('evaluacion/<int:pk>/borrar/', views.borrar_evaluacion, name='borrar_evaluacion'),
+    # urls expositor
+    path('expositores/', views.lista_expositores, name='lista_expositores'),
+    path('expositor/<int:pk>/', views.detalle_expositor, name='detalle_expositor'),
+    path('expositor/nueva/', views.crear_expositor, name='crear_expositor'),
+    path('expositor/<int:pk>/editar/', views.editar_expositor, name='editar_expositor'),
+    path('expositor/<int:pk>/borrar/', views.borrar_expositor, name='borrar_expositor'),
+ ]
 

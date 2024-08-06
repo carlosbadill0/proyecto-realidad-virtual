@@ -13,8 +13,9 @@ from .models import Evaluation
 from .models import Evaluacion
 import json
 # codigo lucho
-from .models import Usuario, Rol, Practicante
-from .forms import UsuarioForm, PracticanteForm
+from .models import Usuario, Rol, Practicante, DisenarEvaluacion
+from .forms import UsuarioForm, PracticanteForm, EvaluacionForm
+
 
 
 if not Group.objects.filter(name='Evaluadores').exists():
@@ -247,7 +248,7 @@ def agregar_practicante(request):
             return redirect('listar_practicantes')
     else:
         form = PracticanteForm()
-    return render(request, 'practicantes/agregar_practicante.html', {'form': form})
+    return render(request, 'practicantes.html', {'form': form})
 
 def editar_practicante(request, id):
     practicante = get_object_or_404(Practicante, id=id)
@@ -266,3 +267,122 @@ def borrar_practicante(request, id):
         practicante.delete()
         return redirect('listar_practicantes')
     return render(request, 'practicantes/borrar_practicante.html', {'practicante': practicante})
+
+#Diseñar evaluación
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
+from .models import Evaluacion
+from .forms import EvaluacionForm
+
+def lista_evaluaciones(request):
+    evaluaciones = Evaluacion.objects.all()
+    return render(request, 'disenar.html', {'evaluaciones': evaluaciones})
+
+def detalle_evaluacion(request, pk):
+    evaluacion = get_object_or_404(Evaluacion, pk=pk)
+    return JsonResponse({'nombre': evaluacion.nombre, 'descripcion': evaluacion.descripcion, 'fecha': evaluacion.fecha})
+
+def nueva_evaluacion(request):
+    if request.method == "POST":
+        form = EvaluacionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
+def editar_evaluacion(request, pk):
+    evaluacion = get_object_or_404(Evaluacion, pk=pk)
+    if request.method == "POST":
+        form = EvaluacionForm(request.POST, instance=evaluacion)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
+def borrar_evaluacion(request, pk):
+    evaluacion = get_object_or_404(Evaluacion, pk=pk)
+    evaluacion.delete()
+    return JsonResponse({'success': True})
+
+#roles de los usuarios
+from django.contrib.auth.decorators import login_required, user_passes_test
+from .forms import UserForm
+from django.contrib.auth.models import User
+
+def is_admin(user):
+    return user.groups.filter(name='Administrador').exists()
+
+@login_required
+@user_passes_test(is_admin)
+def manage_users(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            user.groups.add(form.cleaned_data['group'])
+            return redirect('manage_users')
+    else:
+        form = UserForm()
+    users = User.objects.all()
+    return render(request, 'manage_users.html', {'form': form, 'users': users})
+
+#proteger vistas segun roles 
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+def is_evaluator(user):
+    return user.groups.filter(name='Evaluador').exists()
+
+@login_required
+@user_passes_test(is_evaluator)
+def disenar(request):
+    # Lógica para diseñar evaluación
+    return render(request, 'disenar.html')
+
+
+
+# CRUD Expositor
+from django.http import JsonResponse
+from .models import Expositores
+from .forms import ExpositorForm, ExpositorEditForm
+
+def lista_expositores(request):
+    expositores = Expositores.objects.all()
+    return render(request, 'lista_expositores.html', {'expositores': expositores})
+
+def detalle_expositor(request, pk):
+    expositor = get_object_or_404(Expositores, pk=pk)
+    return JsonResponse({'nombre': expositor.nombre, 'fecha_ingreso': expositor.fecha_ingreso, 'fecha_nacimiento' : expositor.fecha_nacimiento,
+                         'edad': expositor.edad, 'genero': expositor.genero, 'semestre_academico': expositor.semestre_academico,
+                         'carrera': expositor.carrera, 'observacion_inicial': expositor.observacion_inicial, 'observacion_final': expositor.observacion_final                         
+                         })
+
+def crear_expositor(request):
+    if request.method == 'POST':
+        form = ExpositorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, print('no entra'))
+
+
+def editar_expositor(request, pk):
+    expositor = get_object_or_404(Expositores, pk=pk)
+    if request.method == 'POST':
+        form = ExpositorForm(request.POST, instance=expositor)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
+def borrar_expositor(request, pk):
+    expositor = get_object_or_404(Expositores, pk=pk)
+    if request.method == 'POST':
+        expositor.delete()
+        return JsonResponse({'success': True})
+
+def evaluar_expositor(request, pk):
+    expositor = get_object_or_404(Expositores, pk=pk)
+    return render(request, 'modals/evaluar_expositor.html', {'expositor': expositor})
