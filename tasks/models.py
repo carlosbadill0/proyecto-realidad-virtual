@@ -115,6 +115,7 @@ class Expositores(models.Model):
         return self.nombre
     
 class ECGData(models.Model):
+    expositor = models.ForeignKey(Expositores, on_delete=models.CASCADE, default=1, related_name='ecg_data')
     timestamp = models.DateTimeField(auto_now_add=True)
     value = models.FloatField()
 

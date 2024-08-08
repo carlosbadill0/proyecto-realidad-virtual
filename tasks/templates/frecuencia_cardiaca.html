@@ -96,7 +96,6 @@
     </p>
   </div>
   
-  <canvas id="graficoFrecuencia" width="600" height="400"></canvas>
   <script>
     // Inicializa el gráfico
     const ctx = document.getElementById('graficoFrecuencia').getContext('2d')
@@ -120,14 +119,6 @@
             type: 'time',
             time: {
               unit: 'second'
-            },
-            realtime: {
-              duration: 20000,
-              refresh: 5000,
-              delay: 2000,
-              onRefresh: function (chart) {
-                obtenerFrecuencia()
-              }
             }
           },
           y: {
@@ -140,11 +131,11 @@
     
     function obtenerFrecuencia() {
       axios
-        .get('/api/ultima_frecuencia/')
+        .get('/ultima_frecuencia/')
         .then(function (response) {
           if (response.data.status === 'success') {
-            const frecuencia = response.data.frecuencia
-            const tiempoActual = new Date()
+            const frecuencia = response.data.value
+            const tiempoActual = new Date(response.data.timestamp)
     
             document.getElementById('frecuencia').textContent = frecuencia + ' BPM'
     
@@ -165,10 +156,9 @@
           console.error('Error en la solicitud:', error)
         })
     }      
-    // Llama a la función para obtener la frecuencia inicialmente
-    obtenerFrecuencia()
     
-    // Actualiza la frecuencia cada 5 segundos
+    // Llama a la función para obtener la frecuencia inicialmente y luego cada 5 segundos
+    obtenerFrecuencia()
     setInterval(obtenerFrecuencia, 5000)
   </script>
 </body>

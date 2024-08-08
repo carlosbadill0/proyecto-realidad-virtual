@@ -1,40 +1,95 @@
+
+Copiar código
 {% extends 'base.html' %}
 {% block content %}
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <title>Expositores</title>
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    </head>
-    <body>
-      <div class="container">
-        <h1>Expositores</h1>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#crearExpositorModal">Crear Expositor</button>
-        <table class="table">
-          <thead>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Expositores</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <style>
+    .modal-header {
+      background-color: #007bff;
+      color: white;
+    }
+    .modal-title {
+      font-weight: bold;
+    }
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+    .btn-info {
+      background-color: #17a2b8;
+      border-color: #17a2b8;
+    }
+    .btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+    }
+    .btn-primary:hover, .btn-info:hover, .btn-danger:hover {
+      opacity: 0.9;
+    }
+    .table th, .table td {
+      text-align: center;
+    }
+    .table thead {
+      background-color: #f8f9fa;
+    }
+    .table-responsive {
+      margin-top: 20px;
+    }
+    .container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="d-flex justify-content-center align-items-center mb-4">
+      <h2>Expositores</h2>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Fecha de Ingreso</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for expositor in expositores %}
             <tr>
-              <th>Nombre</th>
-              <th>Fecha de Ingreso</th>
-              <th>Acciones</th>
+              <td>{{ expositor.nombre }}</td>
+              <td>{{ expositor.fecha_ingreso }}</td>
+              <td>
+                <button data-id="{{ expositor.id }}" data-toggle="modal" data-target="#editarExpositorModal" class="btn btn-lg">
+                  <i class="bi bi-eye"></i></i> 
+                </button>
+                <button data-id="{{ expositor.id }}" data-toggle="modal" data-target="#editarExpositorModal" class="btn btn-lg">
+                  <i class="bi bi-pencil-square"></i> 
+                </button>
+                <button data-id="{{ expositor.id }}" data-toggle="modal" data-target="#borrarExpositorModal" class="btn btn-lg">
+                  <i class="bi bi-trash3"></i>
+                </button>
+                <button data-id="{{ expositor.id }}" class="btn btn-lg evaluarExpositorBtn">
+                  <i class="bi bi-clipboard-pulse"></i> 
+                </button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {% for expositor in expositores %}
-              <tr>
-                <td>{{ expositor.nombre }}</td>
-                <td>{{ expositor.fecha_ingreso }}</td>
-                <td>
-                  <button data-id="{{ expositor.id }}" data-toggle="modal" data-target="#editarExpositorModal">Editar</button>
-                  <button data-id="{{ expositor.id }}" data-toggle="modal" data-target="#borrarExpositorModal">Borrar</button>
-                  <button data-id="{{ expositor.id }}" data-toggle="modal" data-target="#evaluarExpositorModal">Evaluar</button>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-end">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#crearExpositorModal">
+      Crear Expositor
+    </button>
+    </div>
+  </div>
 
       <!-- Crear Expositor Modal -->
       <div class="modal fade" id="crearExpositorModal" tabindex="-1" role="dialog" aria-labelledby="crearExpositorModalLabel" aria-hidden="true">
@@ -249,7 +304,16 @@
                 })
               })
           })
+
+          $('.evaluarExpositorBtn').click(function () {
+            var id = $(this).data('id');
+            var url = "{% url 'evaluar_expositor' 0 %}".replace('0', id);
+            window.location.href = url;
+          });
+
+          
         })
+
       </script>
     </body>
   </html>
