@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frecuencia Cardiaca</title>
+</head>
+<body>
+    <h1>Frecuencia Cardiaca</h1>
+    <div id="bpm-data">Esperando datos...</div>
+
+    <script>
+        // Función para obtener los datos más recientes
+        function getLatestBPM() {
+            fetch('/api/ultima_frecuencia/')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('bpm-data').innerText = `BPM: ${data.bpm}`;
+                })
+                .catch(error => {
+                    console.error('Error al obtener los datos:', error);
+                });
+        }
+
+        // Actualizar los datos cada 5 segundos
+        setInterval(getLatestBPM, 5000);
+
+        // Obtener los datos iniciales
+        getLatestBPM();
+    </script>
+</body>
+</html>

@@ -113,3 +113,10 @@ class Expositores(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+class ECGData(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return f"{self.timestamp}: {self.value}"

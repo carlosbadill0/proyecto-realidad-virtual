@@ -16,7 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from tasks import views 
+from tasks import consumers, views 
+
+websocket_urlpatterns = [
+    path('ws/frecuencia-cardiaca/', consumers.ECGConsumer.as_asgi()),
+]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,8 +30,8 @@ urlpatterns = [
     path('logout/', views.signout, name='logout'),
     path('signin/', views.signin, name='signin'),
      path('api/frecuencia/', views.recibir_frecuencia, name='recibir_frecuencia'),
-     path('api/ultima_frecuencia/', views.obtener_frecuencia, name='obtener_frecuencia'),
-  path('frecuencia-cardiaca/', views.mostrar_frecuencia_cardiaca, name='frecuencia_cardiaca'),
+#     path('api/ultima_frecuencia/', views.obtener_frecuencia, name='obtener_frecuencia'),
+##  path('frecuencia-cardiaca/', views.mostrar_frecuencia_cardiaca, name='frecuencia_cardiaca'),
      path('a/', views.evaluation_list, name='disenar_evaluacion'),
      path('api/guardar_evaluacion/', views.guardar_evaluacion, name='guardar_evaluacion'),
 #    path('frecuencia-cardiaca/', views.frecuencia_cardiaca, name='frecuencia_cardiaca'),
@@ -57,5 +61,14 @@ urlpatterns = [
     path('expositor/nueva/', views.crear_expositor, name='crear_expositor'),
     path('expositor/<int:pk>/editar/', views.editar_expositor, name='editar_expositor'),
     path('expositor/<int:pk>/borrar/', views.borrar_expositor, name='borrar_expositor'),
+    
+    #pruebas 
+    # path('frecuencia-cardiaca/', views.frecuencia_cardiaca_view, name='frecuencia_cardiaca_view'),
+    # path('api/frecuencia-cardiaca/', views.frecuencia_cardiaca, name='frecuencia_cardiaca'),
+    # path('api/ultima_frecuencia/', views.ultima_frecuencia, name='ultima_frecuencia'),
+    path('frecuencia-cardiaca/', views.receive_ecg_data, name='receive_ecg_data'),
+    path('ecg-chart/', views.ecg_chart, name='ecg_chart'),
+    path('ecg-data/', views.get_ecg_data, name='get_ecg_data'),
+    path('ultima_frecuencia/', views.get_latest_ecg, name='get_latest_ecg'),
  ]
 

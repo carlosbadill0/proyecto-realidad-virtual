@@ -105,7 +105,7 @@ def signin(request):
 
 
 #de aqui para abajo esta comentado pa ver si funciona lo otro 
-ultima_frecuencia = None
+# ultima_frecuencia = None
 
 @csrf_exempt
 def recibir_frecuencia(request):
@@ -386,3 +386,79 @@ def borrar_expositor(request, pk):
 def evaluar_expositor(request, pk):
     expositor = get_object_or_404(Expositores, pk=pk)
     return render(request, 'modals/evaluar_expositor.html', {'expositor': expositor})
+
+
+
+
+
+
+
+
+# #sensor ecg 
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+# import json
+
+# # Variable global para almacenar el último valor de BPM
+# ultimo_bpm = None
+
+# @csrf_exempt
+# def frecuencia_cardiaca(request):
+#     if request.method == 'GET':
+#         bpm = request.GET.get('bpm', None)
+#         if bpm:
+#             return JsonResponse({'status': 'success', 'bpm': bpm})
+#         else:
+#             return JsonResponse({'status': 'error', 'message': 'No BPM data received'}, status=400)
+#     else:
+#         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+# def ultima_frecuencia(request):
+#     global ultimo_bpm
+#     if request.method == 'GET':
+#         if ultimo_bpm is not None:
+#             return JsonResponse({"bpm": ultimo_bpm})
+#         else:
+#             return JsonResponse({"bpm": "No data"})
+#     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
+
+# def frecuencia_cardiaca_view(request):
+#     return render(request, 'fr.html')
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import ECGData
+import json
+
+@csrf_exempt
+def receive_ecg_data(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        value = data.get('value')
+        if value is not None:
+            ECGData.objects.create(value=value)
+            return JsonResponse({'status': 'success'}, status=201)
+        return JsonResponse({'error': 'Invalid data'}, status=400)
+    return JsonResponse({'error': 'Invalid method'}, status=405)
+
+# views.py
+from django.shortcuts import render
+
+def ecg_chart(request):
+    return render(request, 'ecg_chart.html')
+# views.py
+from django.http import JsonResponse
+from .models import ECGData
+
+def get_ecg_data(request):
+    data = list(ECGData.objects.all().values('timestamp', 'value'))
+    return JsonResponse(data, safe=False)
+
+def get_latest_ecg(request):
+    latest_data = ECGData.objects.latest('timestamp')
+    return JsonResponse({
+        'timestamp': latest_data.timestamp,
+        'value': latest_data.value,
+        'status': 'success'
+    })
