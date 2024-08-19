@@ -16,11 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from tasks import consumers, views 
+from tasks import views 
 
-websocket_urlpatterns = [
-    path('ws/frecuencia-cardiaca/', consumers.ECGConsumer.as_asgi()),
-]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
