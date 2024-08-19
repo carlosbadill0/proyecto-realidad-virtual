@@ -101,18 +101,18 @@ class Practicante(models.Model):
 
 class Expositores(models.Model):
     nombre = models.CharField(max_length=100)
-    fecha_ingreso = models.DateField()  # Usa una fecha predeterminada válida
-    fecha_nacimiento = models.DateField()  # Usa una fecha predeterminada válida
+    fecha_ingreso = models.DateField()  
+    fecha_nacimiento = models.DateField()  
     edad = models.IntegerField()
     genero = models.CharField(max_length=10)
-    semestre_academico = models.IntegerField()  # Puedes ajustar según el contexto
+    semestre_academico = models.IntegerField()  
     carrera = models.CharField(max_length=100)
     observacion_inicial = models.TextField()
-    observacion_final = models.TextField(null=True, blank=True)
+    observacion_final = models.TextField(default= 'sin información')
 
 
     def __str__(self):
-        return self.nombre
+        return f"{self.nombre}{self.observacion_final}" 
     
 class ECGData(models.Model):
     expositor = models.ForeignKey(Expositores, on_delete=models.CASCADE, default=1, related_name='ecg_data')
