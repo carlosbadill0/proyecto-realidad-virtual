@@ -1,4 +1,84 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>home</h1>
+  <head>
+    <link rel="stylesheet" href="../../static/css/carousel.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <style>
+      .carousel-container {
+        max-width: 800px; /* Cambia este valor según tus necesidades */
+        max-height: 100px; /* Cambia este valor según tus necesidades */
+        margin: auto; /* Centra el carrusel */
+      }
+      .carousel-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      .carousel-caption h1,
+      .carousel-caption p {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      }
+      
+      .carousel-caption .btn {
+        background-color: rgba(255, 255, 255, 0.5);
+        border: 2px solid #fff;
+        color: #333;
+        padding: 10px 20px;
+        margin-top: 10px;
+        text-shadow: none;
+      }
+      
+      .carousel-caption .btn:hover {
+        background-color: rgba(255, 255, 255, 1);
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <br>
+    <div class="container">
+    <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            
+            <div class="carousel-item active" >
+                <img src="../../static/images/j.jpeg" alt="">
+                <div class="carousel-caption text-center">
+                    <h5><strong>Plataforma Web para Simulación de Exposiciones Orales y Medición de Parámetros Fisiológicos en Estudiantes Universitarios.</strong></h5>    
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="../../static/images/descarga1.jpeg" alt="">
+                <div class="carousel-caption">
+                    <h1><strong>Proyecto que implementa IOT junto con Realidad Virtual</strong></h1>
+                    <p><strong>Enfocado a la educación</strong></p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="../../static/images/ecg.jpeg" alt="logo">
+                <div class="carousel-caption text-center">
+                    <h1><strong>Realiza exposiciones mejorando en el proceso!</strong></h1>
+                    
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
+</div>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script>
 {% endblock %}
