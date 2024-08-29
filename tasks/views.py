@@ -45,7 +45,7 @@ def signup (request):
                 evaluadores_group = Group.objects.get(name='Evaluadores')
                 user.groups.add(evaluadores_group)
                 login(request,user)
-                return redirect('tasks')
+                return redirect('home')
             except:
                 return render(request, 'signup.html',{
                 'form': UserCreationForm,
@@ -79,7 +79,7 @@ def signin(request):
             })
         else: 
             login(request,user)
-            return redirect('tasks')
+            return redirect('home')
         
         
 
