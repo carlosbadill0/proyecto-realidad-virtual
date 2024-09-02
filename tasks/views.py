@@ -19,14 +19,8 @@ from .models import ECGData
 
 
 
-if not Group.objects.filter(name='Evaluadores').exists():
-    Group.objects.create(name='Evaluadores')
-if not Group.objects.filter(name='Expositores').exists():
-    Group.objects.create(name='Expositores')
-    
-if not User.objects.filter(username='admin').exists():
-    User.objects.create_superuser('admin', 'admin@gmail.com', '123')
 
+    
 
 def home(request):   
     return render(request, 'home.html')
@@ -236,9 +230,6 @@ def crear_usuario(request):
                     group = Group.objects.get(name=selected_group_name)
                     user.groups.add(group)
 
-                    # Iniciar sesión con el nuevo usuario
-                    login(request, user)
-                    
                     return redirect('listar_usuarios')
                 except Exception as e:
                     return render(request, 'formulario_usuario.html', {

@@ -12,12 +12,19 @@
     </head>
     <body>
       <div class="container">
-        <div class="search-bar">
-          <input type="text" id="searchInput" placeholder="Búsqueda" />
-          <button type="button">Filtrar</button>
-        </div>
-        <h2>Administrar Usuarios</h2>
-        <a href="{% url 'crear_usuario' %}" class="add-button">Añadir usuario</a>
+<div class="row">
+<div class="col">
+  <div >
+    <input type="text" id="searchInput" style="width: 400px; height: 37px;" placeholder="Búsqueda" />
+    <button type="button" class="btn btn-outline-primary">Filtrar</button>
+  </div>
+</div>
+<div class="col">
+  <div class="d-flex justify-content-end">
+    <a href="{% url 'crear_usuario' %}" class="btn btn-primary">Añadir usuario</a>
+    </div>
+</div>
+</div>
         <table>
           <thead>
             <tr>
@@ -43,7 +50,6 @@
                 <td>{{ usuario.email }}</td>
 
                 <td class="actions">
-                  <button data-id="{{ usuario.id }}" data-toggle="modal" data-target="#verUsuarioModal{{ usuario.id }}" class="btn btn-lg"><i class="bi bi-eye"></i></button>
                   <button data-id="{{ usuario.id }}" data-toggle="modal" data-target="#editarUsuarioModal{{ usuario.id }}" class="btn btn-lg"><i class="bi bi-pencil-square"></i></button>
                   <button data-id="{{ usuario.id }}" data-toggle="modal" data-target="#borrarUsuarioModal{{ usuario.id }}" class="btn btn-lg"><i class="bi bi-trash3"></i></button>
                 </td>
@@ -61,7 +67,7 @@
                       {% csrf_token %}
                       <div class="modal-body">
                         <div class="form-group">
-                          <label for="grupo{{ usuario.id }}">Grupo</label>
+                          <label for="grupo{{ usuario.id }}">Rol</label>
                           <select class="form-control" id="grupo{{ usuario.id }}" name="grupo">
                             {% for grupo in grupos %}
                               <option value="{{ grupo.id }}" {% if grupo in usuario.groups.all %}selected{% endif %}>{{ grupo.name }}</option>
