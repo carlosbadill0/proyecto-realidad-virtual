@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Evaluación</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .section {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+        }
+        .section:last-child {
+            border-right: none;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+        .button {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .button input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .stress-cases {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stress-cases div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .stress-cases div span {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 4px;
+        }
+        .green { background-color: #d4edda; }
+        .yellow { background-color: #fff3cd; }
+        .red { background-color: #f8d7da; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="section">
+        <h2>Datos del expositor</h2>
+        {% for expositor in expositores %}
+            {% if expositor.id == expositor_seleccionado.id %}
+                <label for="nombre">Nombre</label>
+                <p>{{ expositor.nombre }}</p>
+
+                <br>
+                <label for="observacion">Observación Inicial</label>
+                <textarea id="observacion">{{ expositor.observacion_inicial }}</textarea>
+            {% endif %}
+        {% endfor %}
+        <br>
+
+       
+    </div>
+
+    <div class="section">
+        <h2>Datos del evaluador</h2>
+        <label for="fecha-evaluacion">Fecha de Evaluación</label>
+        <input type="date" id="fecha-evaluacion" placeholder="Seleccionar fecha">
+        
+        <label for="nombre-evaluador">Nombre del evaluador</label>
+        <input type="text" id="nombre-evaluador" placeholder="nombre">
+        
+        <label for="evaluacion">Seleccionar Evaluación</label>
+        <select id="evaluacion">
+            {% for evaluation in evaluations %}
+            <option value="prueba">{{evaluation.nombre}}</option>
+            {% endfor %}
+            
+            
+        </select>
+        
+        <h3>Casos de estrés de la evaluación</h3>
+        <div class="stress-cases">
+            <div class="green">
+                Proyector no enciende <span>20 segundos</span>
+            </div>
+            <div class="yellow">
+                Distracción de la audiencia <span>10 segundos</span>
+            </div>
+            <div class="yellow">
+                Proyector se apaga <span>20 segundos</span>
+            </div>
+            <div class="red">
+                Pregunta general <span>25 segundos</span>
+            </div>
+        </div>
+        
+        <br>
+        <div class="button">
+            <button data-id="{{ expositor_seleccionado.id }}" class="btn btn-lg evaluarExpositorBtn">
+                Evaluar expositor
+                <i class="bi bi-clipboard-pulse"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('.evaluarExpositorBtn').click(function () {
+        var id = $(this).data('id');
+        var url = "{% url 'evaluar_expositor' 0 %}".replace('0', id);
+        window.location.href = url;
+        
+    });
+</script>
+</body>
+</html>
+{% endblock %}

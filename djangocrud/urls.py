@@ -52,6 +52,11 @@ urlpatterns = [
     path('evaluacion/nueva/', views.nueva_evaluacion, name='nueva_evaluacion'),
     path('evaluacion/<int:pk>/editar/', views.editar_evaluacion, name='editar_evaluacion'),
     path('evaluacion/<int:pk>/borrar/', views.borrar_evaluacion, name='borrar_evaluacion'),
+    
+    path('elegir-evaluacion/<int:pk>/', views.elegir_evaluacion, name='elegir_evaluacion'),
+    
+    # path('elegir-evaluacion/', views.elegir_evaluacion, name='elegir_evaluacion'),
+
     # urls expositor
     path('expositores/', views.lista_expositores, name='lista_expositores'),
     path('expositor/<int:pk>/', views.detalle_expositor, name='detalle_expositor'),
@@ -69,5 +74,6 @@ urlpatterns = [
     path('ultima_frecuencia/', views.get_latest_ecg, name='get_latest_ecg'),
     #url para evaluar a un expositor
     path('evaluar/<int:id>/', views.evaluar_expositor, name='evaluar_expositor'),
+    
  ]
 

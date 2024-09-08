@@ -16,7 +16,8 @@ import json
 from .models import Usuario, Rol, Practicante, DisenarEvaluacion
 from .forms import UsuarioForm, PracticanteForm, EvaluacionForm
 from .models import ECGData
-
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
 
 
 if not Group.objects.filter(name='Evaluadores').exists():
@@ -305,6 +306,16 @@ def borrar_evaluacion(request, pk):
     evaluacion.delete()
     return JsonResponse({'success': True})
 
+# @login_required
+# def elegir_evaluacion(request):
+#     expositores = Expositores.objects.all()
+#     user_id = request.user.id  # Obtiene el ID del usuario logueado
+#     return render(request, 'elegirEvaluacion.html', {
+#         'expositores': expositores,
+#         'user_id': user_id
+#     })
+
+
 #roles de los usuarios
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import UserForm
@@ -383,9 +394,17 @@ def borrar_expositor(request, pk):
         expositor.delete()
         return JsonResponse({'success': True})
 
-def evaluar_expositor(request, pk):
-    expositor = get_object_or_404(Expositores, pk=pk)
-    return render(request, 'modals/evaluar_expositor.html', {'expositor': expositor})
+def elegir_evaluacion(request, pk):
+    expositor_seleccionado = get_object_or_404(Expositores, pk=pk)
+    expositores = Expositores.objects.all()
+    user_id = request.user.id
+    evaluations = Evaluacion.objects.all()
+    return render(request, 'elegirEvaluacion.html', {
+        'expositor_seleccionado': expositor_seleccionado,
+        'expositores': expositores,
+        'user_id': user_id,
+        'evaluations': evaluations
+    })
 
 # conexion sensor ecg
 
@@ -420,6 +439,7 @@ def get_latest_ecg(request):
 
 # evaluar a un expositor 
 def evaluar_expositor(request, id):
-    expositor = get_object_or_404(Expositores, id=id)
-    return render(request, 'frecuencia_cardiaca.html', {'expositor': expositor})
+    expositores = Expositores.objects.all()
+    expositor_seleccionado = get_object_or_404(Expositores, id=id)
+    return render(request, 'frecuencia_cardiaca.html', {'expositores': expositores, 'expositor_seleccionado': expositor_seleccionado})
 

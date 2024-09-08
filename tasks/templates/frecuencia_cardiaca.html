@@ -49,8 +49,13 @@
       <div class="col-lg-8 content-left">
         <img src="/static/mockup_image.png" alt="Virtual Classroom" class="img-fluid">
         <div class="mt-3">
-          <label for="nombre_expositor" class="form-label">Nombre Expositor</label>
-          <input type="text" class="form-control" id="nombre_expositor" value="Luis Sanhueza">
+          {% for expositor in expositores %}
+            {% if expositor.id == expositor_seleccionado.id %}
+              <label for="nombre_expositor" class="form-label">Nombre Expositor</label>
+              <input type="text" class="form-control" id="nombre_expositor" value="{{ expositor.nombre }}">
+            {% endif %}
+        {% endfor %}
+          
         </div>
         <div class="mt-3">
           <label for="tiempo_exposicion" class="form-label">Tiempo de exposición</label>
