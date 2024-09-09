@@ -78,7 +78,7 @@
                     <button data-id="{{ expositor.id }}" data-toggle="modal" data-target="#borrarExpositorModal" class="btn btn-lg"><i class="bi bi-trash3"></i></button>
                   </td>
                   <td>
-                    <button data-id="{{ expositor.id }}" class="btn btn-lg evaluarExpositorBtn"><i class="bi bi-clipboard-pulse"></i></button>
+                    <button data-id="{{ expositor.id }}" class="btn btn-lg evaluacionPantallaBtn"><i class="bi bi-clipboard-pulse"></i></button>
                   </td>
                 </tr>
               {% endfor %}
@@ -396,6 +396,12 @@
             var url = "{% url 'evaluar_expositor' 0 %}".replace('0', id)
             window.location.href = url
           })
+
+          $('.evaluacionPantallaBtn').click(function () {
+              var id = $(this).data('id');
+              var url = "{% url 'elegir_evaluacion' 0 %}".replace('0', id);
+              window.location.href = url;
+          });
         })
       </script>
     </body>
