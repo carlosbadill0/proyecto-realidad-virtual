@@ -35,7 +35,7 @@ def signup (request):
     else:
         if request.POST['password1'] == request.POST['password2']:
             try:   #registrar usuario
-                user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'])
+                user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'], email=request.POST['email'],last_name=request.POST['last_name'], first_name=request.POST['first_name'])
                 user.save()
                 evaluadores_group = Group.objects.get(name='Evaluador')
                 user.groups.add(evaluadores_group)
