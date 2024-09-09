@@ -10,7 +10,7 @@ import json
 # views.py
 
 from .models import Evaluation
-from .models import Evaluacion
+from .models import Evaluacion, CasoEstres
 import json
 # codigo lucho
 from .models import Usuario, Rol, Practicante, DisenarEvaluacion, User, Group
@@ -36,11 +36,10 @@ def signup (request):
         if request.POST['password1'] == request.POST['password2']:
             try:   #registrar usuario
                 user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'], email=request.POST['email'],last_name=request.POST['last_name'], first_name=request.POST['first_name'])
+                group = Group.objects.get(name=request.POST['group'])
+                user.groups.add(group)
                 user.save()
-                evaluadores_group = Group.objects.get(name='Evaluador')
-                user.groups.add(evaluadores_group)
-                login(request,user)
-                return redirect('home')
+                return redirect('listar_usuarios.html')
             except:
                 return render(request, 'signup.html',{
                 'form': UserForm,
@@ -311,9 +310,18 @@ def nueva_evaluacion(request):
     if request.method == "POST":
         form = EvaluacionForm(request.POST)
         if form.is_valid():
-            form.save()
+            evaluacion = form.save(commit=False)
+            evaluacion.save()
+            # Guardamos los casos de estrés seleccionados
+            casos_estres = form.cleaned_data['casos_estres']
+            evaluacion.casos_estres.set(casos_estres)
             return JsonResponse({'success': True})
-    return JsonResponse({'success': False})
+    else:
+        form = EvaluacionForm()
+    
+    return render(request, 'crear_evaluacion.html', {'form': form})
+
+
 
 def editar_evaluacion(request, pk):
     evaluacion = get_object_or_404(Evaluacion, pk=pk)

@@ -52,15 +52,23 @@ class Evaluation(models.Model):
     
     def __str__(self):
         return self.name
+    
+class CasoEstres(models.Model):
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField()
+    duracion = models.IntegerField()
+
+    def __str__(self):
+        return f'{self.nombre} - {self.duracion}'
 
 class Evaluacion(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
     fecha = models.DateField()
-
-    def __str__(self):
-        return f'Evaluación por {self.nombre_evaluador} el {self.fecha_evaluacion}'
+    casos_estres = models.ManyToManyField(CasoEstres, blank=True)
     
+    def __str__(self):
+        return f'Evaluación por {self.nombre} el {self.fecha}'
     
 class DisenarEvaluacion(models.Model):
     nombre_evaluacion = models.CharField(max_length=100)

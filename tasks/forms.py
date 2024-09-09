@@ -1,5 +1,5 @@
 from django import forms
-from .models import Usuario, Practicante, DisenarEvaluacion,Evaluacion, Expositores
+from .models import Usuario, Practicante, DisenarEvaluacion,Evaluacion, Expositores, CasoEstres
 from django.contrib.auth.models import User, Group
 
 class UserForm(forms.ModelForm):
@@ -20,10 +20,18 @@ class PracticanteForm(forms.ModelForm):
         model = Practicante
         fields = ['nombre_usuario', 'apellidoP_usuario', 'apellidoM_usuario', 'fecha_ingreso']
 
+
+        
 class EvaluacionForm(forms.ModelForm):
+    casos_estres = forms.ModelMultipleChoiceField(
+        queryset=CasoEstres.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+
     class Meta:
         model = Evaluacion
-        fields = ['nombre', 'descripcion', 'fecha']
+        fields = ['nombre', 'descripcion', 'fecha', 'casos_estres']
 
 class ExpositorForm(forms.ModelForm):
     class Meta:
