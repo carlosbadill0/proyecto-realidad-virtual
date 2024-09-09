@@ -84,8 +84,8 @@
             <button class="btn btn-success">Pregunta general - 25 segundos</button>
           </div>
         </div>
-        <div class="chart-container">
-          <label class="form-label">Monitoreo</label>
+        <div class="chart-container text-center" id="frecuencia_cardiaca">
+          <label class="form-label"><pre>Frecuencia actual:   <span id="frecuencia"></span></pre></label>
           <canvas id="graficoFrecuencia"></canvas>
         </div>
         <div class="d-grid mt-3">
@@ -96,6 +96,7 @@
   </div>
 
 
+  
   <script>
     // Inicializa el gráfico
     const ctx = document.getElementById('graficoFrecuencia').getContext('2d')

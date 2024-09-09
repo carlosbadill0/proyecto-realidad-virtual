@@ -1,55 +1,117 @@
 {% extends 'base.html' %}
 {% block content %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/estilos.css' %}">
-    <script src="{% static 'js/filtrar.js'%}"></script>
-    <title>Administrar Usuarios</title>
-</head>
-<body>
-    <div class="container">
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Búsqueda">
-            <button type="button">Filtrar</button>
-        </div>
-        <h2>Administrar Usuarios</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Rol</th>
-                    <th>Correo</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for usuario in usuarios %}
-                <tr>
-                    <td>{{ usuario.id }}</td>
-                    <td>{{ usuario.nombre_usuario }} {{ usuario.apellidoP_usuario }} {{ usuario.apellidoM_usuario }}</td>
-                    <td>{{ usuario.id_rol.nombre_rol }}</td>
-                    <td>{{ usuario.email_usuario }}</td>
-                    <td class="actions">
-                        {% if usuario.id %}
-                            <a href="{% url 'editar_usuario' usuario.id %}">
-                                <img src="{% static 'img/edit.png' %}" alt="Edit">
-                            </a>
-                            <a href="{% url 'eliminar_usuario' usuario.id %}">
-                                <img src="{% static 'img/delete.png' %}" alt="Delete">
-                            </a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <a href="{% url 'crear_usuario' %}" class="add-button">Añadir usuario</a>
+  <!DOCTYPE html>
+  <html lang="es">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      {% load static %}
+      <link rel="stylesheet" type="text/css" href="{% static 'css/estilos.css' %}" />
+      <script src="{% static 'js/filtrar.js' %}"></script>
+      <title>Administrar Usuarios</title>
+    </head>
+    <body>
+      <div class="container">
+<div class="row">
+<div class="col">
+  <div >
+    <input type="text" id="searchInput" style="width: 400px; height: 37px;" placeholder="Búsqueda" />
+    <button type="button" class="btn btn-outline-primary">Filtrar</button>
+  </div>
+</div>
+<div class="col">
+  <div class="d-flex justify-content-end">
+    <a href="{% url 'crear_usuario' %}" class="btn btn-primary">Añadir usuario</a>
     </div>
-</body>
-</html>
+</div>
+</div>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre de usuario</th>
+              <th>Nombre</th>
+              <th>Rol</th>
+              <th>Email</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for usuario in usuarios %}
+              <tr>
+                <td>{{ usuario.id }}</td>
+                <td>{{ usuario.username }}</td>
+                <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
+                <td>
+                  {% for grupo in usuario.groups.all %}
+                    {{ grupo.name }}{% if not forloop.last %}, {% endif %}
+                  {% endfor %}
+                </td>
+                <td>{{ usuario.email }}</td>
+
+                <td class="actions">
+                  <button data-id="{{ usuario.id }}" data-toggle="modal" data-target="#editarUsuarioModal{{ usuario.id }}" class="btn btn-lg"><i class="bi bi-pencil-square"></i></button>
+                  <button data-id="{{ usuario.id }}" data-toggle="modal" data-target="#borrarUsuarioModal{{ usuario.id }}" class="btn btn-lg"><i class="bi bi-trash3"></i></button>
+                </td>
+              </tr>
+
+              <!-- Modal Editar Usuario -->
+              <div class="modal fade" id="editarUsuarioModal{{ usuario.id }}" tabindex="-1" role="dialog" aria-labelledby="editarUsuarioModalLabel{{ usuario.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="editarUsuarioModalLabel{{ usuario.id }}">Editar Usuario</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <form method="POST" action="{% url 'editar_usuario' usuario.id %}">
+                      {% csrf_token %}
+                      <div class="modal-body">
+                        <div class="form-group">
+                          <label for="grupo{{ usuario.id }}">Rol</label>
+                          <select class="form-control" id="grupo{{ usuario.id }}" name="grupo">
+                            {% for grupo in grupos %}
+                              <option value="{{ grupo.id }}" {% if grupo in usuario.groups.all %}selected{% endif %}>{{ grupo.name }}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal Borrar Usuario -->
+              <div class="modal fade" id="borrarUsuarioModal{{ usuario.id }}" tabindex="-1" role="dialog" aria-labelledby="borrarUsuarioModalLabel{{ usuario.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="borrarUsuarioModalLabel{{ usuario.id }}">Eliminar Usuario</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <form method="POST" action="{% url 'borrar_usuario' usuario.id %}">
+                      {% csrf_token %}
+                      <div class="modal-body">
+                        <p>¿Estás seguro de que deseas eliminar al usuario {{ usuario.username }}?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+  </html>
 {% endblock %}

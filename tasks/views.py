@@ -13,47 +13,41 @@ from .models import Evaluation
 from .models import Evaluacion
 import json
 # codigo lucho
-from .models import Usuario, Rol, Practicante, DisenarEvaluacion
+from .models import Usuario, Rol, Practicante, DisenarEvaluacion, User, Group
 from .forms import UsuarioForm, PracticanteForm, EvaluacionForm
 from .models import ECGData
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 
 
-if not Group.objects.filter(name='Evaluadores').exists():
-    Group.objects.create(name='Evaluadores')
-if not Group.objects.filter(name='Expositores').exists():
-    Group.objects.create(name='Expositores')
-    
-if not User.objects.filter(username='admin').exists():
-    User.objects.create_superuser('admin', 'admin@gmail.com', '123')
 
-
-def home(request):
     
+
+def home(request):   
     return render(request, 'home.html')
+
 def signup (request):
     
     if request.method == 'GET':
         return render(request, 'signup.html',{
-        'form': UserCreationForm 
+        'form': UserForm 
         })
     else:
         if request.POST['password1'] == request.POST['password2']:
             try:   #registrar usuario
                 user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'])
                 user.save()
-                evaluadores_group = Group.objects.get(name='Evaluadores')
+                evaluadores_group = Group.objects.get(name='Evaluador')
                 user.groups.add(evaluadores_group)
                 login(request,user)
                 return redirect('home')
             except:
                 return render(request, 'signup.html',{
-                'form': UserCreationForm,
+                'form': UserForm,
                 "error": 'el usuario ya existe'
         })
     return render(request, 'signup.html',{
-        'form': UserCreationForm,
+        'form': UserForm,
         "error": 'las contraseñas no coinciden'
         })
     
@@ -202,38 +196,67 @@ def administrar(request):
 #usuarios
 
 def listar_usuarios(request):
-    usuarios = Usuario.objects.all()
-    for usuario in usuarios:
-        print(usuario.id)  # Imprime para verificar los valores
-    return render(request, 'listar_usuarios.html', {'usuarios': usuarios})
+    usuarios = User.objects.all()
+    grupos = Group.objects.all()
+    contexto = {
+        'usuarios': usuarios,
+        'grupos': grupos
+    }
+    return render(request, 'listar_usuarios.html', contexto)
 
 def crear_usuario(request):
-    if request.method == 'POST':
-        form = UsuarioForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('listar_usuarios')
+    if request.method == 'GET':
+        return render(request, 'formulario_usuario.html', {'form': UserForm()})
     else:
-        form = UsuarioForm()
+        form = UserForm(request.POST)
+        if form.is_valid():
+            # Validar que las contraseñas coinciden
+            password1 = request.POST.get('password1')
+            password2 = request.POST.get('password2')
+            
+            if password1 == password2:
+                try:
+                    # Crear usuario
+                    user = User.objects.create_user(
+                        username=form.cleaned_data['username'], 
+                        password=password1,
+                        email=form.cleaned_data['email'],
+                        first_name=form.cleaned_data['first_name'],
+                        last_name=form.cleaned_data['last_name']
+                    )
+                    user.save()
+
+                    # Obtener el grupo seleccionado del formulario
+                    selected_group_name = form.cleaned_data.get('group')
+                    group = Group.objects.get(name=selected_group_name)
+                    user.groups.add(group)
+
+                    return redirect('listar_usuarios')
+                except Exception as e:
+                    return render(request, 'formulario_usuario.html', {
+                        'form': form,
+                        'error': 'El usuario ya existe o hubo un problema al crearlo.'
+                    })
+            else:
+                return render(request, 'formulario_usuario.html', {
+                    'form': form,
+                    'error': 'Las contraseñas no coinciden.'
+                })
     return render(request, 'formulario_usuario.html', {'form': form})
 
 def editar_usuario(request, id):
-    usuario = get_object_or_404(Usuario, id=id)
-    if request.method == 'POST':
-        form = UsuarioForm(request.POST, instance=usuario)
-        if form.is_valid():
-            form.save()
-            return redirect('listar_usuarios')
-    else:
-        form = UsuarioForm(instance=usuario)
-    return render(request, 'formulario_usuario.html', {'form': form})
+    usuario = get_object_or_404(User, id=id)
+    grupo_id = request.POST.get('grupo')
+    grupo = Group.objects.get(id=grupo_id)
+    usuario.groups.clear()
+    usuario.groups.add(grupo)
+    usuario.save()
+    return redirect('listar_usuarios') 
 
 def eliminar_usuario(request, id):
-    usuario = get_object_or_404(Usuario, id=id)
-    if request.method == 'POST':
-        usuario.delete()
-        return redirect('listar_usuarios')
-    return render(request, 'confirmar_eliminar.html', {'usuario': usuario})
+    usuario = get_object_or_404(User, id=id)
+    usuario.delete()
+    return redirect('listar_usuarios')
 
 #practicantes
 
@@ -357,7 +380,7 @@ def disenar(request):
 # CRUD Expositor
 from django.http import JsonResponse
 from .models import Expositores
-from .forms import ExpositorForm, ExpositorEditForm
+from .forms import ExpositorForm
 
 def lista_expositores(request):
     expositores = Expositores.objects.all()
@@ -366,7 +389,7 @@ def lista_expositores(request):
 def detalle_expositor(request, pk):
     expositor = get_object_or_404(Expositores, pk=pk)
     return JsonResponse({'nombre': expositor.nombre, 'fecha_ingreso': expositor.fecha_ingreso, 'fecha_nacimiento' : expositor.fecha_nacimiento,
-                         'edad': expositor.edad, 'genero': expositor.genero, 'semestre_academico': expositor.semestre_academico,
+                         'edad': expositor.edad, 'genero':expositor.genero, 'semestre_academico': expositor.semestre_academico,
                          'carrera': expositor.carrera, 'observacion_inicial': expositor.observacion_inicial, 'observacion_final': expositor.observacion_final                         
                          })
 
@@ -376,7 +399,7 @@ def crear_expositor(request):
         if form.is_valid():
             form.save()
             return JsonResponse({'success': True})
-    return JsonResponse({'success': False}, print('no entra'))
+    return JsonResponse({'success': False})
 
 
 def editar_expositor(request, pk):

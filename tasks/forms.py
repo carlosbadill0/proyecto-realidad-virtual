@@ -7,7 +7,7 @@ class UserForm(forms.ModelForm):
     group = forms.ModelChoiceField(queryset=Group.objects.all())
     class Meta:
         model = User
-        fields = ['username', 'password', 'group']
+        fields = ['username', 'password', 'email', 'first_name', 'last_name', 'group']
 
 class UsuarioForm(forms.ModelForm):
     class Meta:
@@ -30,14 +30,6 @@ class ExpositorForm(forms.ModelForm):
         model = Expositores
         fields = [
             'nombre', 'fecha_ingreso', 'fecha_nacimiento', 'edad', 
-            'genero', 'semestre_academico', 'carrera', 'observacion_inicial'
+            'genero', 'semestre_academico', 'carrera', 'observacion_inicial', 'observacion_final'
         ]
 
-class ExpositorEditForm(forms.ModelForm):
-    class Meta:
-        model = Expositores
-        fields = [
-            'nombre', 'fecha_ingreso', 'fecha_nacimiento', 'edad', 
-            'genero', 'semestre_academico', 'carrera', 'observacion_inicial', 
-            'observacion_final'
-        ]

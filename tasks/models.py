@@ -112,7 +112,7 @@ class Expositores(models.Model):
 
 
     def __str__(self):
-        return f"{self.nombre}{self.observacion_final}" 
+        return f"{self.nombre}" 
     
 class ECGData(models.Model):
     expositor = models.ForeignKey(Expositores, on_delete=models.CASCADE, default=1, related_name='ecg_data')

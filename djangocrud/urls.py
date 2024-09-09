@@ -39,7 +39,7 @@ urlpatterns = [
     path('administrar/', views.listar_usuarios, name='listar_usuarios'),
     path('usuarios/crear/', views.crear_usuario, name='crear_usuario'),
     path('usuarios/editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
-    path('usuarios/eliminar/<int:id>/', views.eliminar_usuario, name='eliminar_usuario'),
+    path('usuarios/eliminar/<int:id>/', views.eliminar_usuario, name='borrar_usuario'),
     # urls para practicante
     # path('practicantes/', views.listar_practicantes, name='listar_practicantes'),
     # path('practicantes-agregar/', views.agregar_practicante, name='agregar_practicante'),
