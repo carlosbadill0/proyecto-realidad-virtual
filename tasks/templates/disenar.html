@@ -1,271 +1,478 @@
-{% extends 'base.html' %}
-{% block content %}
-  <!DOCTYPE html>
-  <html lang="es">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Evaluaciones</title>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-      <style>
-        .modal-header {
-          background-color: #007bff;
-          color: white;
-        }
-        .modal-title {
-          font-weight: bold;
-        }
-        .btn-primary {
-          background-color: #007bff;
-          border-color: #007bff;
-        }
-        .btn-info {
-          background-color: #17a2b8;
-          border-color: #17a2b8;
-        }
-        .btn-danger {
-          background-color: #dc3545;
-          border-color: #dc3545;
-        }
-        .btn-primary:hover,
-        .btn-info:hover,
-        .btn-danger:hover {
-          opacity: 0.9;
-        }
-        .table th,
-        .table td {
-          text-align: center;
-        }
-        .table thead {
-          background-color: #f8f9fa;
-        }
-        .table-responsive {
-          margin-top: 20px;
-        }
-        .container {
-          margin-top: 20px;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="container mt-4">
-        <div class="d-flex justify-content-end">
-          <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#crearModal">Crear evaluación</button>
-        </div>
-        <div class="table-responsive">
-          <table class="table table-striped table-bordered">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Fecha</th>
-                <th>Casos de estres asociados a la evaluación</th>
-                <th>Acciones</th>
-                <th>Rating</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for evaluacion in evaluaciones %}
-                <tr>
-                  <td>{{ evaluacion.nombre }}</td>
-                  <td>{{ evaluacion.descripcion }}</td>
-                  <td>{{ evaluacion.fecha }}</td>
-                  <td>
-                    {% for caso in evaluacion.casos_de_estres.all %}
-                        <li>{{ caso }}</li>
-                    {% endfor %}
-                </td>
-                  <td>
-                    <button data-id="{{ evaluacion.id }}" data-toggle="modal" data-target="#verModal" class="btn btn-lg"><i class="bi bi-eye"></i></button>
-                    <button data-id="{{ evaluacion.id }}" data-toggle="modal" data-target="#editarModal" class="btn btn-lg"><i class="bi bi-pencil-square"></i></button>
-                    <button data-id="{{ evaluacion.id }}" data-toggle="modal" data-target="#borrarModal" class="btn btn-lg"><i class="bi bi-trash3"></i></button>
-                  </td>
-                  <td></td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+{% extends 'base.html' %} {% block content %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evaluaciones</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <style>
+      .modal-header {
+        background-color: #007bff;
+        color: white;
+      }
+      .modal-title {
+        font-weight: bold;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+      .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+      }
+      .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+      }
+      .btn-primary:hover,
+      .btn-info:hover,
+      .btn-danger:hover {
+        opacity: 0.9;
+      }
+      .table th,
+      .table td {
+        text-align: center;
+      }
+      .table thead {
+        background-color: #f8f9fa;
+      }
+      .table-responsive {
+        margin-top: 20px;
+      }
+      .container {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-4">
+      <div class="d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-primary mb-3"
+          data-toggle="modal"
+          data-target="#crearModal"
+        >
+          Crear evaluación
+        </button>
       </div>
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Fecha</th>
+              <th>Casos de estres asociados a la evaluación</th>
+              <th>Acciones</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for evaluacion in evaluaciones %}
+            <tr>
+              <td>{{ evaluacion.nombre }}</td>
+              <td>{{ evaluacion.descripcion }}</td>
+              <td>{{ evaluacion.fecha }}</td>
+              <td>
+                {% for scenario in evaluacion.scenarios.all %}
+                <li>{{ scenario }}</li>
+                {% endfor %}
+              </td>
+              <td>
+                <button
+                  data-id="{{ evaluacion.id }}"
+                  data-toggle="modal"
+                  data-target="#verModal"
+                  class="btn btn-lg"
+                >
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button
+                  data-id="{{ evaluacion.id }}"
+                  data-toggle="modal"
+                  data-target="#editarModal"
+                  class="btn btn-lg"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button
+                  data-id="{{ evaluacion.id }}"
+                  data-toggle="modal"
+                  data-target="#borrarModal"
+                  class="btn btn-lg"
+                >
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </td>
+              <td></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-      <!-- Crear Modal -->
-      <div class="modal fade" id="crearModal" tabindex="-1" role="dialog" aria-labelledby="crearModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="crearModalLabel">Crear Evaluación</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-              <form id="crearForm">
-                {% csrf_token %}
-                <div class="form-group">
-                  <label for="nombre">Nombre</label>
-                  <input type="text" class="form-control" id="nombre" name="nombre" required />
+    <!-- Crear Modal -->
+    <div
+      class="modal fade"
+      id="crearModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="crearModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="crearModalLabel">Crear Evaluación</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="crearForm">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nombre"
+                  name="nombre"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="descripcion">Descripción</label>
+                <textarea
+                  class="form-control"
+                  id="descripcion"
+                  name="descripcion"
+                  required
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="fecha">Fecha</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="fecha"
+                  name="fecha"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="scenarios">Escenarios</label>
+                <div id="scenarios">
+                  {% for scenario in scenarios %}
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="scenario{{ scenario.id }}"
+                      name="scenarios"
+                      value="{{ scenario.id }}"
+                    />
+                    <label
+                      class="form-check-label"
+                      for="scenario{{ scenario.id }}"
+                      >{{ scenario }}</label
+                    >
+                    <span>-pos:</span>
+                    <span
+                      class="order-number"
+                      id="order{{ scenario.id }}"
+                    ></span>
+                  </div>
+                  {% endfor %}
                 </div>
-                <div class="form-group">
-                  <label for="descripcion">Descripción</label>
-                  <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
-                </div>
-                <div class="form-group">
-                  <label for="fecha">Fecha</label>
-                  <input type="date" class="form-control" id="fecha" name="fecha" required />
-                </div>
-                <button type="button" class="btn btn-primary" id="crearBtn">Guardar</button>
-              </form>
-            </div>
+              </div>
+              <input
+                type="hidden"
+                id="scenarios_orden"
+                name="scenarios_orden"
+              />
+              <button type="button" class="btn btn-primary" id="crearBtn">
+                Guardar
+              </button>
+            </form>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Editar Modal -->
-      <div class="modal fade" id="editarModal" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="editarModalLabel">Editar Evaluación</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-              <form id="editarForm">
-                <input type="hidden" id="editarId" />
-                <div class="form-group">
-                  <label for="editarNombre">Nombre</label>
-                  <input type="text" class="form-control" id="editarNombre" name="nombre" required />
+    <!-- Editar Modal -->
+    <div
+      class="modal fade"
+      id="editarModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="editarModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editarModalLabel">Editar Evaluación</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="editarForm">
+              <input type="hidden" id="editarId" />
+              <div class="form-group">
+                <label for="editarNombre">Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editarNombre"
+                  name="nombre"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="editarDescripcion">Descripción</label>
+                <textarea
+                  class="form-control"
+                  id="editarDescripcion"
+                  name="descripcion"
+                  required
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="editarFecha">Fecha</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="editarFecha"
+                  name="fecha"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="editarScenarios">Escenarios</label>
+                <div id="editarScenarios">
+                  {% for scenario in scenarios %}
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="editarScenario{{ scenario.id }}"
+                      name="scenarios"
+                      value="{{ scenario.id }}"
+                    />
+                    <label
+                      class="form-check-label"
+                      for="editarScenario{{ scenario.id }}"
+                      >{{ scenario }}</label
+                    >
+                    <span>-pos:</span>
+                    <span
+                      class="order-number"
+                      id="editarOrder{{ scenario.id }}"
+                    ></span>
+                  </div>
+                  {% endfor %}
                 </div>
-                <div class="form-group">
-                  <label for="editarDescripcion">Descripción</label>
-                  <textarea class="form-control" id="editarDescripcion" name="descripcion" required></textarea>
-                </div>
-                <div class="form-group">
-                  <label for="editarFecha">Fecha</label>
-                  <input type="date" class="form-control" id="editarFecha" name="fecha" required />
-                </div>
-                <button type="button" class="btn btn-primary" id="editarBtn">Guardar</button>
-              </form>
-            </div>
+              </div>
+              <input
+                type="hidden"
+                id="editarScenariosOrden"
+                name="scenarios_orden"
+              />
+              <button type="button" class="btn btn-primary" id="editarBtn">
+                Guardar
+              </button>
+            </form>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Borrar Modal -->
-      <div class="modal fade" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="borrarModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="borrarModalLabel">Borrar Evaluación</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-              <p>¿Estás seguro de que quieres borrar esta evaluación?</p>
-              <button type="button" class="btn btn-danger" id="borrarBtn">Borrar</button>
-            </div>
+    <!-- Borrar Modal -->
+    <div
+      class="modal fade"
+      id="borrarModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="borrarModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="borrarModalLabel">Borrar Evaluación</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>¿Estás seguro de que quieres borrar esta evaluación?</p>
+            <button type="button" class="btn btn-danger" id="borrarBtn">
+              Borrar
+            </button>
           </div>
         </div>
       </div>
+    </div>
 
-      <script>
-        $(document).ready(function () {
-          function getCookie(name) {
-            let cookieValue = null
-            if (document.cookie && document.cookie !== '') {
-              const cookies = document.cookie.split(';')
-              for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim()
-                if (cookie.substring(0, name.length + 1) === name + '=') {
-                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
-                  break
-                }
+    <script>
+      $(document).ready(function () {
+        function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === name + "=") {
+                cookieValue = decodeURIComponent(
+                  cookie.substring(name.length + 1)
+                );
+                break;
               }
             }
-            return cookieValue
           }
-          const csrftoken = getCookie('csrftoken')
-        
-          function csrfSafeMethod(method) {
-            return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method)
-          }
-        
-          $.ajaxSetup({
-            beforeSend: function (xhr, settings) {
-              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader('X-CSRFToken', csrftoken)
-              }
+          return cookieValue;
+        }
+        const csrftoken = getCookie("csrftoken");
+
+        function csrfSafeMethod(method) {
+          return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
+        }
+
+        $.ajaxSetup({
+          beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
-          })
-        
-          $('#crearBtn').click(function () {
-            $.ajax({
-              url: '{% url "nueva_evaluacion" %}',
-              method: 'POST',
-              data: $('#crearForm').serialize(),
-              success: function (response) {
-                if (response.success) {
-                  location.reload()
-                } else {
-                  alert('Error al crear la evaluación.')
-                }
+          },
+        });
+
+        let order = 1;
+        $("#scenarios .form-check-input").change(function () {
+          if (this.checked) {
+            $(this).next(".order-number").text(order++);
+          } else {
+            $(this).next(".order-number").text("");
+            order--;
+            $("#scenarios .form-check-input:checked").each(function (index) {
+              $(this)
+                .next(".order-number")
+                .text(index + 1);
+            });
+          }
+          updateOrderField();
+        });
+
+        function updateOrderField() {
+          let selectedOrder = [];
+          $("#scenarios .form-check-input:checked").each(function () {
+            selectedOrder.push($(this).val());
+          });
+          $("#scenarios_orden").val(selectedOrder.join(","));
+        }
+
+        $("#crearBtn").click(function () {
+          updateOrderField();
+          $.ajax({
+            url: '{% url "nueva_evaluacion" %}',
+            method: "POST",
+            data: $("#crearForm").serialize(),
+            success: function (response) {
+              if (response.success) {
+                location.reload();
+              } else {
+                alert("Error al crear la evaluación.");
               }
-            })
-          })
-        
-          $('#editarModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget)
-            var id = button.data('id')
-            var url = "{% url 'detalle_evaluacion' 0 %}".replace('0', id)
-            $.ajax({
-              url: url,
-              method: 'GET',
-              success: function (data) {
-                $('#editarId').val(id)
-                $('#editarNombre').val(data.nombre)
-                $('#editarDescripcion').val(data.descripcion)
-                $('#editarFecha').val(data.fecha)
+            },
+          });
+        });
+
+        $("#editarModal").on("show.bs.modal", function (event) {
+          var button = $(event.relatedTarget);
+          var id = button.data("id");
+          var url = "{% url 'detalle_evaluacion' 0 %}".replace("0", id);
+          $.ajax({
+            url: url,
+            method: "GET",
+            success: function (data) {
+              $("#editarId").val(id);
+              $("#editarNombre").val(data.nombre);
+              $("#editarDescripcion").val(data.descripcion);
+              $("#editarFecha").val(data.fecha);
+              $("#editarScenarios input").each(function () {
+                $(this).prop(
+                  "checked",
+                  data.scenarios.includes(parseInt($(this).val()))
+                );
+              });
+            },
+          });
+        });
+
+        $("#editarBtn").click(function () {
+          var id = $("#editarId").val();
+          var url = "{% url 'editar_evaluacion' 0 %}".replace("0", id);
+          $.ajax({
+            url: url,
+            method: "POST",
+            data: $("#editarForm").serialize(),
+            success: function (response) {
+              if (response.success) {
+                location.reload();
+              } else {
+                alert("Error al editar la evaluación.");
               }
-            })
-          })
-        
-          $('#editarBtn').click(function () {
-            var id = $('#editarId').val()
-            var url = "{% url 'editar_evaluacion' 0 %}".replace('0', id)
-            $.ajax({
-              url: url,
-              method: 'POST',
-              data: $('#editarForm').serialize(),
-              success: function (response) {
-                if (response.success) {
-                  location.reload()
-                } else {
-                  alert('Error al editar la evaluación.')
-                }
-              }
-            })
-          })
-        
-          $('#borrarModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget)
-            var id = button.data('id')
-            var url = "{% url 'borrar_evaluacion' 0 %}".replace('0', id)
-            $('#borrarBtn')
-              .off('click')
-              .on('click', function () {
-                $.ajax({
-                  url: url,
-                  method: 'POST',
-                  success: function (response) {
-                    if (response.success) {
-                      location.reload()
-                    } else {
-                      alert('Error al borrar la evaluación.')
-                    }
+            },
+          });
+        });
+
+        $("#borrarModal").on("show.bs.modal", function (event) {
+          var button = $(event.relatedTarget);
+          var id = button.data("id");
+          var url = "{% url 'borrar_evaluacion' 0 %}".replace("0", id);
+          $("#borrarBtn")
+            .off("click")
+            .on("click", function () {
+              $.ajax({
+                url: url,
+                method: "POST",
+                success: function (response) {
+                  if (response.success) {
+                    location.reload();
+                  } else {
+                    alert("Error al borrar la evaluación.");
                   }
-                })
-              })
-          })
-        })
-      </script>
-    </body>
-  </html>
+                },
+              });
+            });
+        });
+      });
+    </script>
+  </body>
+</html>
 {% endblock %}

@@ -9,8 +9,8 @@ from django.views.decorators.csrf import csrf_exempt # type: ignore
 import json
 # views.py
 
-from .models import Evaluation
-from .models import Evaluacion, CasoDeEstres
+from .models import EvaluacionScenario, Evaluation
+from .models import Evaluacion, CasoDeEstres, Scenario
 import json
 # codigo lucho
 from .models import Usuario, Rol, Practicante, DisenarEvaluacion, User, Group
@@ -319,37 +319,77 @@ from .forms import EvaluacionForm
 
 def lista_evaluaciones(request):
     evaluaciones = Evaluacion.objects.all()
-    casos_de_estres_correspondientes = [caso for evaluacion in evaluaciones for caso in evaluacion.casos_de_estres.all()]
+    scenarios = Scenario.objects.all()
+    if request.method == 'POST':
+        form = EvaluacionForm(request.POST)
+        if form.is_valid():
+            evaluacion = form.save(commit=False)
+            evaluacion.save()
+            form.save_m2m()
+            return redirect('lista_evaluaciones')
+    else:
+        form = EvaluacionForm()
+
     return render(request, 'disenar.html', {
         'evaluaciones': evaluaciones,
-        'casos_de_estres': casos_de_estres_correspondientes
+        'form': form,
+        'scenarios': scenarios,
     })
 
 def detalle_evaluacion(request, pk):
     evaluacion = get_object_or_404(Evaluacion, pk=pk)
-    return JsonResponse({'nombre': evaluacion.nombre, 'descripcion': evaluacion.descripcion, 'fecha': evaluacion.fecha})
+    return JsonResponse({
+        'nombre': evaluacion.nombre,
+        'descripcion': evaluacion.descripcion,
+        'fecha': evaluacion.fecha,
+        'scenarios': list(evaluacion.scenarios.values_list('id', flat=True))
+    })
 
 def nueva_evaluacion(request):
     if request.method == "POST":
         form = EvaluacionForm(request.POST)
         if form.is_valid():
-            form.save()
+            evaluacion = form.save(commit=False)
+            evaluacion.save()
+            form.save_m2m()
+            # Limpiar la relación ManyToMany antes de agregar los nuevos escenarios
+            evaluacion.scenarios.clear()
+            # Guardar el orden de los escenarios
+            orden = request.POST.get('scenarios_orden', '').split(',')
+            for index, scenario_id in enumerate(orden):
+                scenario = Scenario.objects.get(id=scenario_id)
+                EvaluacionScenario.objects.create(evaluacion=evaluacion, scenario=scenario, orden=index + 1)
             return JsonResponse({'success': True})
-    return JsonResponse({'success': False})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'errors': 'Invalid request method'})
 
 def editar_evaluacion(request, pk):
     evaluacion = get_object_or_404(Evaluacion, pk=pk)
     if request.method == "POST":
         form = EvaluacionForm(request.POST, instance=evaluacion)
         if form.is_valid():
-            form.save()
+            evaluacion = form.save(commit=False)
+            evaluacion.save()
+            form.save_m2m()
+            # Limpiar la relación ManyToMany antes de agregar los nuevos escenarios
+            evaluacion.scenarios.clear()
+            # Guardar el orden de los escenarios
+            orden = request.POST.get('scenarios_orden', '').split(',')
+            for index, scenario_id in enumerate(orden):
+                scenario = Scenario.objects.get(id=scenario_id)
+                EvaluacionScenario.objects.create(evaluacion=evaluacion, scenario=scenario, orden=index + 1)
             return JsonResponse({'success': True})
-    return JsonResponse({'success': False})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'errors': 'Invalid request method'})
 
 def borrar_evaluacion(request, pk):
     evaluacion = get_object_or_404(Evaluacion, pk=pk)
-    evaluacion.delete()
-    return JsonResponse({'success': True})
+    if request.method == "POST":
+        evaluacion.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'errors': 'Invalid request method'})
 
 # @login_required
 # def elegir_evaluacion(request):
@@ -406,7 +446,8 @@ from .forms import ExpositorForm
 
 def lista_expositores(request):
     expositores = Expositores.objects.all()
-    return render(request, 'lista_expositores.html', {'expositores': expositores})
+    evaluations = Evaluacion.objects.all()
+    return render(request, 'lista_expositores.html', {'expositores': expositores, 'evaluations': evaluations})
 
 def detalle_expositor(request, pk):
     expositor = get_object_or_404(Expositores, pk=pk)
@@ -444,11 +485,16 @@ def elegir_evaluacion(request, pk):
     expositores = Expositores.objects.all()
     user_id = request.user.id
     evaluations = Evaluacion.objects.all()
+    scenarios_by_evaluation = {
+        evaluation.id: list(evaluation.scenarios.values('function_name', 'duration', 'tag_name'))
+        for evaluation in evaluations
+    }
     return render(request, 'elegirEvaluacion.html', {
         'expositor_seleccionado': expositor_seleccionado,
         'expositores': expositores,
         'user_id': user_id,
-        'evaluations': evaluations
+        'evaluations': evaluations,
+        'scenarios_by_evaluation': scenarios_by_evaluation  # Pasar los escenarios agrupados por evaluación
     })
 
 # conexion sensor ecg
@@ -483,8 +529,14 @@ def get_latest_ecg(request):
     })
 
 # evaluar a un expositor 
-def evaluar_expositor(request, id):
+def evaluar_expositor(request, id, id_evaluacion):
     expositores = Expositores.objects.all()
     expositor_seleccionado = get_object_or_404(Expositores, id=id)
-    return render(request, 'frecuencia_cardiaca.html', {'expositores': expositores, 'expositor_seleccionado': expositor_seleccionado})
-
+    evaluacion = get_object_or_404(Evaluacion, id=id_evaluacion)
+    escenarios = evaluacion.scenarios.all()
+    return render(request, 'frecuencia_cardiaca.html', {
+        'expositores': expositores,
+        'expositor_seleccionado': expositor_seleccionado,
+        'evaluacion': evaluacion,
+        'escenarios': escenarios
+    })

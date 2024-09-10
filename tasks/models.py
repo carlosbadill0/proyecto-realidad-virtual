@@ -80,7 +80,6 @@ class Scenario(models.Model):
         return f"{self.function_name} ({self.tag_name}) - {self.duration} mins"       
     
 class CasoDeEstres(models.Model):
-    expositor = models.ForeignKey(Expositores, on_delete=models.CASCADE, default=1, related_name='casos_de_estres')
     simulation_id = models.CharField(max_length=50)
     date = models.DateField()
     duration = models.DurationField()
@@ -97,21 +96,26 @@ class Evaluacion(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
     fecha = models.DateField()
-    casos_de_estres = models.ManyToManyField(CasoDeEstres, related_name='evaluaciones')
+    scenarios = models.ManyToManyField(Scenario, through='EvaluacionScenario', related_name='evaluaciones')
 
-    def clean(self):
-        # Validar que la evaluación tenga al menos 4 y como máximo 8 casos de estrés
-        if not (4 <= self.casos_de_estres.count() <= 8):
-            raise ValidationError('Una evaluación debe tener entre 4 y 8 casos de estrés.')
+    # def clean(self):
+    #     if not (4 <= self.casos_de_estres.count() <= 8):
+    #         raise ValidationError('Una evaluación debe tener entre 4 y 8 casos de estrés.')
 
-        # Validar que la duración total de la evaluación no exceda 2 minutos
-        total_duration = sum(caso.duration.total_seconds() for caso in self.casos_de_estres.all()) / 60  # convertimos a minutos
-        if total_duration > 2:
-            raise ValidationError('La duración total de los casos de estrés no puede exceder los 2 minutos.')
+    #     total_duration = sum(caso.duration.total_seconds() for caso in self.casos_de_estres.all()) / 60  # convertimos a minutos
+    #     if total_duration > 2:
+    #         raise ValidationError('La duración total de los casos de estrés no puede exceder los 2 minutos.')
 
     def __str__(self):
-        return f'Evaluación por {self.nombre} el {self.fecha}'
+        return self.nombre
     
+class EvaluacionScenario(models.Model):
+    evaluacion = models.ForeignKey(Evaluacion, on_delete=models.CASCADE)
+    scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE)
+    orden = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ['orden']
     
 class DisenarEvaluacion(models.Model):
     nombre_evaluacion = models.CharField(max_length=100)
@@ -148,10 +152,6 @@ class Practicante(models.Model):
     
     def __str__(self):
         return f"{self.nombre_usuario} {self.apellidoP_usuario} {self.apellidoM_usuario} {self.fecha_ingreso} {self.observacionInicial} {self.observacionFinal}"
-
-
-
-
 
 
 class ECGData(models.Model):

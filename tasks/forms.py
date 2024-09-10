@@ -1,3 +1,4 @@
+from xml.dom import ValidationErr
 from django import forms # type: ignore
 from .models import Usuario, Practicante, DisenarEvaluacion,Evaluacion, Expositores, CasoDeEstres, Scenario
 from django.contrib.auth.models import User, Group # type: ignore
@@ -24,21 +25,21 @@ class PracticanteForm(forms.ModelForm):
 class EvaluacionForm(forms.ModelForm):
     class Meta:
         model = Evaluacion
-        fields = ['nombre', 'descripcion', 'fecha', 'casos_de_estres']
+        fields = ['nombre', 'descripcion', 'fecha', 'scenarios']
+        widgets = {
+            'scenarios': forms.CheckboxSelectMultiple,
+        }
 
-    def clean_casos_de_estres(self):
-        casos_de_estres = self.cleaned_data['casos_de_estres']
-        
-        # Validar el número de casos de estrés
-        if not (4 <= casos_de_estres.count() <= 8):
-            raise forms.ValidationError('La evaluación debe tener entre 4 y 8 casos de estrés.')
+    def clean_scenarios(self):
+        scenarios = self.cleaned_data.get('scenarios')
+        # if not (4 <= len(scenarios) <= 8):
+        #     raise ValidationErr('Debe seleccionar entre 4 y 8 escenarios.')
 
-        # Validar que la duración total de los casos de estrés no exceda 2 minutos
-        total_duration = sum(caso.duration.total_seconds() for caso in casos_de_estres) / 60  # convertimos a minutos
-        if total_duration > 2:
-            raise forms.ValidationError('La duración total de los casos de estrés no puede exceder los 2 minutos.')
-        
-        return casos_de_estres
+        # total_duration = sum(scenario.duration.total_seconds() for scenario in scenarios)
+        # if total_duration > 120:
+        #     raise ValidationErr('La duración total de los escenarios no debe exceder los 2 minutos.')
+
+        return scenarios
 
 class ExpositorForm(forms.ModelForm):
     class Meta:

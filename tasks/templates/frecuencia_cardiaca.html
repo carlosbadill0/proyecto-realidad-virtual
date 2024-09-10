@@ -78,12 +78,13 @@
         <div class="info-box">
           <label class="form-label">Evaluación de prueba</label>
           <div class="d-grid gap-2">
-            <button class="btn btn-primary">Proyector no enciende - 20 segundos</button>
-            <button class="btn btn-warning">Distracción de la audiencia - 10 segundos</button>
-            <button class="btn btn-danger">Proyector se apaga - 20 segundos</button>
-            <button class="btn btn-success">Pregunta general - 25 segundos</button>
+              {% for escenario in escenarios %}
+              <button class="btn {% if escenario.tag_name == 'high' %}btn-danger{% elif escenario.tag_name == 'medium' %}btn-warning{% elif escenario.tag_name == 'low' %}btn-success{% else %}btn-primary{% endif %}">
+                  {{ escenario.function_name }} - {{ escenario.duration }} segundos
+              </button>
+              {% endfor %}
           </div>
-        </div>
+      </div>
         <div class="chart-container text-center" id="frecuencia_cardiaca">
           <label class="form-label"><pre>Frecuencia actual:   <span id="frecuencia"></span></pre></label>
           <canvas id="graficoFrecuencia"></canvas>

@@ -92,15 +92,12 @@
             {% if expositor.id == expositor_seleccionado.id %}
                 <label for="nombre">Nombre</label>
                 <p>{{ expositor.nombre }}</p>
-
                 <br>
                 <label for="observacion">Observación Inicial</label>
-                <textarea id="observacion">{{ expositor.observacion_inicial }}</textarea>
+                <textarea id="observacion" readonly>{{ expositor.observacion_inicial }}</textarea>
             {% endif %}
         {% endfor %}
         <br>
-
-       
     </div>
 
     <div class="section">
@@ -113,46 +110,80 @@
         
         <label for="evaluacion">Seleccionar Evaluación</label>
         <select id="evaluacion">
+            <option value="">Seleccionar evaluación</option>
             {% for evaluation in evaluations %}
-            <option value="prueba">{{evaluation.nombre}}</option>
+            <option value="{{ evaluation.id }}">{{ evaluation.nombre }}</option>
             {% endfor %}
-            
-            
         </select>
-        
+
         <h3>Casos de estrés de la evaluación</h3>
-        <div class="stress-cases">
-            <div class="green">
-                Proyector no enciende <span>20 segundos</span>
-            </div>
-            <div class="yellow">
-                Distracción de la audiencia <span>10 segundos</span>
-            </div>
-            <div class="yellow">
-                Proyector se apaga <span>20 segundos</span>
-            </div>
-            <div class="red">
-                Pregunta general <span>25 segundos</span>
-            </div>
+        <div class="stress-cases" id="stress-cases">
+            <!-- Los escenarios se actualizarán aquí -->
         </div>
-        
+                
         <br>
-        <div class="button">
-            <button data-id="{{ expositor_seleccionado.id }}" class="btn btn-lg evaluarExpositorBtn">
-                Evaluar expositor
-                <i class="bi bi-clipboard-pulse"></i>
-            </button>
-        </div>
+        
+        {% for expositor in expositores %}
+            {% if expositor.id == expositor_seleccionado.id %}
+                <div class="button">
+                    <button class="evaluarExpositorBtn" data-id="{{ expositor.id }}">
+                        Evaluar expositor
+                        <i class="bi bi-clipboard-pulse"></i>
+                    </button>
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $('.evaluarExpositorBtn').click(function () {
-        var id = $(this).data('id');
-        var url = "{% url 'evaluar_expositor' 0 %}".replace('0', id);
-        window.location.href = url;
-        
+    // Manejo del botón de evaluación
+    $(document).ready(function () {
+        $('.evaluarExpositorBtn').click(function () {
+            var expositorId = $(this).data('id');
+            var evaluacionId = $('#evaluacion').val();
+            if (evaluacionId) {
+                var url = "{% url 'evaluar_expositor' 0 0 %}".replace('0/0', expositorId + '/' + evaluacionId);
+                window.location.href = url;
+            } else {
+                alert('Por favor, selecciona una evaluación.');
+            }
+        });
+
+        $('.evaluacionPantallaBtn').click(function () {
+            var id = $(this).data('id');
+            var url = "{% url 'elegir_evaluacion' 0 %}".replace('0', id);
+            window.location.href = url;
+        });
     });
+
+    // Datos de los escenarios (deberían estar en un formato JSON válido)
+    const scenariosByEvaluation = {{ scenarios_by_evaluation|safe }};
+
+    function updateScenarios() {
+        const evaluationId = document.getElementById('evaluacion').value;
+        const stressCasesDiv = document.getElementById('stress-cases');
+        stressCasesDiv.innerHTML = '';
+
+        if (evaluationId && scenariosByEvaluation[evaluationId]) {
+            scenariosByEvaluation[evaluationId].forEach(scenario => {
+                const severityClass = scenario.tag_name === 'high' ? 'red' :
+                                      scenario.tag_name === 'medium' ? 'yellow' : 'green';
+                const scenarioDiv = document.createElement('div');
+                scenarioDiv.className = severityClass;
+                scenarioDiv.innerHTML = `${scenario.function_name} <span>${scenario.duration} segundos</span>`;
+                stressCasesDiv.appendChild(scenarioDiv);
+            });
+        }
+    }
+
+    // Inicializar escenarios al cargar la página si ya hay una evaluación seleccionada
+    document.getElementById('evaluacion').addEventListener('change', updateScenarios);
+    
+</script>
+<script type="application/json" id="scenarios-by-evaluation">
+    {{ scenarios_by_evaluation|safe }}
 </script>
 </body>
 </html>

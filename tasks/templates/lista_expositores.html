@@ -392,10 +392,15 @@
           })
         
           $('.evaluarExpositorBtn').click(function () {
-            var id = $(this).data('id')
-            var url = "{% url 'evaluar_expositor' 0 %}".replace('0', id)
-            window.location.href = url
-          })
+              var expositorId = $(this).data('id');
+              var evaluacionId = $('#evaluacion').val();
+              if (evaluacionId) {
+                  var url = "{% url 'evaluar_expositor' 0 0 %}".replace('0/0', expositorId + '/' + evaluacionId);
+                  window.location.href = url;
+              } else {
+                  alert('Por favor, selecciona una evaluación.');
+              }
+          });
 
           $('.evaluacionPantallaBtn').click(function () {
               var id = $(this).data('id');
