@@ -1,8 +1,10 @@
-from django.db import models
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Group, Permission
-from django.db.models.signals import post_migrate
-from django.dispatch import receiver
+from django.db import models # type: ignore
+from django.contrib.auth.models import User # type: ignore
+from django.contrib.auth.models import Group, Permission # type: ignore
+from django.db.models.signals import post_migrate # type: ignore
+from django.dispatch import receiver # type: ignore
+from django import forms # type: ignore
+from django.core.exceptions import ValidationError # type: ignore
 
 @receiver(post_migrate)
 def create_user_roles(sender, **kwargs):
@@ -53,14 +55,67 @@ class Evaluation(models.Model):
     def __str__(self):
         return self.name
 
+class Expositores(models.Model):
+    nombre = models.CharField(max_length=100)
+    fecha_ingreso = models.DateField()  
+    fecha_nacimiento = models.DateField()  
+    edad = models.IntegerField()
+    genero = models.CharField(max_length=10)
+    semestre_academico = models.IntegerField()  
+    carrera = models.CharField(max_length=100)
+    observacion_inicial = models.TextField()
+    observacion_final = models.TextField(default= 'sin información')
+
+
+    def __str__(self):
+        return f"{self.nombre}"     
+ 
+class Scenario(models.Model):
+    id = models.CharField(max_length=50, primary_key=True)
+    function_name = models.CharField(max_length=100)
+    tag_name = models.CharField(max_length=50)
+    duration = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.function_name} ({self.tag_name}) - {self.duration} mins"       
+    
+class CasoDeEstres(models.Model):
+    simulation_id = models.CharField(max_length=50)
+    date = models.DateField()
+    duration = models.DurationField()
+    scene = models.CharField(max_length=100)
+    description = models.TextField()
+    scenarios = models.ManyToManyField(Scenario)
+
+    def __str__(self):
+        return f"{self.simulation_id}: {self.scene} - {self.duration}"     
+ 
+    
+
 class Evaluacion(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
     fecha = models.DateField()
+    scenarios = models.ManyToManyField(Scenario, through='EvaluacionScenario', related_name='evaluaciones')
+
+    # def clean(self):
+    #     if not (4 <= self.casos_de_estres.count() <= 8):
+    #         raise ValidationError('Una evaluación debe tener entre 4 y 8 casos de estrés.')
+
+    #     total_duration = sum(caso.duration.total_seconds() for caso in self.casos_de_estres.all()) / 60  # convertimos a minutos
+    #     if total_duration > 2:
+    #         raise ValidationError('La duración total de los casos de estrés no puede exceder los 2 minutos.')
 
     def __str__(self):
-        return f'Evaluación por {self.nombre_evaluador} el {self.fecha_evaluacion}'
+        return self.nombre
     
+class EvaluacionScenario(models.Model):
+    evaluacion = models.ForeignKey(Evaluacion, on_delete=models.CASCADE)
+    scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE)
+    orden = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ['orden']
     
 class DisenarEvaluacion(models.Model):
     nombre_evaluacion = models.CharField(max_length=100)
@@ -99,21 +154,6 @@ class Practicante(models.Model):
         return f"{self.nombre_usuario} {self.apellidoP_usuario} {self.apellidoM_usuario} {self.fecha_ingreso} {self.observacionInicial} {self.observacionFinal}"
 
 
-class Expositores(models.Model):
-    nombre = models.CharField(max_length=100)
-    fecha_ingreso = models.DateField()  
-    fecha_nacimiento = models.DateField()  
-    edad = models.IntegerField()
-    genero = models.CharField(max_length=10)
-    semestre_academico = models.IntegerField()  
-    carrera = models.CharField(max_length=100)
-    observacion_inicial = models.TextField()
-    observacion_final = models.TextField(default= 'sin información')
-
-
-    def __str__(self):
-        return f"{self.nombre}" 
-    
 class ECGData(models.Model):
     expositor = models.ForeignKey(Expositores, on_delete=models.CASCADE, default=1, related_name='ecg_data')
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -121,3 +161,4 @@ class ECGData(models.Model):
 
     def __str__(self):
         return f"{self.timestamp}: {self.value}"
+

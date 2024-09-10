@@ -1,6 +1,8 @@
-from django import forms
-from .models import Usuario, Practicante, DisenarEvaluacion,Evaluacion, Expositores
-from django.contrib.auth.models import User, Group
+from xml.dom import ValidationErr
+from django import forms # type: ignore
+from .models import Usuario, Practicante, DisenarEvaluacion,Evaluacion, Expositores, CasoDeEstres, Scenario
+from django.contrib.auth.models import User, Group # type: ignore
+from django.db import models # type: ignore
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -23,7 +25,21 @@ class PracticanteForm(forms.ModelForm):
 class EvaluacionForm(forms.ModelForm):
     class Meta:
         model = Evaluacion
-        fields = ['nombre', 'descripcion', 'fecha']
+        fields = ['nombre', 'descripcion', 'fecha', 'scenarios']
+        widgets = {
+            'scenarios': forms.CheckboxSelectMultiple,
+        }
+
+    def clean_scenarios(self):
+        scenarios = self.cleaned_data.get('scenarios')
+        # if not (4 <= len(scenarios) <= 8):
+        #     raise ValidationErr('Debe seleccionar entre 4 y 8 escenarios.')
+
+        # total_duration = sum(scenario.duration.total_seconds() for scenario in scenarios)
+        # if total_duration > 120:
+        #     raise ValidationErr('La duración total de los escenarios no debe exceder los 2 minutos.')
+
+        return scenarios
 
 class ExpositorForm(forms.ModelForm):
     class Meta:
@@ -33,3 +49,17 @@ class ExpositorForm(forms.ModelForm):
             'genero', 'semestre_academico', 'carrera', 'observacion_inicial', 'observacion_final'
         ]
 
+class CasoDeEstresForm(forms.ModelForm):
+    class Meta:
+        model = CasoDeEstres
+        fields = [
+            'simulation_id', 'date', 'duration', 'scene', 'description', 'scenarios'
+        ]
+
+class ScenarioForm(forms.ModelForm):
+    class Meta:
+        model = Scenario
+        fields = [
+            'id', 'function_name', 'tag_name', 'duration'
+        ]     
+    

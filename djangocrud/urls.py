@@ -14,8 +14,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
+from django.contrib import admin # type: ignore
+from django.urls import path # type: ignore
 from tasks import views 
 
 
@@ -73,7 +73,7 @@ urlpatterns = [
     path('ecg-data/', views.get_ecg_data, name='get_ecg_data'),
     path('ultima_frecuencia/', views.get_latest_ecg, name='get_latest_ecg'),
     #url para evaluar a un expositor
-    path('evaluar/<int:id>/', views.evaluar_expositor, name='evaluar_expositor'),
+    path('evaluar/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
     
  ]
 
