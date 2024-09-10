@@ -1,27 +1,24 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User, Group, Permission
-from django.http import HttpResponse
-from django.contrib.auth import login, logout, authenticate
+from django.shortcuts import render, redirect # type: ignore
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm # type: ignore
+from django.contrib.auth.models import User, Group, Permission # type: ignore
+from django.http import HttpResponse # type: ignore
+from django.contrib.auth import login, logout, authenticate # type: ignore
 # imports de prueba para la frecuencia cardiaca.
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse # type: ignore
+from django.views.decorators.csrf import csrf_exempt # type: ignore
 import json
 # views.py
 
 from .models import Evaluation
-from .models import Evaluacion
+from .models import Evaluacion, CasoDeEstres
 import json
 # codigo lucho
 from .models import Usuario, Rol, Practicante, DisenarEvaluacion, User, Group
-from .forms import UsuarioForm, PracticanteForm, EvaluacionForm
+from .forms import UsuarioForm, PracticanteForm, EvaluacionForm, CasoDeEstresForm, ScenarioForm
 from .models import ECGData
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required # type: ignore
+from django.shortcuts import render, get_object_or_404 # type: ignore
 
-
-
-    
 
 def home(request):   
     return render(request, 'home.html')
@@ -136,22 +133,43 @@ def mostrar_frecuencia_cardiaca(request):
 
 
 def evaluation_list(request):
-    evaluations = Evaluation.objects.all()
-    return render(request, 'disenar_evaluacion.html', {'evaluations': evaluations})
+    try:
+        evaluations = Evaluation.objects.all()
+        return render(request, 'disenar_evaluacion.html', {'evaluations': evaluations})
+    except Exception as e:
+        return render(request, 'disenar_evaluacion.html', {'error': str(e)})
 
 def guardar_evaluacion(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        evaluacion = Evaluacion(
-            tiempo_exposicion=data['tiempo_exposicion'],
-            fecha_evaluacion=data['fecha_evaluacion'],
-            nombre_evaluador=data['nombre_evaluador'],
-            observaciones=data['observaciones']
-        )
-        evaluacion.save()
-        return JsonResponse({'status': 'success', 'message': 'Datos guardados correctamente.'})
-    else:
-        return JsonResponse({'status': 'error', 'message': 'Método no permitido.'})
+        try:
+            # Cargar los datos del cuerpo de la solicitud
+            data = json.loads(request.body)
+            
+            # Validar que los campos esperados están en el JSON recibido
+            required_fields = ['tiempo_exposicion', 'fecha_evaluacion', 'nombre_evaluador', 'observaciones']
+            for field in required_fields:
+                if field not in data:
+                    return JsonResponse({'status': 'error', 'message': f'Falta el campo {field}.'}, status=400)
+
+            # Crear nueva instancia de Evaluacion con los datos recibidos
+            evaluacion = Evaluacion(
+                tiempo_exposicion=data['tiempo_exposicion'],
+                fecha_evaluacion=data['fecha_evaluacion'],
+                nombre_evaluador=data['nombre_evaluador'],
+                observaciones=data['observaciones']
+            )
+            evaluacion.save()
+            
+            return JsonResponse({'status': 'success', 'message': 'Datos guardados correctamente.'})
+        
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Error al parsear JSON.'}, status=400)
+        
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': f'Error interno del servidor: {str(e)}'}, status=500)
+    
+    # Si no es POST, retornamos error de método no permitido
+    return JsonResponse({'status': 'error', 'message': 'Método no permitido.'}, status=405)
 
 # @csrf_exempt  # Para permitir peticiones POST sin CSRF token (solo para pruebas)
 # def frecuencia_cardiaca(request):
@@ -172,8 +190,8 @@ def guardar_evaluacion(request):
 
 # codigo del lucho 
 
-from django.http import HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse # type: ignore
+from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
 from .models import Usuario, Rol, Practicante
 from .forms import UsuarioForm, PracticanteForm
 # Create your views here.
@@ -294,14 +312,18 @@ def borrar_practicante(request, id):
 
 #Diseñar evaluación
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect # type: ignore
+from django.http import JsonResponse # type: ignore
 from .models import Evaluacion
 from .forms import EvaluacionForm
 
 def lista_evaluaciones(request):
     evaluaciones = Evaluacion.objects.all()
-    return render(request, 'disenar.html', {'evaluaciones': evaluaciones})
+    casos_de_estres_correspondientes = [caso for evaluacion in evaluaciones for caso in evaluacion.casos_de_estres.all()]
+    return render(request, 'disenar.html', {
+        'evaluaciones': evaluaciones,
+        'casos_de_estres': casos_de_estres_correspondientes
+    })
 
 def detalle_evaluacion(request, pk):
     evaluacion = get_object_or_404(Evaluacion, pk=pk)
@@ -340,9 +362,9 @@ def borrar_evaluacion(request, pk):
 
 
 #roles de los usuarios
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required, user_passes_test # type: ignore
 from .forms import UserForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User # type: ignore
 
 def is_admin(user):
     return user.groups.filter(name='Administrador').exists()
@@ -364,7 +386,7 @@ def manage_users(request):
     return render(request, 'manage_users.html', {'form': form, 'users': users})
 
 #proteger vistas segun roles 
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required, user_passes_test # type: ignore
 
 def is_evaluator(user):
     return user.groups.filter(name='Evaluador').exists()
@@ -378,7 +400,7 @@ def disenar(request):
 
 
 # CRUD Expositor
-from django.http import JsonResponse
+from django.http import JsonResponse # type: ignore # type: ignore
 from .models import Expositores
 from .forms import ExpositorForm
 
@@ -445,7 +467,7 @@ def receive_ecg_data(request):
 def ecg_chart(request):
     return render(request, 'ecg_chart.html')
 
-from django.http import JsonResponse
+from django.http import JsonResponse # type: ignore
 from .models import ECGData
 
 def get_ecg_data(request):
