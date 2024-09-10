@@ -61,6 +61,7 @@
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Fecha</th>
+                <th>Casos de estres asociados a la evaluación</th>
                 <th>Acciones</th>
                 <th>Rating</th>
               </tr>
@@ -71,6 +72,11 @@
                   <td>{{ evaluacion.nombre }}</td>
                   <td>{{ evaluacion.descripcion }}</td>
                   <td>{{ evaluacion.fecha }}</td>
+                  <td>
+                    {% for caso in evaluacion.casos_de_estres.all %}
+                        <li>{{ caso }}</li>
+                    {% endfor %}
+                </td>
                   <td>
                     <button data-id="{{ evaluacion.id }}" data-toggle="modal" data-target="#verModal" class="btn btn-lg"><i class="bi bi-eye"></i></button>
                     <button data-id="{{ evaluacion.id }}" data-toggle="modal" data-target="#editarModal" class="btn btn-lg"><i class="bi bi-pencil-square"></i></button>
