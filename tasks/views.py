@@ -10,7 +10,7 @@ import json
 # views.py
 from .models import FrecuenciaCardiaca
 from .models import Evaluation
-from .models import Evaluacion
+from .models import Evaluacion, UserProfile
 import json
 # codigo lucho
 from .models import Usuario, Rol, Practicante, DisenarEvaluacion
@@ -30,30 +30,44 @@ if not User.objects.filter(username='admin').exists():
 def home(request):
     
     return render(request, 'home.html')
-def signup (request):
-    
+
+def signup(request):
     if request.method == 'GET':
-        return render(request, 'signup.html',{
-        'form': UserCreationForm 
+        return render(request, 'signup.html', {
+            'form': UserForm
         })
     else:
         if request.POST['password1'] == request.POST['password2']:
-            try:   #registrar usuario
-                user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'])
+            try:
+                user = User.objects.create_user(
+                    username=request.POST['username'], 
+                    password=request.POST['password1'], 
+                    email=request.POST['email'],
+                    last_name=request.POST['last_name'], 
+                    first_name=request.POST['first_name']
+                )
                 user.save()
-                evaluadores_group = Group.objects.get(name='Evaluadores')
-                user.groups.add(evaluadores_group)
-                login(request,user)
-                return redirect('tasks')
+
+                # Guardar el RUT y dígito verificador en el perfil del usuario
+                user_profile = UserProfile.objects.create(
+                    user=user,
+                    rut=request.POST['rut'],
+                    dv=request.POST['dv']
+                )
+                user_profile.save()
+
+                return redirect('listar_usuarios.html')
             except:
-                return render(request, 'signup.html',{
-                'form': UserCreationForm,
-                "error": 'el usuario ya existe'
-        })
-    return render(request, 'signup.html',{
-        'form': UserCreationForm,
-        "error": 'las contraseñas no coinciden'
-        })
+                return render(request, 'signup.html', {
+                    'form': UserForm,
+                    "error": 'El usuario ya existe'
+                })
+        else:
+            return render(request, 'signup.html', {
+                'form': UserForm,
+                "error": 'Las contraseñas no coinciden'
+            })
+
     
 def tasks(request):
     return render(request, 'tasks.html')
@@ -462,3 +476,47 @@ def get_latest_ecg(request):
         'value': latest_data.value,
         'status': 'success'
     })
+import requests
+import base64
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from django.contrib.auth.models import User
+
+def login_view(request):
+    if request.method == 'POST':
+        rut = request.POST['rut']
+        dv = request.POST['dv']
+        password = request.POST['password']
+
+        # Codificar la contraseña en base64
+        password_encoded = base64.b64encode(password.encode()).decode()
+
+        # Construir la URL de la API con los parámetros
+        url = f"https://ubiobio.cl/miweb/admin/val3.php?r={rut}&dv={dv}&c={password_encoded}"
+
+        # Realizar la solicitud a la API
+        response = requests.get(url)
+
+        # Verificar la respuesta de la API
+        if response.status_code == 200:
+            # Suponiendo que la API devuelva un código 200 si el login es exitoso
+            api_response = response.json()
+
+            # Comprobamos si la respuesta indica éxito
+            if api_response.get('success'):  # O ajusta según la estructura real de la respuesta
+                # Si el login es exitoso, puedes autenticar al usuario en tu sistema
+                user, created = User.objects.get_or_create(username=rut)
+                login(request, user)  # Autentica al usuario
+                return redirect('home')  # Redirige a la página de inicio
+            else:
+                # Si la autenticación falla, muestra un error
+                return render(request, 'login.html', {
+                    'error': 'Credenciales inválidas'
+                })
+        else:
+            # Si la API devuelve un error o no se pudo conectar
+            return render(request, 'login.html', {
+                'error': 'Error al conectar con la API'
+            })
+
+    return render(request, 'login.html')

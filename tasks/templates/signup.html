@@ -1,11 +1,62 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>signup</h1>
-{{error}}
-<form action="/signup/" method="POST">
-  {% csrf_token %} {{form.as_p}}
-  <button>signup</button>
-</form>
+<div class="login-container">
+  <div class="row">
+      <div class="col-md-4 offset-md-4 mt-5">
+          <form method="POST" class="card card-body">
+              <h1 class="text-center">Registro usuario</h1>
+              {{error}}
+              {% csrf_token %}
+
+              <div class="mb-3">
+                  <label for="username">Nombre de usuario</label>
+                  <input type="text" name="username" id="username" class="form-control" placeholder="Nombre de usuario">
+              </div>
+
+              <div class="mb-3">
+                  <label for="password1">Contraseña</label>
+                  <input type="password" name="password1" id="password1" class="form-control" placeholder="Contraseña">
+              </div>
+
+              <div class="mb-3">
+                  <label for="password2">Confirmar contraseña</label>
+                  <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirmar contraseña">
+              </div>
+
+              <div class="mb-3">
+                  <label for="first_name">Nombre</label>
+                  <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Nombre">
+              </div>
+
+              <div class="mb-3">
+                  <label for="last_name">Apellido</label>
+                  <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Apellido">
+              </div>
+
+              <div class="mb-3">
+                  <label for="email">Correo electrónico</label>
+                  <input type="email" name="email" id="email" class="form-control" placeholder="Correo electrónico">
+              </div>
+
+              <!-- Campos adicionales para RUT y dígito verificador -->
+              <div class="mb-3">
+                  <label for="rut">RUT</label>
+                  <input type="text" name="rut" id="rut" class="form-control" placeholder="RUT (sin dígito verificador)">
+              </div>
+
+              <div class="mb-3">
+                  <label for="dv">Dígito Verificador</label>
+                  <input type="text" name="dv" id="dv" class="form-control" placeholder="Dígito Verificador">
+              </div>
+
+              <div class="d-flex justify-content-center">
+                  <button class="btn btn-primary">Registrar usuario</button>
+              </div>
+          </form>
+
+      </div>
+  </div>
+</div>
 
 {% endblock %}

@@ -120,3 +120,14 @@ class ECGData(models.Model):
 
     def __str__(self):
         return f"{self.timestamp}: {self.value}"
+
+from django.contrib.auth.models import User
+from django.db import models
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    rut = models.CharField(max_length=10, unique=True)  # Campo para el RUT
+    dv = models.CharField(max_length=1)  # Campo para el dígito verificador
+
+    def __str__(self):
+        return f"{self.user.username} - {self.rut}-{self.dv}"
