@@ -21,12 +21,12 @@ from tasks import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('signup/', views.signup, name='signup'),
+    path('home/', views.home, name='home'),
+    # path('signup/', views.signup, name='signup'),
     path('tasks/', views.tasks, name='tasks'),
     path('logout/', views.signout, name='logout'),
-    path('signin/', views.signin, name='signin'),
-     path('api/frecuencia/', views.recibir_frecuencia, name='recibir_frecuencia'),
+    path('', views.signin, name='signin'),
+    path('api/frecuencia/', views.recibir_frecuencia, name='recibir_frecuencia'),
 #     path('api/ultima_frecuencia/', views.obtener_frecuencia, name='obtener_frecuencia'),
 ##  path('frecuencia-cardiaca/', views.mostrar_frecuencia_cardiaca, name='frecuencia_cardiaca'),
      path('a/', views.evaluation_list, name='disenar_evaluacion'),

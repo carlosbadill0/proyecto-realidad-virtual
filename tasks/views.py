@@ -19,87 +19,35 @@ from .models import ECGData
 from django.contrib.auth.decorators import login_required # type: ignore
 from django.shortcuts import render, get_object_or_404 # type: ignore
 
-
+@login_required
 def home(request):   
     return render(request, 'home.html')
 
-def signup (request):
-    
+def signin(request):
     if request.method == 'GET':
-        return render(request, 'signup.html',{
-        'form': UserForm 
+        return render(request, 'signin.html', {
+            'form': AuthenticationForm
         })
     else:
-        if request.POST['password1'] == request.POST['password2']:
-            try:   #registrar usuario
-                user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'], email=request.POST['email'],last_name=request.POST['last_name'], first_name=request.POST['first_name'])
-                user.save()
-                evaluadores_group = Group.objects.get(name='Evaluador')
-                user.groups.add(evaluadores_group)
-                login(request,user)
-                return redirect('home')
-            except:
-                return render(request, 'signup.html',{
-                'form': UserForm,
-                "error": 'el usuario ya existe'
-        })
-    return render(request, 'signup.html',{
-        'form': UserForm,
-        "error": 'las contraseñas no coinciden'
-        })
-    
-def tasks(request):
-    return render(request, 'tasks.html')
+        user = authenticate(
+            request, username=request.POST['username'], password=request.POST['password'])
+        if user is None:
+            return render(request, 'signin.html', {
+                'form': AuthenticationForm,
+                'error': 'credenciales incorrectas'
+            })
+        else:
+            login(request, user)
+            return redirect('home')
 
 def signout(request):
     logout(request)
-    return redirect('home')
+    return redirect('signin')
 
-def signin(request):
-    if request.method == 'GET':
-        return render(request, 'signin.html' ,{
-            'form': AuthenticationForm
-    })
-    else: 
-        user = authenticate(
-            request, username=request.POST['username'], password=request.POST
-            ['password'])
-        if user is None: 
-            return render(request, 'signin.html', {
-                'form': AuthenticationForm,
-                'error': 'credenciales incorrectas'          
-            })
-        else: 
-            login(request,user)
-            return redirect('home')
-        
-        
+def tasks(request):
+    return render(request, 'tasks.html')
 
-# @csrf_exempt
-# def recibir_frecuencia(request):
-#     if request.method == 'POST':
-#         try:
-#             frecuencia = float(request.POST.get('frecuencia', '0'))
-            
-#             # Guardar frecuencia en la base de datos (ejemplo usando un modelo)
-#             nueva_frecuencia = FrecuenciaCardiaca(frecuencia=frecuencia)
-#             nueva_frecuencia.save()
-            
-#             print(f'Frecuencia recibida y almacenada: {frecuencia} BPM')
-            
-#             return JsonResponse({'status': 'success', 'frecuencia': frecuencia})
-#         except ValueError:
-#             return JsonResponse({'status': 'error', 'message': 'Frecuencia no válida'})
-    
-#     return JsonResponse({'status': 'error', 'message': 'Método no soportado'})
-
-# Variable global para mantener la última frecuencia
-
-
-
-#de aqui para abajo esta comentado pa ver si funciona lo otro 
-# ultima_frecuencia = None
-
+  
 @csrf_exempt
 def recibir_frecuencia(request):
     global ultima_frecuencia
@@ -170,22 +118,6 @@ def guardar_evaluacion(request):
     
     # Si no es POST, retornamos error de método no permitido
     return JsonResponse({'status': 'error', 'message': 'Método no permitido.'}, status=405)
-
-# @csrf_exempt  # Para permitir peticiones POST sin CSRF token (solo para pruebas)
-# def frecuencia_cardiaca(request):
-#     if request.method == 'POST':
-#         heart_rate = request.POST.get('heartRate')
-#         # Aquí puedes procesar el valor de frecuencia cardíaca como lo necesites
-#         print(f"Frecuencia cardíaca recibida: {heart_rate}")
-
-#         # Puedes retornar una respuesta JSON si lo deseas
-#         return JsonResponse({'message': 'Datos recibidos correctamente'})
-#     else:
-#         return JsonResponse({'error': 'Método no permitido'}, status=405)
-
-
-# vistas para el admin 
-# Verifica que el usuario sea administrador
 
 
 # codigo del lucho 
