@@ -24,6 +24,52 @@ from django.shortcuts import render, get_object_or_404 # type: ignore
 def home(request):   
     return render(request, 'home.html')
 
+from .forms import UserForm
+
+def signup(request):
+    if request.method == 'GET':
+        return render(request, 'signup.html', {
+            'form': UserForm()
+        })
+    else:
+        form = UserForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['password1'] == form.cleaned_data['password2']:
+                try:
+                    # Crear usuario
+                    user = User.objects.create_user(
+                        username=form.cleaned_data['username'],
+                        password=form.cleaned_data['password1'],
+                        email=form.cleaned_data['email'],
+                        first_name=form.cleaned_data['first_name'],
+                        last_name=form.cleaned_data['last_name']
+                    )
+                    user.save()
+
+                    # Obtener el grupo seleccionado del formulario
+                    selected_group = form.cleaned_data['group']
+                    user.groups.add(selected_group)
+
+                    login(request, user)
+                    return redirect('home')
+                except Exception as e:
+                     return render(request, 'signup.html', {
+                        'form': form,
+                        'error': 'El usuario ya existe o hubo un problema al crearlo.'
+                    })
+            else:
+                return render(request, 'signup.html', {
+                    'form': form,
+                    'error': 'Las contraseñas no coinciden.'
+                })
+        else:
+            return render(request, 'signup.html', {
+                'form': form,
+                'error': 'Formulario inválido.'
+            })
+    
+def tasks(request):
+    return render(request, 'tasks.html')
 def signin(request):
     if request.method == 'GET':
         return render(request, 'signin.html', {
@@ -155,6 +201,7 @@ def listar_usuarios(request):
     }
     return render(request, 'listar_usuarios.html', contexto)
 
+
 def crear_usuario(request):
     if request.method == 'GET':
         return render(request, 'formulario_usuario.html', {'form': UserForm()})
@@ -182,10 +229,11 @@ def crear_usuario(request):
                     group = Group.objects.get(name=selected_group_name)
                     user.groups.add(group)
 
+                    login(request, user)  # Iniciar sesión con el nuevo usuario
                     return redirect('listar_usuarios')
                 except Exception as e:
                     return render(request, 'formulario_usuario.html', {
-                        'form': form,
+                                                'form': form,
                         'error': 'El usuario ya existe o hubo un problema al crearlo.'
                     })
             else:
@@ -194,6 +242,7 @@ def crear_usuario(request):
                     'error': 'Las contraseñas no coinciden.'
                 })
     return render(request, 'formulario_usuario.html', {'form': form})
+
 
 def editar_usuario(request, id):
     usuario = get_object_or_404(User, id=id)
