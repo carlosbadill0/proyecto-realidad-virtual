@@ -1,6 +1,6 @@
 from xml.dom import ValidationErr
 from django import forms # type: ignore
-from .models import Usuario, Practicante, DisenarEvaluacion,Evaluacion, Expositores, CasoDeEstres, Scenario
+from .models import Usuario, Practicante, DisenarEvaluacion,Evaluacion,EvaluacionRealizada ,Expositores, CasoDeEstres, Scenario
 from django.contrib.auth.models import User, Group # type: ignore
 from django.db import models # type: ignore
 
@@ -62,4 +62,18 @@ class ScenarioForm(forms.ModelForm):
         fields = [
             'id', 'function_name', 'tag_name', 'duration'
         ]     
+
+class EvaluacionRealizadaForm(forms.ModelForm):
+    class Meta:
+        model = EvaluacionRealizada
+        fields = [
+            'expositor',
+            'nombre_evaluador',
+            'fecha_evaluacion',
+            'observacion_inicial',
+            'observacion_final',
+            'tiempo_exposicion',
+            'video_evaluacion',
+            'evaluacion_aplicada'
+        ]        
     

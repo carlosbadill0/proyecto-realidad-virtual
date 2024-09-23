@@ -101,38 +101,41 @@
     </div>
 
     <div class="section">
-        <h2>Datos del evaluador</h2>
-        <label for="fecha-evaluacion">Fecha de Evaluación</label>
-        <input type="date" id="fecha-evaluacion" placeholder="Seleccionar fecha">
-        
-        <label for="nombre-evaluador">Nombre del evaluador</label>
-        <input type="text" id="nombre-evaluador" placeholder="nombre">
-        
-        <label for="evaluacion">Seleccionar Evaluación</label>
-        <select id="evaluacion">
-            <option value="">Seleccionar evaluación</option>
-            {% for evaluation in evaluations %}
-            <option value="{{ evaluation.id }}">{{ evaluation.nombre }}</option>
-            {% endfor %}
-        </select>
+        <form method="POST" action="{% url 'elegir_evaluacion' expositor_seleccionado.id %}">
+            {% csrf_token %}
+            <h2>Datos del evaluador</h2>
+            <label for="fecha-evaluacion">Fecha de Evaluación</label>
+            <input type="date" id="fecha-evaluacion" name="fecha_evaluacion" required>
+            
+            <label for="nombre-evaluador">Nombre del evaluador</label>
+            <input type="text" id="nombre-evaluador" name="nombre_evaluador" required>
+            
+            <label for="evaluacion">Evaluación</label>
+            <select id="evaluacion" name="evaluacion_id" required>
+                <option value="">Seleccionar evaluación</option>
+                {% for evaluation in evaluations %}
+                <option value="{{ evaluation.id }}">{{ evaluation.nombre }}</option>
+                {% endfor %}
+            </select>
 
-        <h3>Casos de estrés de la evaluación</h3>
-        <div class="stress-cases" id="stress-cases">
-            <!-- Los escenarios se actualizarán aquí -->
-        </div>
-                
-        <br>
-        
-        {% for expositor in expositores %}
-            {% if expositor.id == expositor_seleccionado.id %}
-                <div class="button">
-                    <button class="evaluarExpositorBtn" data-id="{{ expositor.id }}">
-                        Evaluar expositor
-                        <i class="bi bi-clipboard-pulse"></i>
-                    </button>
-                </div>
-            {% endif %}
-        {% endfor %}
+            <h3>Casos de estrés de la evaluación</h3>
+            <div class="stress-cases" id="stress-cases">
+                <!-- Los escenarios se actualizarán aquí -->
+            </div>
+                    
+            <br>
+            
+            {% for expositor in expositores %}
+                {% if expositor.id == expositor_seleccionado.id %}
+                    <div class="button">
+                        <button class="evaluarExpositorBtn" data-id="{{ expositor.id }}">
+                            Evaluar expositor
+                            <i class="bi bi-clipboard-pulse"></i>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </form>     
     </div>
 </div>
 

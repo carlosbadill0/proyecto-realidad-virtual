@@ -153,6 +153,18 @@ class Practicante(models.Model):
     def __str__(self):
         return f"{self.nombre_usuario} {self.apellidoP_usuario} {self.apellidoM_usuario} {self.fecha_ingreso} {self.observacionInicial} {self.observacionFinal}"
 
+class EvaluacionRealizada(models.Model):
+    expositor = models.ForeignKey('Expositores', on_delete=models.CASCADE)
+    nombre_evaluador = models.CharField(max_length=100)
+    fecha_evaluacion = models.DateField()
+    observacion_inicial = models.TextField()
+    observacion_final = models.TextField(blank=True, null=True)
+    tiempo_exposicion = models.CharField(max_length=8, default='00:00:00')  # Valor predeterminado
+    video_evaluacion = models.FileField(upload_to='videos/', blank=True, null=True)
+    evaluacion_aplicada = models.ForeignKey('Evaluacion', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Evaluación de {self.expositor} por {self.nombre_evaluador} el {self.fecha_evaluacion}"
 
 class ECGData(models.Model):
     expositor = models.ForeignKey(Expositores, on_delete=models.CASCADE, default=1, related_name='ecg_data')
