@@ -48,6 +48,11 @@ urlpatterns = [
     #urls para evaluacion
 #     path('crear_evaluacion/', views.crear_evaluacion, name='crear_evaluacion'),
     path('diseñar/', views.lista_evaluaciones, name='lista_evaluaciones'),
+    path('evaluaciones_realizadas/', views.listar_evaluaciones_realizadas, name='listar_evaluaciones_realizadas'),
+    path('evaluaciones_realizadas/<int:pk>/', views.detalle_evaluacionRealizada, name='detalle_evaluacionRealizada'),
+    path('evaluaciones_realizadas/<int:pk>/editar/', views.editar_evaluacionRealizada, name='editar_evaluacionRealizada'),
+    path('evaluaciones_realizadas/<int:pk>/borrar/', views.borrar_evaluacionRealizada, name='borrar_evaluacionRealizada'),
+    
     path('evaluacion/<int:pk>/', views.detalle_evaluacion, name='detalle_evaluacion'),
     path('evaluacion/nueva/', views.nueva_evaluacion, name='nueva_evaluacion'),
     path('evaluacion/<int:pk>/editar/', views.editar_evaluacion, name='editar_evaluacion'),
