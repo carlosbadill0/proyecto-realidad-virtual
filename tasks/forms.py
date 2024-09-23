@@ -62,4 +62,12 @@ class ScenarioForm(forms.ModelForm):
         fields = [
             'id', 'function_name', 'tag_name', 'duration'
         ]     
-    
+
+class UserForm(forms.ModelForm):
+    password1 = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput)
+    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True, label="Rol")
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'group']
