@@ -1,6 +1,6 @@
 from xml.dom import ValidationErr
 from django import forms # type: ignore
-from .models import Usuario, Practicante, DisenarEvaluacion,Evaluacion, Expositores, CasoDeEstres, Scenario
+from .models import Usuario, Practicante, DisenarEvaluacion,Evaluacion,EvaluacionRealizada ,Expositores, CasoDeEstres, Scenario
 from django.contrib.auth.models import User, Group # type: ignore
 from django.db import models # type: ignore
 
@@ -63,6 +63,7 @@ class ScenarioForm(forms.ModelForm):
             'id', 'function_name', 'tag_name', 'duration'
         ]     
 
+<<<<<<< HEAD
 class UserForm(forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
@@ -71,3 +72,19 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'group']
+=======
+class EvaluacionRealizadaForm(forms.ModelForm):
+    class Meta:
+        model = EvaluacionRealizada
+        fields = [
+            'expositor',
+            'nombre_evaluador',
+            'fecha_evaluacion',
+            'observacion_inicial',
+            'observacion_final',
+            'tiempo_exposicion',
+            'video_evaluacion',
+            'evaluacion_aplicada'
+        ]        
+    
+>>>>>>> 9d075d6f26881bf912b021697bbe6063b94c1531

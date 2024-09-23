@@ -7,19 +7,20 @@ from django.contrib.auth import login, logout, authenticate # type: ignore
 from django.http import JsonResponse # type: ignore
 from django.views.decorators.csrf import csrf_exempt # type: ignore
 import json
+from datetime import timedelta
 # views.py
 
 from .models import EvaluacionScenario, Evaluation
-from .models import Evaluacion, CasoDeEstres, Scenario
+from .models import Evaluacion, CasoDeEstres, Scenario, EvaluacionRealizada
 import json
 # codigo lucho
 from .models import Usuario, Rol, Practicante, DisenarEvaluacion, User, Group
-from .forms import UsuarioForm, PracticanteForm, EvaluacionForm, CasoDeEstresForm, ScenarioForm
+from .forms import UsuarioForm, PracticanteForm, EvaluacionRealizadaForm ,EvaluacionForm, CasoDeEstresForm, ScenarioForm
 from .models import ECGData
 from django.contrib.auth.decorators import login_required # type: ignore
 from django.shortcuts import render, get_object_or_404 # type: ignore
 
-
+@login_required
 def home(request):   
     return render(request, 'home.html')
 
@@ -69,56 +70,31 @@ def signup(request):
     
 def tasks(request):
     return render(request, 'tasks.html')
+def signin(request):
+    if request.method == 'GET':
+        return render(request, 'signin.html', {
+            'form': AuthenticationForm
+        })
+    else:
+        user = authenticate(
+            request, username=request.POST['username'], password=request.POST['password'])
+        if user is None:
+            return render(request, 'signin.html', {
+                'form': AuthenticationForm,
+                'error': 'credenciales incorrectas'
+            })
+        else:
+            login(request, user)
+            return redirect('home')
 
 def signout(request):
     logout(request)
-    return redirect('home')
+    return redirect('signin')
 
-def signin(request):
-    if request.method == 'GET':
-        return render(request, 'signin.html' ,{
-            'form': AuthenticationForm
-    })
-    else: 
-        user = authenticate(
-            request, username=request.POST['username'], password=request.POST
-            ['password'])
-        if user is None: 
-            return render(request, 'signin.html', {
-                'form': AuthenticationForm,
-                'error': 'credenciales incorrectas'          
-            })
-        else: 
-            login(request,user)
-            return redirect('home')
-        
-        
+def tasks(request):
+    return render(request, 'tasks.html')
 
-# @csrf_exempt
-# def recibir_frecuencia(request):
-#     if request.method == 'POST':
-#         try:
-#             frecuencia = float(request.POST.get('frecuencia', '0'))
-            
-#             # Guardar frecuencia en la base de datos (ejemplo usando un modelo)
-#             nueva_frecuencia = FrecuenciaCardiaca(frecuencia=frecuencia)
-#             nueva_frecuencia.save()
-            
-#             print(f'Frecuencia recibida y almacenada: {frecuencia} BPM')
-            
-#             return JsonResponse({'status': 'success', 'frecuencia': frecuencia})
-#         except ValueError:
-#             return JsonResponse({'status': 'error', 'message': 'Frecuencia no válida'})
-    
-#     return JsonResponse({'status': 'error', 'message': 'Método no soportado'})
-
-# Variable global para mantener la última frecuencia
-
-
-
-#de aqui para abajo esta comentado pa ver si funciona lo otro 
-# ultima_frecuencia = None
-
+  
 @csrf_exempt
 def recibir_frecuencia(request):
     global ultima_frecuencia
@@ -189,22 +165,6 @@ def guardar_evaluacion(request):
     
     # Si no es POST, retornamos error de método no permitido
     return JsonResponse({'status': 'error', 'message': 'Método no permitido.'}, status=405)
-
-# @csrf_exempt  # Para permitir peticiones POST sin CSRF token (solo para pruebas)
-# def frecuencia_cardiaca(request):
-#     if request.method == 'POST':
-#         heart_rate = request.POST.get('heartRate')
-#         # Aquí puedes procesar el valor de frecuencia cardíaca como lo necesites
-#         print(f"Frecuencia cardíaca recibida: {heart_rate}")
-
-#         # Puedes retornar una respuesta JSON si lo deseas
-#         return JsonResponse({'message': 'Datos recibidos correctamente'})
-#     else:
-#         return JsonResponse({'error': 'Método no permitido'}, status=405)
-
-
-# vistas para el admin 
-# Verifica que el usuario sea administrador
 
 
 # codigo del lucho 
@@ -413,16 +373,6 @@ def borrar_evaluacion(request, pk):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'errors': 'Invalid request method'})
 
-# @login_required
-# def elegir_evaluacion(request):
-#     expositores = Expositores.objects.all()
-#     user_id = request.user.id  # Obtiene el ID del usuario logueado
-#     return render(request, 'elegirEvaluacion.html', {
-#         'expositores': expositores,
-#         'user_id': user_id
-#     })
-
-
 #roles de los usuarios
 from django.contrib.auth.decorators import login_required, user_passes_test # type: ignore
 from .forms import UserForm
@@ -505,18 +455,33 @@ def borrar_expositor(request, pk):
 def elegir_evaluacion(request, pk):
     expositor_seleccionado = get_object_or_404(Expositores, pk=pk)
     expositores = Expositores.objects.all()
-    user_id = request.user.id
     evaluations = Evaluacion.objects.all()
-    scenarios_by_evaluation = {
+    scenarios_by_evaluation = {  ##linea para mostrar los escenarios de cada evaluacion al elegir una evaluacion
         evaluation.id: list(evaluation.scenarios.values('function_name', 'duration', 'tag_name'))
         for evaluation in evaluations
     }
+    if request.method == 'POST':
+        evaluacion_id = request.POST.get('evaluacion_id')
+        nombre_evaluador = request.POST.get('nombre_evaluador')
+        fecha_evaluacion = request.POST.get('fecha_evaluacion')
+        observacion_inicial = expositor_seleccionado.observacion_inicial
+
+        evaluacion_realizada = EvaluacionRealizada.objects.create(
+            expositor=expositor_seleccionado,
+            nombre_evaluador=nombre_evaluador,
+            fecha_evaluacion=fecha_evaluacion,
+            observacion_inicial=observacion_inicial,
+            evaluacion_aplicada_id=evaluacion_id
+        )
+        
+
+        return redirect('evaluar_expositor', id=expositor_seleccionado.id, id_evaluacion=evaluacion_realizada.id)
+
     return render(request, 'elegirEvaluacion.html', {
         'expositor_seleccionado': expositor_seleccionado,
         'expositores': expositores,
-        'user_id': user_id,
-        'evaluations': evaluations,
-        'scenarios_by_evaluation': scenarios_by_evaluation  # Pasar los escenarios agrupados por evaluación
+        'scenarios_by_evaluation' : scenarios_by_evaluation,
+        'evaluations': evaluations
     })
 
 # conexion sensor ecg
@@ -552,13 +517,72 @@ def get_latest_ecg(request):
 
 # evaluar a un expositor 
 def evaluar_expositor(request, id, id_evaluacion):
-    expositores = Expositores.objects.all()
     expositor_seleccionado = get_object_or_404(Expositores, id=id)
-    evaluacion = get_object_or_404(Evaluacion, id=id_evaluacion)
-    escenarios = evaluacion.scenarios.all()
+    evaluacion_realizada = get_object_or_404(EvaluacionRealizada, id=id_evaluacion)
+    escenarios = evaluacion_realizada.evaluacion_aplicada.scenarios.all()
+    evaluaciones = EvaluacionRealizada.objects.filter(expositor=expositor_seleccionado)
+    ultima_evaluacion = evaluaciones.last() if evaluaciones.exists() else None
+    
+    if request.method == 'POST':
+        tiempo_total = request.POST.get('tiempo_total')
+        observacion_final = request.POST.get('observacion_final')
+
+        # Convertir tiempo_total a timedelta
+        tiempo_total_seconds = int(tiempo_total)
+        tiempo_total_timedelta = timedelta(seconds=tiempo_total_seconds)
+        tiempo_total_str = str(tiempo_total_timedelta)
+
+        evaluacion_realizada.tiempo_exposicion = tiempo_total_str
+        evaluacion_realizada.observacion_final = observacion_final
+        evaluacion_realizada.save()
+
+        return render(request, 'mensaje_realizado.html')  # Redirigir a la plantilla intermedia
+
     return render(request, 'frecuencia_cardiaca.html', {
-        'expositores': expositores,
+        'expositores': Expositores.objects.all(),
         'expositor_seleccionado': expositor_seleccionado,
-        'evaluacion': evaluacion,
-        'escenarios': escenarios
+        'evaluacion': evaluacion_realizada,
+        'escenarios': escenarios,
+        'evaluaciones': evaluaciones,
+        'ultima_evaluacion': ultima_evaluacion,
     })
+    
+
+def listar_evaluaciones_realizadas(request):
+    evaluaciones_realizadas = EvaluacionRealizada.objects.all()
+    return render(request, 'listar_evaluaciones_realizadas.html', {
+        'evaluaciones_realizadas': evaluaciones_realizadas
+    })
+ 
+def detalle_evaluacionRealizada(request, pk):
+    evaluacion = get_object_or_404(EvaluacionRealizada, pk=pk)
+    data = {
+        'expositor': evaluacion.expositor.nombre,
+        'nombre_evaluador': evaluacion.nombre_evaluador,
+        'fecha_evaluacion': evaluacion.fecha_evaluacion,
+        'observacion_inicial': evaluacion.observacion_inicial,
+        'observacion_final': evaluacion.observacion_final,
+        'tiempo_exposicion': evaluacion.tiempo_exposicion,
+        'video_evaluacion': evaluacion.video_evaluacion.url if evaluacion.video_evaluacion else None,
+    }
+    return JsonResponse(data)
+
+def editar_evaluacionRealizada(request, pk):
+    evaluacion = get_object_or_404(EvaluacionRealizada, pk=pk)
+    if request.method == 'POST':
+        form = EvaluacionRealizadaForm(request.POST, instance=evaluacion)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    else:
+        form = EvaluacionRealizadaForm(instance=evaluacion)
+    return render(request, 'editar_evaluacion.html', {'form': form})   
+
+def borrar_evaluacionRealizada(request, pk):
+    evaluacion = get_object_or_404(EvaluacionRealizada, pk=pk)
+    if request.method == "POST":
+        evaluacion.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'errors': 'Invalid request method'})
