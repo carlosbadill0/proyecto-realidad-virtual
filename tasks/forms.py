@@ -63,7 +63,6 @@ class ScenarioForm(forms.ModelForm):
             'id', 'function_name', 'tag_name', 'duration'
         ]     
 
-<<<<<<< HEAD
 class UserForm(forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
@@ -72,7 +71,6 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'group']
-=======
 class EvaluacionRealizadaForm(forms.ModelForm):
     class Meta:
         model = EvaluacionRealizada
@@ -87,4 +85,3 @@ class EvaluacionRealizadaForm(forms.ModelForm):
             'evaluacion_aplicada'
         ]        
     
->>>>>>> 9d075d6f26881bf912b021697bbe6063b94c1531
