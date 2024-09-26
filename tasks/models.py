@@ -173,4 +173,13 @@ class ECGData(models.Model):
 
     def __str__(self):
         return f"{self.timestamp}: {self.value}"
+    
 
+from django.utils import timezone
+
+class ECGData2(models.Model):
+    bpm = models.IntegerField()
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.bpm} BPM at {self.timestamp}"

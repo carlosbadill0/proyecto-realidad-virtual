@@ -97,13 +97,11 @@ def tasks(request):
   
 @csrf_exempt
 def recibir_frecuencia(request):
-    global ultima_frecuencia
     if request.method == 'POST':
         try:
-            frecuencia = float(request.POST.get('frecuencia', '0'))
+            frecuencia = float(request.POST.get('bpm', '0'))
             if 30 <= frecuencia <= 220:  # Rango típico de frecuencia cardíaca
-                ultima_frecuencia = frecuencia
-                print(f'Frecuencia recibida y actualizada: {frecuencia} BPM')
+                ECGData.objects.create(value=frecuencia)
                 return JsonResponse({'status': 'success', 'frecuencia': frecuencia})
             else:
                 return JsonResponse({'status': 'error', 'message': 'Frecuencia fuera de rango'})
@@ -500,10 +498,13 @@ def receive_ecg_data(request):
     return JsonResponse({'error': 'Invalid method'}, status=405)
 
 def ecg_chart(request):
-    return render(request, 'ecg_chart.html')
+     return render(request, 'ecg_chart.html')
 
-from django.http import JsonResponse # type: ignore
-from .models import ECGData
+# from django.http import JsonResponse # type: ignore
+# from .models import ECGData
+
+
+
 
 def get_ecg_data(request):
     data = list(ECGData.objects.all().values('timestamp', 'value'))
@@ -588,3 +589,41 @@ def borrar_evaluacionRealizada(request, pk):
         evaluacion.delete()
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'errors': 'Invalid request method'})
+
+
+@csrf_exempt
+def recibir_datos(request):
+    if request.method == 'POST':
+        bpm_value = request.POST.get('bpm', None)
+        if bpm_value:
+            # Guardar el BPM en la base de datos
+            ECGData2.objects.create(bpm=bpm_value)
+            return JsonResponse({"status": "success", "bpm": bpm_value})
+        else:
+            return JsonResponse({"status": "error", "message": "No data received"})
+    return JsonResponse({"status": "error", "message": "Invalid request method"})
+
+from django.http import JsonResponse
+from .models import ECGData2
+from django.utils import timezone
+from datetime import timedelta
+
+def obtener_datos(request):
+    # Obtener los últimos 10 datos de BPM
+    data = ECGData2.objects.filter(timestamp__gte=timezone.now()-timedelta(minutes=10)).order_by('timestamp')
+    
+    bpm_values = [entry.bpm for entry in data]
+    timestamps = [entry.timestamp.strftime("%Y-%m-%d %H:%M:%S") for entry in data]
+    
+    return JsonResponse({'bpm_values': bpm_values, 'timestamps': timestamps})
+
+def mostrar_grafico(request):
+    return render(request, 'grafico.html')
+
+def get_latest_ecg2(request):
+    latest_data = ECGData2.objects.latest('timestamp')
+    return JsonResponse({
+        'timestamp': latest_data.timestamp,
+        'value': latest_data.bpm,
+        'status': 'success'
+    })
