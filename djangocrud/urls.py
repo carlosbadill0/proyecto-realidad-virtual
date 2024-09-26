@@ -55,6 +55,7 @@ urlpatterns = [
     
     path('evaluacion/<int:pk>/', views.detalle_evaluacion, name='detalle_evaluacion'),
     path('evaluacion/nueva/', views.nueva_evaluacion, name='nueva_evaluacion'),
+    
     path('evaluacion/<int:pk>/editar/', views.editar_evaluacion, name='editar_evaluacion'),
     path('evaluacion/<int:pk>/borrar/', views.borrar_evaluacion, name='borrar_evaluacion'),
     
@@ -77,6 +78,9 @@ urlpatterns = [
     path('ecg-chart/', views.ecg_chart, name='ecg_chart'),
     path('ecg-data/', views.get_ecg_data, name='get_ecg_data'),
     path('ultima_frecuencia/', views.get_latest_ecg, name='get_latest_ecg'),
+    path('recibir_datos/', views.recibir_datos, name='recibir_datos'),
+    path('obtener_datos/', views.obtener_datos, name='obtener_datos'),
+    path('ultima_frecuencia2/', views.get_latest_ecg2, name='get_latest_ecg2'),
     #url para evaluar a un expositor
     path('evaluar/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
     

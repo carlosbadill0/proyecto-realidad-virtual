@@ -50,6 +50,7 @@
     </head>
     <body>
       <div class="container">
+        <h4 class="text-center">Expositores</h4>
         <div class="search-bar">
           <input type="text" id="searchInput" placeholder="Búsqueda">
           <button type="button">Filtrar</button>
@@ -246,18 +247,19 @@
         </div>
       </div>
 
+
       <!-- Borrar Expositor Modal -->
       <div class="modal fade" id="borrarExpositorModal" tabindex="-1" role="dialog" aria-labelledby="borrarExpositorModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title text-center" id="borrarExpositorModalLabel">Borrar Expositor</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <div class="modal-content rounded-3 shadow">
+            <div class="modal-body p-4 text-center">
+              <h5 class="mb-0" id="borrarExpositorModalLabel">¿Borrar Expositor?</h5>
+              <p class="mb-0">Se eliminará de forma permanente</p>
             </div>
-            <div class="modal-body text-center">
-              <p>¿Estás seguro de que quieres borrar este expositor?</p>
+            <div class="modal-footer flec-nowrap p-0">
             <div class="d-flex justify-content-end">
-              <button type="button" class="btn btn-danger" id="borrarExpositorBtn">Borrar</button>
+              <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" id="borrarExpositorBtn"><strong>Borrar</strong></button>
+              <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Cancelar</span></button>
             </div>
             </div>
           </div>

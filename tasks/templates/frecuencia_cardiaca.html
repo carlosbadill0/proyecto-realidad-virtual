@@ -152,20 +152,18 @@
           document.getElementById('timer').textContent = `${minutes}m ${seconds}s`;
       }
     // Inicializa el gráfico
-    const ctx = document.getElementById('graficoFrecuencia').getContext('2d')
+    const ctx = document.getElementById('graficoFrecuencia').getContext('2d');
     const chart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: [], // Etiquetas de tiempo
-        datasets: [
-          {
-            label: 'Frecuencia Cardíaca (BPM)',
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            data: [], // Datos de frecuencia
-            fill: false
-          }
-        ]
+        datasets: [{
+          label: 'Frecuencia Cardíaca (BPM)',
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          data: [], // Datos de frecuencia
+          fill: false
+        }]
       },
       options: {
         scales: {
@@ -173,47 +171,57 @@
             type: 'time',
             time: {
               unit: 'second'
+            },
+            title: {
+              display: true,
+              text: 'Tiempo'
             }
           },
           y: {
             beginAtZero: true,
-            suggestedMax: 150
+            suggestedMax: 150,
+            title: {
+              display: true,
+              text: 'BPM'
+            }
           }
         }
       }
-    })
-    
+    });
+
+    // Función para obtener la última frecuencia
     function obtenerFrecuencia() {
-      axios
-        .get('/ultima_frecuencia/')
-        .then(function (response) {
-          if (response.data.status === 'success') {
-            const frecuencia = response.data.value
-            const tiempoActual = new Date(response.data.timestamp)
-    
-            document.getElementById('frecuencia').textContent = frecuencia + ' BPM'
-    
-            chart.data.labels.push(tiempoActual)
-            chart.data.datasets[0].data.push(frecuencia)
-            chart.update()
-    
+      fetch('/ultima_frecuencia2/')  // Asegúrate de que esta URL esté definida en Django
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            const frecuencia = data.value;
+            const tiempoActual = new Date(data.timestamp);
+
+            document.getElementById('frecuencia').textContent = frecuencia + ' BPM';
+
+            // Agrega los datos al gráfico
+            chart.data.labels.push(tiempoActual);
+            chart.data.datasets[0].data.push(frecuencia);
+            chart.update();
+
             // Limita el número de puntos en el gráfico
-            if (chart.data.labels.length > 20) {
-              chart.data.labels.shift()
-              chart.data.datasets[0].data.shift()
+            if (chart.data.labels.length > 30) {
+              chart.data.labels.shift();
+              chart.data.datasets[0].data.shift();
             }
           } else {
-            console.error('Error al obtener la frecuencia cardíaca:', response.data.message)
+            console.error('Error al obtener la frecuencia cardíaca:', data.message);
           }
         })
-        .catch(function (error) {
-          console.error('Error en la solicitud:', error)
-        })
-    }      
-    
+        .catch(error => {
+          console.error('Error en la solicitud:', error);
+        });
+    }
+
     // Llama a la función para obtener la frecuencia inicialmente y luego cada 5 segundos
-    obtenerFrecuencia()
-    setInterval(obtenerFrecuencia, 5000)
+    obtenerFrecuencia();
+    setInterval(obtenerFrecuencia, 3000);
 </script>
 </body>
 </html>
