@@ -215,7 +215,6 @@
     </div>
   </div>
 
-<<<<<<< HEAD
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="../../static/js/filtrar.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -230,40 +229,6 @@
             if (cookie.substring(0, name.length + 1) === name + '=') {
               cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
               break;
-=======
-
-      <!-- Borrar Expositor Modal -->
-      <div class="modal fade" id="borrarExpositorModal" tabindex="-1" role="dialog" aria-labelledby="borrarExpositorModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content rounded-3 shadow">
-            <div class="modal-body p-4 text-center">
-              <h5 class="mb-0" id="borrarExpositorModalLabel">¿Borrar Expositor?</h5>
-              <p class="mb-0">Se eliminará de forma permanente</p>
-            </div>
-            <div class="modal-footer flec-nowrap p-0">
-            <div class="d-flex justify-content-end">
-              <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" id="borrarExpositorBtn"><strong>Borrar</strong></button>
-              <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Cancelar</span></button>
-            </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <script>
-        $(document).ready(function () {
-          function getCookie(name) {
-            let cookieValue = null
-            if (document.cookie && document.cookie !== '') {
-              const cookies = document.cookie.split(';')
-              for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim()
-                if (cookie.substring(0, name.length + 1) === name + '=') {
-                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
-                  break
-                }
-              }
->>>>>>> 7549476cdab3f907b9d07821f9ed587c18f8af46
             }
           }
         }
