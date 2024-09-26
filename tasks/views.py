@@ -434,7 +434,9 @@ def crear_expositor(request):
         if form.is_valid():
             form.save()
             return JsonResponse({'success': True})
-    return JsonResponse({'success': False})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 
 def editar_expositor(request, pk):

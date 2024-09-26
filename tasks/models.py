@@ -64,7 +64,7 @@ class Expositores(models.Model):
     semestre_academico = models.IntegerField()  
     carrera = models.CharField(max_length=100)
     observacion_inicial = models.TextField()
-    observacion_final = models.TextField(default= 'sin información')
+    observacion_final = models.TextField(blank=True, null=True, default= 'sin información')
 
 
     def __str__(self):

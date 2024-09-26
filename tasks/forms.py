@@ -48,6 +48,9 @@ class ExpositorForm(forms.ModelForm):
             'nombre', 'fecha_ingreso', 'fecha_nacimiento', 'edad', 
             'genero', 'semestre_academico', 'carrera', 'observacion_inicial', 'observacion_final'
         ]
+        widgets = {
+            'observacion_final': forms.Textarea(attrs={'required': False}),
+        }
 
 class CasoDeEstresForm(forms.ModelForm):
     class Meta:
