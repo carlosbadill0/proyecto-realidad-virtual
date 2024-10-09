@@ -11,6 +11,7 @@
     />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     <style>
       .modal-header {
         background-color: #007bff;
@@ -48,6 +49,9 @@
       }
       .container {
         margin-top: 20px;
+      }
+      .list-group-item {
+        cursor: pointer;
       }
     </style>
   </head>
@@ -176,28 +180,21 @@
               </div>
               <div class="form-group">
                 <label for="scenarios">Escenarios</label>
-                <div id="scenarios">
-                  {% for scenario in scenarios %}
-                  <div class="form-check form-check-inline">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="scenario{{ scenario.id }}"
-                      name="scenarios"
-                      value="{{ scenario.id }}"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="scenario{{ scenario.id }}"
-                      >{{ scenario }}</label
-                    >
-                    <span>-pos:</span>
-                    <span
-                      class="order-number"
-                      id="order{{ scenario.id }}"
-                    ></span>
+                <div class="row">
+                  <div class="col-md-6">
+                    <h5>Casos disponibles</h5>
+                    <ul id="availableScenarios" class="list-group">
+                      {% for scenario in scenarios %}
+                      <li class="list-group-item" data-id="{{ scenario.id }}">
+                        {{ scenario }}
+                      </li>
+                      {% endfor %}
+                    </ul>
                   </div>
-                  {% endfor %}
+                  <div class="col-md-6">
+                    <h5>Casos que tendrá la evaluación</h5>
+                    <ul id="selectedScenarios" class="list-group"></ul>
+                  </div>
                 </div>
               </div>
               <input
@@ -214,11 +211,40 @@
       </div>
     </div>
 
-
-
-
- <!-- Ver Modal -->
-
+    <!-- Ver Modal -->
+    <div
+      class="modal fade"
+      id="verModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="verModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="verModalLabel">Ver Evaluación</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Nombre:</strong> <span id="verNombre"></span></p>
+            <p>
+              <strong>Descripción:</strong> <span id="verDescripcion"></span>
+            </p>
+            <p><strong>Fecha:</strong> <span id="verFecha"></span></p>
+            <p><strong>Escenarios:</strong></p>
+            <ul id="verScenarios"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Editar Modal -->
     <div
@@ -246,6 +272,12 @@
             <form id="editarForm">
               <input type="hidden" id="editarId" />
               <div class="form-group">
+                <input
+                  type="hidden"
+                  id="evaluacion_id"
+                  name="evaluacion_id"
+                  value="{{ evaluacion.id }}"
+                />
                 <label for="editarNombre">Nombre</label>
                 <input
                   type="text"
@@ -276,34 +308,27 @@
               </div>
               <div class="form-group">
                 <label for="editarScenarios">Escenarios</label>
-                <div id="editarScenarios">
-                  {% for scenario in scenarios %}
-                  <div class="form-check form-check-inline">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="editarScenario{{ scenario.id }}"
-                      name="scenarios"
-                      value="{{ scenario.id }}"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="editarScenario{{ scenario.id }}"
-                      >{{ scenario }}</label
-                    >
-                    <span>-pos:</span>
-                    <span
-                      class="order-number"
-                      id="editarOrder{{ scenario.id }}"
-                    ></span>
+                <div class="row">
+                  <div class="col-md-6">
+                    <h5>Casos disponibles</h5>
+                    <ul id="editarAvailableScenarios" class="list-group">
+                      {% for scenario in scenarios %}
+                      <li class="list-group-item" data-id="{{ scenario.id }}">
+                        {{ scenario }}
+                      </li>
+                      {% endfor %}
+                    </ul>
                   </div>
-                  {% endfor %}
+                  <div class="col-md-6">
+                    <h5>Casos que tendrá la evaluación</h5>
+                    <ul id="editarSelectedScenarios" class="list-group"></ul>
+                  </div>
                 </div>
               </div>
               <input
                 type="hidden"
-                id="editarScenariosOrden"
-                name="scenarios_orden"
+                id="editarScenariosIds"
+                name="scenarios_ids"
               />
               <button type="button" class="btn btn-primary" id="editarBtn">
                 Guardar
@@ -378,32 +403,32 @@
           },
         });
 
-        let order = 1;
-        $("#scenarios .form-check-input").change(function () {
-          if (this.checked) {
-            $(this).next(".order-number").text(order++);
-          } else {
-            $(this).next(".order-number").text("");
-            order--;
-            $("#scenarios .form-check-input:checked").each(function (index) {
-              $(this)
-                .next(".order-number")
-                .text(index + 1);
-            });
-          }
-          updateOrderField();
-        });
-
         function updateOrderField() {
           let selectedOrder = [];
-          $("#scenarios .form-check-input:checked").each(function () {
-            selectedOrder.push($(this).val());
+          $("#selectedScenarios .list-group-item").each(function () {
+            selectedOrder.push($(this).data("id"));
           });
           $("#scenarios_orden").val(selectedOrder.join(","));
         }
 
+        function updateEditOrderField() {
+          var scenariosIds = [];
+          $("#editarSelectedScenarios li").each(function () {
+            var scenarioId = $(this).data("id");
+            if (
+              scenarioId !== undefined &&
+              scenarioId !== null &&
+              scenarioId !== ""
+            ) {
+              scenariosIds.push(scenarioId);
+            }
+          });
+          $("#editarScenariosIds").val(scenariosIds.join(","));
+        }
+
         $("#crearBtn").click(function () {
-          updateOrderField();
+          updateEditOrderField();
+          console.log("Datos enviados:", $("#crearForm").serialize()); // Verifica los datos enviados
           $.ajax({
             url: '{% url "nueva_evaluacion" %}',
             method: "POST",
@@ -414,6 +439,10 @@
               } else {
                 alert("Error al crear la evaluación.");
               }
+            },
+            error: function (xhr, status, error) {
+              console.log("Error:", error); // Verifica el error
+              alert("Error al crear la evaluación.");
             },
           });
         });
@@ -430,10 +459,16 @@
               $("#editarNombre").val(data.nombre);
               $("#editarDescripcion").val(data.descripcion);
               $("#editarFecha").val(data.fecha);
-              $("#editarScenarios input").each(function () {
-                $(this).prop(
-                  "checked",
-                  data.scenarios.includes(parseInt($(this).val()))
+              $("#editarSelectedScenarios").empty();
+              $("#editarAvailableScenarios").empty();
+              data.selected_scenarios.forEach(function (scenario) {
+                $("#editarSelectedScenarios").append(
+                  `<li class="list-group-item" data-id="${scenario.id}">${scenario.nombre}</li>`
+                );
+              });
+              data.available_scenarios.forEach(function (scenario) {
+                $("#editarAvailableScenarios").append(
+                  `<li class="list-group-item" data-id="${scenario.id}">${scenario.nombre}</li>`
                 );
               });
             },
@@ -441,18 +476,37 @@
         });
 
         $("#editarBtn").click(function () {
+          updateEditOrderField();
           var id = $("#editarId").val();
-          var url = "{% url 'editar_evaluacion' 0 %}".replace("0", id);
+          var selectedScenarios = $("#editarScenariosIds").val();
+
+          if (!selectedScenarios) {
+            alert("No puede quedar sin casos para evaluar.");
+            return;
+          }
+
           $.ajax({
-            url: url,
+            url: "{% url 'editar_evaluacion' 0 %}".replace("0", id),
             method: "POST",
-            data: $("#editarForm").serialize(),
+            data: {
+              nombre: $("#editarNombre").val(),
+              descripcion: $("#editarDescripcion").val(),
+              fecha: $("#editarFecha").val(),
+              scenarios_ids: selectedScenarios.split(","),
+              csrfmiddlewaretoken: "{{ csrf_token }}",
+            },
+
             success: function (response) {
               if (response.success) {
+                alert("Evaluación actualizada correctamente.");
                 location.reload();
               } else {
-                alert("Error al editar la evaluación.");
+                alert("Error2222: " + response.error);
               }
+            },
+            error: function (xhr, status, error) {
+              console.error("Error:", error);
+              alert("Ocurrió un error al actualizar la evaluación.");
             },
           });
         });
@@ -476,6 +530,57 @@
                 },
               });
             });
+        });
+
+        $("#verModal").on("show.bs.modal", function (event) {
+          var button = $(event.relatedTarget);
+          var id = button.data("id");
+          var url = "{% url 'detalle_evaluacion' 0 %}".replace("0", id);
+          $.ajax({
+            url: url,
+            method: "GET",
+            success: function (data) {
+              $("#verNombre").text(data.nombre);
+              $("#verDescripcion").text(data.descripcion);
+              $("#verFecha").text(data.fecha);
+              $("#verScenarios").empty();
+              data.selected_scenarios.forEach(function (scenario) {
+                $("#verScenarios").append(`<li>${scenario.nombre}</li>`);
+              });
+            },
+          });
+        });
+
+        new Sortable(document.getElementById("availableScenarios"), {
+          group: "scenarios",
+          animation: 150,
+        });
+
+        new Sortable(document.getElementById("selectedScenarios"), {
+          group: "scenarios",
+          animation: 150,
+          onAdd: function (evt) {
+            updateOrderField();
+          },
+          onRemove: function (evt) {
+            updateOrderField();
+          },
+        });
+
+        new Sortable(document.getElementById("editarAvailableScenarios"), {
+          group: "scenarios",
+          animation: 150,
+        });
+
+        new Sortable(document.getElementById("editarSelectedScenarios"), {
+          group: "scenarios",
+          animation: 150,
+          onAdd: function (evt) {
+            updateEditOrderField();
+          },
+          onRemove: function (evt) {
+            updateEditOrderField();
+          },
         });
       });
     </script>

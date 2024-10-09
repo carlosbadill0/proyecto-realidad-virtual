@@ -317,53 +317,102 @@ def lista_evaluaciones(request):
     })
 
 def detalle_evaluacion(request, pk):
-    evaluacion = get_object_or_404(Evaluacion, pk=pk)
-    return JsonResponse({
-        'nombre': evaluacion.nombre,
-        'descripcion': evaluacion.descripcion,
-        'fecha': evaluacion.fecha,
-        'scenarios': list(evaluacion.scenarios.values_list('id', flat=True))
-    })
+    try:
+        evaluacion = get_object_or_404(Evaluacion, pk=pk)
+        selected_scenarios = evaluacion.scenarios.all()
+        available_scenarios = Scenario.objects.exclude(id__in=selected_scenarios.values('id'))
+
+        data = {
+            'nombre': evaluacion.nombre,
+            'descripcion': evaluacion.descripcion,
+            'fecha': evaluacion.fecha,
+            'scenarios': list(evaluacion.scenarios.values_list('function_name', flat=True)),
+            'selected_scenarios': [{'id': scenario.id, 'nombre': scenario.function_name} for scenario in selected_scenarios],
+            'available_scenarios': [{'id': scenario.id, 'nombre': scenario.function_name} for scenario in available_scenarios],
+        }
+        return JsonResponse(data)
+    except Exception as e:
+        return JsonResponse({'error': str(e)})
 
 def nueva_evaluacion(request):
-    if request.method == "POST":
-        form = EvaluacionForm(request.POST)
-        if form.is_valid():
-            evaluacion = form.save(commit=False)
-            evaluacion.save()
-            form.save_m2m()
-            # Limpiar la relación ManyToMany antes de agregar los nuevos escenarios
-            evaluacion.scenarios.clear()
-            # Guardar el orden de los escenarios
-            orden = request.POST.get('scenarios_orden', '').split(',')
-            for index, scenario_id in enumerate(orden):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        descripcion = request.POST.get('descripcion')
+        fecha = request.POST.get('fecha')
+        scenarios_orden = request.POST.get('scenarios_orden').split(',')
+
+        if not (nombre and descripcion and fecha and scenarios_orden):
+            return JsonResponse({'success': False, 'error': 'Faltan datos'})
+
+        try:
+            evaluacion = Evaluacion.objects.create(
+                nombre=nombre,
+                descripcion=descripcion,
+                fecha=fecha
+            )
+            for orden, scenario_id in enumerate(scenarios_orden, start=1):
                 scenario = Scenario.objects.get(id=scenario_id)
-                EvaluacionScenario.objects.create(evaluacion=evaluacion, scenario=scenario, orden=index + 1)
+                EvaluacionScenario.objects.create(
+                    evaluacion=evaluacion,
+                    scenario=scenario,
+                    orden=orden
+                )
             return JsonResponse({'success': True})
-        else:
-            return JsonResponse({'success': False, 'errors': form.errors})
-    return JsonResponse({'success': False, 'errors': 'Invalid request method'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Método no permitido'})
 
 def editar_evaluacion(request, pk):
     evaluacion = get_object_or_404(Evaluacion, pk=pk)
     if request.method == "POST":
-        form = EvaluacionForm(request.POST, instance=evaluacion)
-        if form.is_valid():
-            evaluacion = form.save(commit=False)
-            evaluacion.save()
-            form.save_m2m()
-            # Limpiar la relación ManyToMany antes de agregar los nuevos escenarios
-            evaluacion.scenarios.clear()
-            # Guardar el orden de los escenarios
-            orden = request.POST.get('scenarios_orden', '').split(',')
-            for index, scenario_id in enumerate(orden):
-                scenario = Scenario.objects.get(id=scenario_id)
-                EvaluacionScenario.objects.create(evaluacion=evaluacion, scenario=scenario, orden=index + 1)
-            return JsonResponse({'success': True})
-        else:
-            return JsonResponse({'success': False, 'errors': form.errors})
-    return JsonResponse({'success': False, 'errors': 'Invalid request method'})
+        nombre = request.POST.get('nombre')
+        descripcion = request.POST.get('descripcion')
+        fecha = request.POST.get('fecha')
+        scenarios_ids = request.POST.getlist('scenarios_ids[]')
 
+        if not (nombre and descripcion and fecha and scenarios_ids):
+            return JsonResponse({'success': False, 'error': 'Faltan datos'})
+
+        try:
+            evaluacion.nombre = nombre
+            evaluacion.descripcion = descripcion
+            evaluacion.fecha = fecha
+            evaluacion.save()
+
+            # Limpiar escenarios anteriores
+            evaluacion.scenarios.clear()
+
+            # Agregar nuevos escenarios
+            for orden, scenario_id in enumerate(scenarios_ids, start=1):
+                if scenario_id:  # Verificar que scenario_id no sea vacío o None
+                    try:
+                        scenario = Scenario.objects.get(id=scenario_id)
+                        EvaluacionScenario.objects.create(
+                            evaluacion=evaluacion,
+                            scenario=scenario,
+                            orden=orden
+                        )
+                    except Scenario.DoesNotExist:
+                        return JsonResponse({'success': False, 'error': f'Scenario con ID {scenario_id} no existe'})
+
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    else:
+        scenarios = Scenario.objects.all()
+        selected_scenarios = evaluacion.scenarios.all()
+        available_scenarios = scenarios.exclude(id__in=selected_scenarios.values('id'))
+        
+        data = {
+            'nombre': evaluacion.nombre,
+            'descripcion': evaluacion.descripcion,
+            'fecha': evaluacion.fecha,
+            'selected_scenarios': [{'id': es.id, 'nombre': es.function_name} for es in selected_scenarios],
+            'available_scenarios': [{'id': s.id, 'nombre': s.function_name} for s in available_scenarios],
+        }
+        return JsonResponse(data)
+     
 def borrar_evaluacion(request, pk):
     evaluacion = get_object_or_404(Evaluacion, pk=pk)
     if request.method == "POST":

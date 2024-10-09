@@ -23,6 +23,13 @@ class PracticanteForm(forms.ModelForm):
         fields = ['nombre_usuario', 'apellidoP_usuario', 'apellidoM_usuario', 'fecha_ingreso']
 
 class EvaluacionForm(forms.ModelForm):
+    
+    scenarios = forms.ModelMultipleChoiceField(
+        queryset=Scenario.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True
+    )
+    
     class Meta:
         model = Evaluacion
         fields = ['nombre', 'descripcion', 'fecha', 'scenarios']
