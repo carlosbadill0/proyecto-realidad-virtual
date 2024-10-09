@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'djangocrud.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'monitoreo_rv',
+        'NAME': 'monitoreo_rv2',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
