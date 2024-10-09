@@ -83,7 +83,8 @@ urlpatterns = [
     path('ultima_frecuencia2/', views.get_latest_ecg2, name='get_latest_ecg2'),
     #url para evaluar a un expositor
     path('evaluar/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
-
+    ## para mandar el json
+    path('evaluar_expositor/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
     
  ]
 

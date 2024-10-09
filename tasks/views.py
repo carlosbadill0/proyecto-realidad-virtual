@@ -590,6 +590,41 @@ def evaluar_expositor(request, id, id_evaluacion):
 
         return render(request, 'mensaje_realizado.html')  # Redirigir a la plantilla intermedia
 
+    if request.GET.get('format') == 'json':
+        
+        def convert_to_seconds(time_str):
+            h, m = map(int, time_str.split(':'))
+            return h * 3600 + m * 60
+
+        total_duration_seconds = sum(convert_to_seconds(escenario.duration) for escenario in escenarios)
+
+        # Convertir total_duration_seconds a formato HH:MM
+        total_duration_minutes = total_duration_seconds // 60
+        total_duration_hours = total_duration_minutes // 60
+        total_duration_minutes = total_duration_minutes % 60
+        total_duration_str = f"{total_duration_hours:02}:{total_duration_minutes:02}"
+
+        # Crear el JSON con los datos de la evaluación
+        data = {
+            "simulationID": f"sim-{evaluacion_realizada.id}",
+            "date": evaluacion_realizada.fecha_evaluacion.strftime('%Y-%m-%d'),
+            "duration": total_duration_str,
+            "details": {
+                "scene": evaluacion_realizada.evaluacion_aplicada.nombre,
+                "description": evaluacion_realizada.evaluacion_aplicada.descripcion
+            },
+            "scenarios": [
+                {
+                    "id": f"scene-{escenario.id}",
+                    "functionName": escenario.function_name,
+                    "tagName": escenario.tag_name,
+                    "duration": escenario.duration
+                }
+                for escenario in escenarios
+            ]
+        }
+        return JsonResponse(data)
+
     return render(request, 'frecuencia_cardiaca.html', {
         'expositores': Expositores.objects.all(),
         'expositor_seleccionado': expositor_seleccionado,

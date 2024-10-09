@@ -143,15 +143,22 @@
 <script>
     // Manejo del botón de evaluación
     $(document).ready(function () {
-        $('.evaluarExpositorBtn').click(function () {
-            var expositorId = $(this).data('id');
-            var evaluacionId = $('#evaluacion').val();
-            if (evaluacionId) {
-                var url = "{% url 'evaluar_expositor' 0 0 %}".replace('0/0', expositorId + '/' + evaluacionId);
-                window.location.href = url;
-            } else {
-                alert('Por favor, selecciona una evaluación.');
-            }
+        $('#evaluarExpositorBtn').click(function () {
+            var expositorId = $('#expositorId').val();
+            var evaluacionId = $('#evaluacionId').val();
+            var url = "{% url 'evaluar_expositor' 0 0 %}".replace('0', expositorId).replace('0', evaluacionId);
+    
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function (data) {
+                    console.log(data);
+                    // Aquí puedes manejar el JSON recibido, por ejemplo, mostrarlo en la consola o procesarlo de alguna manera
+                },
+                error: function (error) {
+                    console.error('Error al obtener los datos de la evaluación:', error);
+                }
+            });
         });
 
         $('.evaluacionPantallaBtn').click(function () {
