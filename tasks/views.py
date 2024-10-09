@@ -676,3 +676,4 @@ def get_latest_ecg2(request):
         'value': latest_data.bpm,
         'status': 'success'
     })
+    
