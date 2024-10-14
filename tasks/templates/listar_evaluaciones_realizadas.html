@@ -29,6 +29,13 @@
         background-color: #dc3545;
         color: white;
       }
+      .modal-header {
+        background-color: #007bff;
+        color: white;
+      }
+      .modal-title {
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
@@ -41,7 +48,7 @@
         </div>
       </div>
       <div class="table-responsive">
-        <table class="table table-bordered mt-3">
+        <table class="table table-striped">
           <thead>
             <tr>
               <th>Expositor</th>
@@ -284,5 +291,6 @@
       });
     </script>
   </body>
+  {% include 'footer.html' %}
 </html>
 {% endblock %}
