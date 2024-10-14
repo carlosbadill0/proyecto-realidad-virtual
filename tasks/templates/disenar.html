@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Evaluaciones</title>
+
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -53,12 +53,37 @@
       .list-group-item {
         cursor: pointer;
       }
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .table thead th {
+        background-color: #017c8c;
+        color: white;
+      }
+      .btn-view {
+        background-color: #17a2b8;
+        color: white;
+      }
+      .btn-edit {
+        background-color: #ffc107;
+        color: white;
+      }
+      .btn-delete {
+        background-color: #dc3545;
+        color: white;
+      }
     </style>
   </head>
   <body>
     <div class="container mt-4">
-      <div class="d-flex justify-content-end">
-        <button
+      <h1>Diseñar evaluaciones</h1>
+      <div class="row mb-3">
+        <div class="col-md-6 d-flex align-items-center">
+          <input type="text" id="searchInput" class="form-control me-2" placeholder="Búsqueda" /> 
+          <button type="button" class="btn btn-primary">Filtrar</button>
+        </div>
+        <div class="col-md-6 text-right">
+          <button
           type="button"
           class="btn btn-primary mb-3"
           data-toggle="modal"
@@ -66,6 +91,7 @@
         >
           Crear evaluación
         </button>
+        </div>
       </div>
       <div class="table-responsive">
         <table class="table table-striped table-bordered">
@@ -95,25 +121,22 @@
                   data-id="{{ evaluacion.id }}"
                   data-toggle="modal"
                   data-target="#verModal"
-                  class="btn btn-lg"
+                  class="btn btn-info bi bi-eye"
                 >
-                  <i class="bi bi-eye"></i>
                 </button>
                 <button
                   data-id="{{ evaluacion.id }}"
                   data-toggle="modal"
                   data-target="#editarModal"
-                  class="btn btn-lg"
+                  class="btn btn-warning bi bi-pencil-square "
                 >
-                  <i class="bi bi-pencil-square"></i>
                 </button>
                 <button
                   data-id="{{ evaluacion.id }}"
                   data-toggle="modal"
                   data-target="#borrarModal"
-                  class="btn btn-lg"
+                  class="btn btn-danger bi bi-trash "
                 >
-                  <i class="bi bi-trash3"></i>
                 </button>
               </td>
               <td></td>

@@ -1,12 +1,86 @@
-{% extends 'base.html' %}
-{% block content %}
-  <div class="container">
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Búsqueda">
-      <button type="button">Filtrar</button>
-    </div>
-    <div class="d-flex justify-content-end">
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#crearExpositorModal">Crear Expositor</button>
+{% extends 'base.html' %} {% block content %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <style>
+      .modal-header {
+        background-color: #007bff;
+        color: white;
+      }
+      .modal-title {
+        font-weight: bold;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+      .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+      }
+      .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+      }
+      .btn-primary:hover,
+      .btn-info:hover,
+      .btn-danger:hover {
+        opacity: 0.9;
+      }
+      .table th,
+      .table td {
+        text-align: center;
+      }
+      .table thead {
+        background-color: #f8f9fa;
+      }
+      .table-responsive {
+        margin-top: 20px;
+      }
+      .container {
+        margin-top: 20px;
+      }
+      .list-group-item {
+        cursor: pointer;
+      }
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .table thead th {
+        background-color: #017c8c;
+        color: white;
+      }
+    </style>
+  </head>
+
+
+<body>
+  <div class="container mt-4">
+    <h1>Listado de expositores</h1>
+    <div class="row mb-3">
+      <div class="col-md-6 d-flex align-items-center">
+        <input type="text" id="searchInput" class="form-control me-2" placeholder="Búsqueda" /> 
+        <button type="button" class="btn btn-primary">Filtrar</button>
+      </div>
+      <div class="col-md-6 text-right">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-toggle="modal"
+          data-target="#crearExpositorModal"
+        >
+          Crear Expositor
+        </button>
+      </div>
     </div>
     <div class="table-responsive">
       <table class="table table-striped table-bordered">
@@ -20,31 +94,67 @@
         </thead>
         <tbody>
           {% for expositor in expositores %}
-            <tr>
-              <td>{{ expositor.nombre }}</td>
-              <td>{{ expositor.fecha_ingreso }}</td>
-              <td>
-                <button data-id="{{ expositor.id }}" data-toggle="modal" data-target="#verExpositorModal" class="btn btn-lg"><i class="bi bi-eye"></i></button>
-                <button data-id="{{ expositor.id }}" data-toggle="modal" data-target="#editarExpositorModal" class="btn btn-lg"><i class="bi bi-pencil-square"></i></button>
-                <button data-id="{{ expositor.id }}" data-toggle="modal" data-target="#borrarExpositorModal" class="btn btn-lg"><i class="bi bi-trash3"></i></button>
-              </td>
-              <td>
-                <button data-id="{{ expositor.id }}" class="btn btn-lg evaluacionPantallaBtn"><i class="bi bi-clipboard-pulse"></i></button>
-              </td>
-            </tr>
+          <tr>
+            <td>{{ expositor.nombre }}</td>
+            <td>{{ expositor.fecha_ingreso }}</td>
+            <td>
+              <button
+                data-id="{{ expositor.id }}"
+                data-toggle="modal"
+                data-target="#verExpositorModal"
+                class="btn btn-info bi bi-eye"
+              ></button>
+              <button
+                data-id="{{ expositor.id }}"
+                data-toggle="modal"
+                data-target="#editarExpositorModal"
+                class="btn btn-warning bi bi-pencil-square"
+              ></button>
+              <button
+                data-id="{{ expositor.id }}"
+                data-toggle="modal"
+                data-target="#borrarExpositorModal"
+                class="btn btn-danger bi bi-trash"
+              ></button>
+            </td>
+            <td>
+              <button
+                data-id="{{ expositor.id }}"
+                class="btn btn-lg evaluacionPantallaBtn"
+              >
+                <i class="bi bi-clipboard-pulse"></i>
+              </button>
+            </td>
+          </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
-
+  
   <!-- Crear Expositor Modal -->
-  <div class="modal fade" id="crearExpositorModal" tabindex="-1" role="dialog" aria-labelledby="crearExpositorModalLabel" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="crearExpositorModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="crearExpositorModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="crearExpositorModalLabel">Crear Expositor</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h5 class="modal-title" id="crearExpositorModalLabel">
+            Crear Expositor
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
           <form id="crearExpositorForm">
@@ -54,15 +164,31 @@
             </div>
             <div class="form-group">
               <label for="fecha_ingreso">Fecha de Ingreso</label>
-              <input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso" />
+              <input
+                type="date"
+                class="form-control"
+                id="fecha_ingreso"
+                name="fecha_ingreso"
+              />
             </div>
             <div class="form-group">
               <label for="fecha_nacimiento">Fecha de Nacimiento</label>
-              <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" />
+              <input
+                type="date"
+                class="form-control"
+                id="fecha_nacimiento"
+                name="fecha_nacimiento"
+              />
             </div>
             <div class="form-group">
               <label for="edad">Edad</label>
-              <input type="number" class="form-control" id="edad" name="edad" required />
+              <input
+                type="number"
+                class="form-control"
+                id="edad"
+                name="edad"
+                required
+              />
             </div>
             <div class="form-group">
               <label for="genero">Género</label>
@@ -70,30 +196,62 @@
             </div>
             <div class="form-group">
               <label for="semestre_academico">Semestre Académico</label>
-              <input type="number" class="form-control" id="semestre_academico" name="semestre_academico" />
+              <input
+                type="number"
+                class="form-control"
+                id="semestre_academico"
+                name="semestre_academico"
+              />
             </div>
             <div class="form-group">
               <label for="carrera">Carrera</label>
-              <input type="text" class="form-control" id="carrera" name="carrera" />
+              <input
+                type="text"
+                class="form-control"
+                id="carrera"
+                name="carrera"
+              />
             </div>
             <div class="form-group">
               <label for="observacion_inicial">Observación Inicial</label>
-              <textarea class="form-control" id="observacion_inicial" name="observacion_inicial"></textarea>
+              <textarea
+                class="form-control"
+                id="observacion_inicial"
+                name="observacion_inicial"
+              ></textarea>
             </div>
-            <button type="button" class="btn btn-primary" id="crearExpositorBtn">Guardar</button>
+            <button type="button" class="btn btn-primary" id="crearExpositorBtn">
+              Guardar
+            </button>
           </form>
         </div>
       </div>
     </div>
   </div>
-
+  
   <!-- Ver Expositor Modal -->
-  <div class="modal fade" id="verExpositorModal" tabindex="-1" role="dialog" aria-labelledby="verExpositorModalLabel" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="verExpositorModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="verExpositorModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="verExpositorModalLabel">Detalles del Expositor</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h5 class="modal-title" id="verExpositorModalLabel">
+            Detalles del Expositor
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -104,7 +262,12 @@
             <div class="col">
               <div class="form-group">
                 <label for="verFechaIngreso">Fecha de Ingreso</label>
-                <input type="date" class="form-control" id="verFechaIngreso" readonly />
+                <input
+                  type="date"
+                  class="form-control"
+                  id="verFechaIngreso"
+                  readonly
+                />
               </div>
               <div class="form-group">
                 <label for="verEdad">Edad</label>
@@ -112,17 +275,31 @@
               </div>
               <div class="form-group">
                 <label for="verSemestreAcademico">Semestre Académico</label>
-                <input type="number" class="form-control" id="verSemestreAcademico" readonly />
+                <input
+                  type="number"
+                  class="form-control"
+                  id="verSemestreAcademico"
+                  readonly
+                />
               </div>
               <div class="form-group">
                 <label for="verObservacionInicial">Observación Inicial</label>
-                <textarea class="form-control" id="verObservacionInicial" readonly></textarea>
+                <textarea
+                  class="form-control"
+                  id="verObservacionInicial"
+                  readonly
+                ></textarea>
               </div>
             </div>
             <div class="col">
               <div class="form-group">
                 <label for="verFechaNacimiento">Fecha de Nacimiento</label>
-                <input type="date" class="form-control" id="verFechaNacimiento" readonly />
+                <input
+                  type="date"
+                  class="form-control"
+                  id="verFechaNacimiento"
+                  readonly
+                />
               </div>
               <div class="form-group">
                 <label for="verGenero">Género</label>
@@ -130,11 +307,20 @@
               </div>
               <div class="form-group">
                 <label for="verCarrera">Carrera</label>
-                <input type="text" class="form-control" id="verCarrera" readonly />
+                <input
+                  type="text"
+                  class="form-control"
+                  id="verCarrera"
+                  readonly
+                />
               </div>
               <div class="form-group">
                 <label for="verObservacionFinal">Observación Final</label>
-                <textarea class="form-control" id="verObservacionFinal" readonly></textarea>
+                <textarea
+                  class="form-control"
+                  id="verObservacionFinal"
+                  readonly
+                ></textarea>
               </div>
             </div>
           </div>
@@ -142,79 +328,158 @@
       </div>
     </div>
   </div>
-
+  
   <!-- Editar Expositor Modal -->
-  <div class="modal fade" id="editarExpositorModal" tabindex="-1" role="dialog" aria-labelledby="editarExpositorModalLabel" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="editarExpositorModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="editarExpositorModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editarExpositorModalLabel">Editar Expositor</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h5 class="modal-title" id="editarExpositorModalLabel">
+            Editar Expositor
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
           <form id="editarExpositorForm">
             <input type="hidden" id="editarId" />
             <div class="form-group">
               <label for="editarNombre">Nombre</label>
-              <input type="text" class="form-control" id="editarNombre" name="nombre" />
+              <input
+                type="text"
+                class="form-control"
+                id="editarNombre"
+                name="nombre"
+              />
             </div>
             <div class="form-group">
               <label for="editarFechaIngreso">Fecha de Ingreso</label>
-              <input type="date" class="form-control" id="editarFechaIngreso" name="fecha_ingreso" />
+              <input
+                type="date"
+                class="form-control"
+                id="editarFechaIngreso"
+                name="fecha_ingreso"
+              />
             </div>
             <div class="form-group">
               <label for="editarFecha_nacimiento">Fecha de Nacimiento</label>
-              <input type="date" class="form-control" id="editarFecha_nacimiento" name="fecha_nacimiento" />
+              <input
+                type="date"
+                class="form-control"
+                id="editarFecha_nacimiento"
+                name="fecha_nacimiento"
+              />
             </div>
             <div class="form-group">
               <label for="EditarEdad">Edad</label>
-              <input type="number" class="form-control" id="EditarEdad" name="edad" />
+              <input
+                type="number"
+                class="form-control"
+                id="EditarEdad"
+                name="edad"
+              />
             </div>
             <div class="form-group">
               <label for="editarGenero">Género</label>
-              <input type="text" class="form-control" id="editarGenero" name="genero" />
+              <input
+                type="text"
+                class="form-control"
+                id="editarGenero"
+                name="genero"
+              />
             </div>
             <div class="form-group">
               <label for="editarSemestre_academico">Semestre Académico</label>
-              <input type="number" class="form-control" id="editarSemestre_academico" name="semestre_academico" />
+              <input
+                type="number"
+                class="form-control"
+                id="editarSemestre_academico"
+                name="semestre_academico"
+              />
             </div>
             <div class="form-group">
               <label for="editarCarrera">Carrera</label>
-              <input type="text" class="form-control" id="editarCarrera" name="carrera" />
+              <input
+                type="text"
+                class="form-control"
+                id="editarCarrera"
+                name="carrera"
+              />
             </div>
             <div class="form-group">
               <label for="editarObservacion_inicial">Observación Inicial</label>
-              <textarea class="form-control" id="editarObservacion_inicial" name="observacion_inicial"></textarea>
+              <textarea
+                class="form-control"
+                id="editarObservacion_inicial"
+                name="observacion_inicial"
+              ></textarea>
             </div>
             <div class="form-group">
               <label for="editarObservacion_final">Observación Final</label>
-              <textarea class="form-control" id="editarObservacion_final" name="observacion_final"></textarea>
+              <textarea
+                class="form-control"
+                id="editarObservacion_final"
+                name="observacion_final"
+              ></textarea>
             </div>
-            <button type="button" class="btn btn-primary" id="editarExpositorBtn">Guardar</button>
+            <button type="button" class="btn btn-primary" id="editarExpositorBtn">
+              Guardar
+            </button>
           </form>
         </div>
       </div>
     </div>
   </div>
-
+  
   <!-- Borrar Expositor Modal -->
-  <div class="modal fade" id="borrarExpositorModal" tabindex="-1" role="dialog" aria-labelledby="borrarExpositorModalLabel" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="borrarExpositorModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="borrarExpositorModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title text-center" id="borrarExpositorModalLabel">Borrar Expositor</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h5 class="modal-title text-center" id="borrarExpositorModalLabel">
+            Borrar Expositor
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body text-center">
           <p>¿Estás seguro de que quieres borrar este expositor?</p>
           <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-danger" id="borrarExpositorBtn">Borrar</button>
+            <button type="button" class="btn btn-danger" id="borrarExpositorBtn">
+              Borrar
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
-
+  
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="../../static/js/filtrar.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -222,11 +487,11 @@
     $(document).ready(function () {
       function getCookie(name) {
         let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-          const cookies = document.cookie.split(';');
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
           for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === name + '=') {
+            if (cookie.substring(0, name.length + 1) === name + "=") {
               cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
               break;
             }
@@ -234,134 +499,139 @@
         }
         return cookieValue;
       }
-      const csrftoken = getCookie('csrftoken');
-
+      const csrftoken = getCookie("csrftoken");
+  
       function csrfSafeMethod(method) {
         return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
       }
-
+  
       $.ajaxSetup({
         beforeSend: function (xhr, settings) {
           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader('X-CSRFToken', csrftoken);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
           }
-        }
+        },
       });
-
-      $('#verExpositorModal').on('show.bs.modal', function (event) {
+  
+      $("#verExpositorModal").on("show.bs.modal", function (event) {
         var button = $(event.relatedTarget);
-        var id = button.data('id');
-        var url = "{% url 'detalle_expositor' 0 %}".replace('0', id);
-
+        var id = button.data("id");
+        var url = "{% url 'detalle_expositor' 0 %}".replace("0", id);
+  
         $.ajax({
           url: url,
-          method: 'GET',
+          method: "GET",
           success: function (data) {
-            $('#verNombre').val(data.nombre);
-            $('#verFechaIngreso').val(data.fecha_ingreso);
-            $('#verFechaNacimiento').val(data.fecha_nacimiento);
-            $('#verEdad').val(data.edad);
-            $('#verGenero').val(data.genero);
-            $('#verSemestreAcademico').val(data.semestre_academico);
-            $('#verCarrera').val(data.carrera);
-            $('#verObservacionInicial').val(data.observacion_inicial);
-            $('#verObservacionFinal').val(data.observacion_final);
-          }
+            $("#verNombre").val(data.nombre);
+            $("#verFechaIngreso").val(data.fecha_ingreso);
+            $("#verFechaNacimiento").val(data.fecha_nacimiento);
+            $("#verEdad").val(data.edad);
+            $("#verGenero").val(data.genero);
+            $("#verSemestreAcademico").val(data.semestre_academico);
+            $("#verCarrera").val(data.carrera);
+            $("#verObservacionInicial").val(data.observacion_inicial);
+            $("#verObservacionFinal").val(data.observacion_final);
+          },
         });
       });
-
-      $('#crearExpositorBtn').click(function () {
+  
+      $("#crearExpositorBtn").click(function () {
         $.ajax({
           url: '{% url "crear_expositor" %}',
-          method: 'POST',
-          data: $('#crearExpositorForm').serialize(),
+          method: "POST",
+          data: $("#crearExpositorForm").serialize(),
           success: function (response) {
             if (response.success) {
               location.reload();
             } else {
-              console.log(response)
-              alert('Error al crear el expositor.');
+              console.log(response);
+              alert("Error al crear el expositor.");
             }
-          }
+          },
         });
       });
-
-      $('#editarExpositorModal').on('show.bs.modal', function (event) {
+  
+      $("#editarExpositorModal").on("show.bs.modal", function (event) {
         var button = $(event.relatedTarget);
-        var id = button.data('id');
-        var url = "{% url 'detalle_expositor' 0 %}".replace('0', id);
+        var id = button.data("id");
+        var url = "{% url 'detalle_expositor' 0 %}".replace("0", id);
         $.ajax({
           url: url,
-          method: 'GET',
+          method: "GET",
           success: function (data) {
-            $('#editarId').val(id);
-            $('#editarNombre').val(data.nombre);
-            $('#editarFechaIngreso').val(data.fecha_ingreso);
-            $('#editarFecha_nacimiento').val(data.fecha_nacimiento);
-            $('#EditarEdad').val(data.edad);
-            $('#editarGenero').val(data.genero);
-            $('#editarCarrera').val(data.carrera);
-            $('#editarSemestre_academico').val(data.semestre_academico);
-            $('#editarObservacion_inicial').val(data.observacion_inicial);
-            $('#editarObservacion_final').val(data.observacion_final);
-          }
+            $("#editarId").val(id);
+            $("#editarNombre").val(data.nombre);
+            $("#editarFechaIngreso").val(data.fecha_ingreso);
+            $("#editarFecha_nacimiento").val(data.fecha_nacimiento);
+            $("#EditarEdad").val(data.edad);
+            $("#editarGenero").val(data.genero);
+            $("#editarCarrera").val(data.carrera);
+            $("#editarSemestre_academico").val(data.semestre_academico);
+            $("#editarObservacion_inicial").val(data.observacion_inicial);
+            $("#editarObservacion_final").val(data.observacion_final);
+          },
         });
       });
-
-      $('#editarExpositorBtn').click(function () {
-        var id = $('#editarId').val();
-        var url = "{% url 'editar_expositor' 0 %}".replace('0', id);
+  
+      $("#editarExpositorBtn").click(function () {
+        var id = $("#editarId").val();
+        var url = "{% url 'editar_expositor' 0 %}".replace("0", id);
         $.ajax({
           url: url,
-          method: 'POST',
-          data: $('#editarExpositorForm').serialize(),
+          method: "POST",
+          data: $("#editarExpositorForm").serialize(),
           success: function (response) {
             if (response.success) {
               location.reload();
             } else {
-              alert('Error al editar el expositor.');
+              alert("Error al editar el expositor.");
             }
-          }
+          },
         });
       });
-
-      $('#borrarExpositorModal').on('show.bs.modal', function (event) {
+  
+      $("#borrarExpositorModal").on("show.bs.modal", function (event) {
         var button = $(event.relatedTarget);
-        var id = button.data('id');
-        var url = "{% url 'borrar_expositor' 0 %}".replace('0', id);
-        $('#borrarExpositorBtn')
-          .off('click')
-          .on('click', function () {
+        var id = button.data("id");
+        var url = "{% url 'borrar_expositor' 0 %}".replace("0", id);
+        $("#borrarExpositorBtn")
+          .off("click")
+          .on("click", function () {
             $.ajax({
               url: url,
-              method: 'POST',
+              method: "POST",
               success: function (response) {
                 if (response.success) {
                   location.reload();
                 } else {
-                  alert('Error al borrar el expositor.');
+                  alert("Error al borrar el expositor.");
                 }
-              }
+              },
             });
           });
       });
-
-      $('.evaluarExpositorBtn').click(function () {
-        var expositorId = $(this).data('id');
-        var evaluacionId = $('#evaluacion').val();
+  
+      $(".evaluarExpositorBtn").click(function () {
+        var expositorId = $(this).data("id");
+        var evaluacionId = $("#evaluacion").val();
         if (evaluacionId) {
-          var url = "{% url 'evaluar_expositor' 0 0 %}".replace('0/0', expositorId + '/' + evaluacionId);
+          var url = "{% url 'evaluar_expositor' 0 0 %}".replace(
+            "0/0",
+            expositorId + "/" + evaluacionId
+          );
           window.location.href = url;
         } else {
-          alert('Por favor, selecciona una evaluación.');
+          alert("Por favor, selecciona una evaluación.");
         }
       });
-
-      $('.evaluacionPantallaBtn').click(function () {
-        var id = $(this).data('id');
-        var url = "{% url 'elegir_evaluacion' 0 %}".replace('0', id);
+  
+      $(".evaluacionPantallaBtn").click(function () {
+        var id = $(this).data("id");
+        var url = "{% url 'elegir_evaluacion' 0 %}".replace("0", id);
         window.location.href = url;
       });
     });
   </script>
+</body>  
+
 {% endblock %}
