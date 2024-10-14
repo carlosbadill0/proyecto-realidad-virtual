@@ -64,6 +64,9 @@
         background-color: #dc3545;
         color: white;
       }
+      .star-rating {
+        color: gold;
+      }
     </style>
   </head>
   <body>
@@ -131,7 +134,21 @@
                 >
                 </button>
               </td>
-              <td></td>
+              <td>
+                {% with evaluacion.scenarios.count as scenario_count %}
+                  {% if scenario_count >= 8 %}
+                    <span class="star-rating">★★★★★</span>
+                  {% elif scenario_count >= 6 %}
+                    <span class="star-rating">★★★★</span>
+                  {% elif scenario_count >= 4 %}
+                    <span class="star-rating">★★★</span>
+                  {% elif scenario_count >= 2 %}
+                    <span class="star-rating">★★</span>
+                  {% else %}
+                    <span class="star-rating">★</span>
+                  {% endif %}
+                {% endwith %}
+              </td>
             </tr>
             {% endfor %}
           </tbody>
