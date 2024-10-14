@@ -7,7 +7,7 @@
 
     <link
       rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -60,17 +60,12 @@
         background-color: #017c8c;
         color: white;
       }
-      .btn-view {
-        background-color: #17a2b8;
-        color: white;
-      }
-      .btn-edit {
-        background-color: #ffc107;
-        color: white;
-      }
       .btn-delete {
         background-color: #dc3545;
         color: white;
+      }
+      .star-rating {
+        color: gold;
       }
     </style>
   </head>
@@ -94,7 +89,7 @@
         </div>
       </div>
       <div class="table-responsive">
-        <table class="table table-striped table-bordered">
+        <table class="table table-striped">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -139,7 +134,21 @@
                 >
                 </button>
               </td>
-              <td></td>
+              <td>
+                {% with evaluacion.scenarios.count as scenario_count %}
+                  {% if scenario_count >= 8 %}
+                    <span class="star-rating">★★★★★</span>
+                  {% elif scenario_count >= 6 %}
+                    <span class="star-rating">★★★★</span>
+                  {% elif scenario_count >= 4 %}
+                    <span class="star-rating">★★★</span>
+                  {% elif scenario_count >= 2 %}
+                    <span class="star-rating">★★</span>
+                  {% else %}
+                    <span class="star-rating">★</span>
+                  {% endif %}
+                {% endwith %}
+              </td>
             </tr>
             {% endfor %}
           </tbody>
@@ -608,5 +617,6 @@
       });
     </script>
   </body>
+  {% include 'footer.html' %}
 </html>
 {% endblock %}

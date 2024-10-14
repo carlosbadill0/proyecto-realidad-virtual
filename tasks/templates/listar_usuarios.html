@@ -10,11 +10,7 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="{% static 'css/estilos.css' %}"
-    />
+
     <script src="{% static 'js/filtrar.js' %}"></script>
     <style>
       .modal-header {
@@ -70,182 +66,182 @@
           >
         </div>
       </div>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>RUT</th>
+              <th>Nombre</th>
+              <th>Rol</th>
+              <th>Email</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+              <td>{{ usuario.id }}</td>
+              <td>{{ usuario.username }}</td>
+              <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
+              <td>
+                {% for grupo in usuario.groups.all %} {{ grupo.name }} {% if notforloop.last %}, {% endif %} {% endfor %}
+              </td>
+              <td>{{ usuario.email }}</td>
+              <td>
+                <button
+                  data-id="{{ usuario.id }}"
+                  class="btn btn-warning bi bi-pencil-square"
+                  data-toggle="modal"
+                  data-target="#editarUsuarioModal{{ usuario.id }}"
+                ></button>
+                <button
+                  data-id="{{ usuario.id }}"
+                  class="btn btn-danger bi bi-trash"
+                  data-toggle="modal"
+                  data-target="#borrarUsuarioModal{{ usuario.id }}"
+                ></button>
+              </td>
+            </tr>
 
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>RUT</th>
-            <th>Nombre</th>
-            <th>Rol</th>
-            <th>Email</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for usuario in usuarios %}
-          <tr>
-            <td>{{ usuario.id }}</td>
-            <td>{{ usuario.username }}</td>
-            <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
-            <td>
-              {% for grupo in usuario.groups.all %} {{ grupo.name }}
-              {% if notforloop.last %}, {% endif %} {% endfor %}
-            </td>
-            <td>{{ usuario.email }}</td>
-            <td>
-              <button
-                data-id="{{ usuario.id }}"
-                class="btn btn-warning bi bi-pencil-square"
-                data-toggle="modal"
-                data-target="#editarUsuarioModal{{ usuario.id }}"
-              ></button>
-              <button
-                data-id="{{ usuario.id }}"
-                class="btn btn-danger bi bi-trash"
-                data-toggle="modal"
-                data-target="#borrarUsuarioModal{{ usuario.id }}"
-              ></button>
-            </td>
-          </tr>
-
-          <!-- Modal Editar Usuario -->
-          <div
-            class="modal fade"
-            id="editarUsuarioModal{{ usuario.id }}"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="editarUsuarioModalLabel{{ usuario.id }}"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5
-                    class="modal-title"
-                    id="editarUsuarioModalLabel{{ usuario.id }}"
+            <!-- Modal Editar Usuario -->
+            <div
+              class="modal fade"
+              id="editarUsuarioModal{{ usuario.id }}"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="editarUsuarioModalLabel{{ usuario.id }}"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5
+                      class="modal-title"
+                      id="editarUsuarioModalLabel{{ usuario.id }}"
+                    >
+                      Editar Usuario
+                    </h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <form
+                    method="POST"
+                    action="{% url 'editar_usuario' usuario.id %}"
                   >
-                    Editar Usuario
-                  </h5>
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-label="Close"
-                  >
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <form
-                  method="POST"
-                  action="{% url 'editar_usuario' usuario.id %}"
-                >
-                  {% csrf_token %}
-                  <div class="modal-body">
-                    <div class="form-group">
-                      <label for="grupo{{ usuario.id }}">Rol</label>
-                      <select
-                        class="form-control"
-                        id="grupo{{ usuario.id }}"
-                        name="grupo"
-                      >
-                        {% for grupo in grupos %}
-                        <option
-                          value="{{ grupo.id }}"
-                          {%
-                          if
-                          grupo
-                          in
-                          usuario.groups.all
-                          %}selected{%
-                          endif
-                          %}
+                    {% csrf_token %}
+                    <div class="modal-body">
+                      <div class="form-group">
+                        <label for="grupo{{ usuario.id }}">Rol</label>
+                        <select
+                          class="form-control"
+                          id="grupo{{ usuario.id }}"
+                          name="grupo"
                         >
-                          {{ grupo.name }}
-                        </option>
-                        {% endfor %}
-                      </select>
+                          {% for grupo in grupos %}
+                          <option
+                            value="{{ grupo.id }}"
+                            {%
+                            if
+                            grupo
+                            in
+                            usuario.groups.all
+                            %}selected{%
+                            endif
+                            %}
+                          >
+                            {{ grupo.name }}
+                          </option>
+                          {% endfor %}
+                        </select>
+                      </div>
                     </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-dismiss="modal"
-                    >
-                      Cerrar
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                      Guardar cambios
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <!-- Modal Borrar Usuario -->
-          <div
-            class="modal fade"
-            id="borrarUsuarioModal{{ usuario.id }}"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="borrarUsuarioModalLabel{{ usuario.id }}"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5
-                    class="modal-title"
-                    id="borrarUsuarioModalLabel{{ usuario.id }}"
-                  >
-                    Eliminar Usuario
-                  </h5>
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-label="Close"
-                  >
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                      >
+                        Cerrar
+                      </button>
+                      <button type="submit" class="btn btn-primary">
+                        Guardar cambios
+                      </button>
+                    </div>
+                  </form>
                 </div>
-                <form
-                  method="POST"
-                  action="{% url 'borrar_usuario' usuario.id %}"
-                >
-                  {% csrf_token %}
-                  <div class="modal-body">
-                    <p>
-                      ¿Estás seguro de que deseas eliminar al usuario {{
-                      usuario.username }}?
-                    </p>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-dismiss="modal"
-                    >
-                      Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-danger">
-                      Eliminar
-                    </button>
-                  </div>
-                </form>
               </div>
             </div>
-          </div>
-          {% endfor %}
-        </tbody>
-      </table>
+
+            <!-- Modal Borrar Usuario -->
+            <div
+              class="modal fade"
+              id="borrarUsuarioModal{{ usuario.id }}"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="borrarUsuarioModalLabel{{ usuario.id }}"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5
+                      class="modal-title"
+                      id="borrarUsuarioModalLabel{{ usuario.id }}"
+                    >
+                      Eliminar Usuario
+                    </h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <form
+                    method="POST"
+                    action="{% url 'borrar_usuario' usuario.id %}"
+                  >
+                    {% csrf_token %}
+                    <div class="modal-body">
+                      <p>
+                        ¿Estás seguro de que deseas eliminar al usuario: {{ usuario.first_name}} {{usuario.last_name }}?
+                      </p>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                      >
+                        Cancelar
+                      </button>
+                      <button type="submit" class="btn btn-danger">
+                        Eliminar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
+  {% include 'footer.html' %}
 </html>
 {% endblock %}
