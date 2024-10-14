@@ -181,37 +181,45 @@
           <div class="modal-body">
             <form id="crearForm">
               {% csrf_token %}
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <h6 for="nombre">Nombre</h6>
+                    <textarea
+                      type="text"
+                      class="form-control"
+                      id="nombre"
+                      name="nombre"
+                      required
+                    /></textarea>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <h6 for="descripcion">Descripción</h6>
+                    <textarea
+                      class="form-control"
+                      id="descripcion"
+                      name="descripcion"
+                      required
+                    ></textarea>
+                  </div>
+                </div> 
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <h6 for="fecha">Fecha</h6>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="fecha"
+                      name="fecha"
+                      required
+                    />
+                  </div>
+                </div>  
+              </div>  
+            
               <div class="form-group">
-                <label for="nombre">Nombre</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="nombre"
-                  name="nombre"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="descripcion">Descripción</label>
-                <textarea
-                  class="form-control"
-                  id="descripcion"
-                  name="descripcion"
-                  required
-                ></textarea>
-              </div>
-              <div class="form-group">
-                <label for="fecha">Fecha</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  id="fecha"
-                  name="fecha"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="scenarios">Escenarios</label>
                 <div class="row">
                   <div class="col-md-6">
                     <h5>Casos disponibles</h5>
