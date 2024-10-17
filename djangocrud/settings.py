@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'monitoreo_rv2',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '3306',
         
     }
