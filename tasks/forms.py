@@ -1,6 +1,6 @@
 from xml.dom import ValidationErr
 from django import forms # type: ignore
-from .models import Usuario, Practicante, DisenarEvaluacion,Evaluacion,EvaluacionRealizada ,Expositores, CasoDeEstres, Scenario
+from .models import Usuario, Practicante, Evaluacion, Expositores, CasoDeEstres, Scenario, EvaluacionRealizada
 from django.contrib.auth.models import User, Group # type: ignore
 from django.db import models # type: ignore
 

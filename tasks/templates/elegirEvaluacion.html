@@ -10,9 +10,9 @@
         .container {
             display: flex;
             justify-content: space-between;
-            border: 1px solid #ccc;
+            color: #233666;
             padding: 20px;
-            border-radius: 8px;
+
             max-width: 1200px;
             margin: auto;
         }
@@ -74,13 +74,22 @@
         }
         .stress-cases div span {
             padding: 5px 10px;
-            background-color: #007bff;
+            background-color: #1ea6c6;
             color: #fff;
             border-radius: 4px;
         }
-        .green { background-color: #d4edda; }
-        .yellow { background-color: #fff3cd; }
-        .red { background-color: #f8d7da; }
+        /* estos estan todos en f2f2f2 para no interferir en el codigo, solo cambia el color del fondo de los casos de estres */
+        .green { background-color: #f2f2f2; }
+        .yellow { background-color: #f2f2f2; }
+        .red { background-color: #f2f2f2; }
+        .btn-custom2 {
+            background-color: #1ea6c6; /* Color de fondo */
+            color: white; /* Color del texto */
+            border: none; /* Sin borde */
+          }
+          .btn-custom2:hover {
+            background-color: #1ea6c6; /* Mismo color que el estado normal */
+            }
     </style>
 </head>
 <body>
@@ -119,7 +128,7 @@
             </select>
 
             <h3>Casos de estrés de la evaluación</h3>
-            <div class="stress-cases" id="stress-cases">
+            <div class="stress-cases" id="stress-cases" >
                 <!-- Los escenarios se actualizarán aquí -->
             </div>
                     
@@ -128,7 +137,7 @@
             {% for expositor in expositores %}
                 {% if expositor.id == expositor_seleccionado.id %}
                     <div class="button">
-                        <button class="evaluarExpositorBtn" data-id="{{ expositor.id }}">
+                        <button class="btn btn-custom2 evaluarExpositorBtn" data-id="{{ expositor.id }}">
                             Evaluar expositor
                             <i class="bi bi-clipboard-pulse"></i>
                         </button>
