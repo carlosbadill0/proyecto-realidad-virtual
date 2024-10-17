@@ -65,22 +65,23 @@
         color: white;
       }
       .star-rating {
-        color: gold;
+        color: #1ea6c6;
+        font-size: 24px;
       }
     </style>
   </head>
   <body>
     <div class="container mt-4">
-      <h1>Diseñar evaluaciones</h1>
+      <h1 style="color: #233666;">Diseñar evaluaciones</h1>
       <div class="row mb-3">
         <div class="col-md-6 d-flex align-items-center">
           <input type="text" id="searchInput" class="form-control me-2" placeholder="Búsqueda" /> 
-          <button type="button" class="btn btn-primary">Filtrar</button>
+          <button type="button" class="btn btn-custom2">Filtrar</button>
         </div>
         <div class="col-md-6 text-right">
           <button
           type="button"
-          class="btn btn-primary mb-3"
+          class="btn btn-custom2 mb-3"
           data-toggle="modal"
           data-target="#crearModal"
         >
@@ -93,9 +94,7 @@
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Descripción</th>
               <th>Fecha</th>
-              <th>Casos de estres asociados a la evaluación</th>
               <th>Acciones</th>
               <th>Rating</th>
             </tr>
@@ -104,13 +103,7 @@
             {% for evaluacion in evaluaciones %}
             <tr>
               <td>{{ evaluacion.nombre }}</td>
-              <td>{{ evaluacion.descripcion }}</td>
               <td>{{ evaluacion.fecha }}</td>
-              <td>
-                {% for scenario in evaluacion.scenarios.all %}
-                <li>{{ scenario }}</li>
-                {% endfor %}
-              </td>
               <td>
                 <button
                   data-id="{{ evaluacion.id }}"

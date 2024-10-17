@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh; /* Asegura que el contenido ocupe al menos toda la pantalla */
+    display: flex;
+    flex-direction: column;
+  }
+  .table thead th {
+    background-color: #017c8c;
+    color: white;
+  }
+  .btn-view {
+    background-color: #17a2b8;
+    color: white;
+  }
+  .btn-edit {
+    background-color: #ffc107;
+    color: white;
+  }
+  .btn-delete {
+    background-color: #dc3545;
+    color: white;
+  }
+  .modal-header {
+    background-color: #007bff;
+    color: white;
+  }
+  .modal-title {
+    font-weight: bold;
+  }
+  .main-content {
+    flex: 1; /* Esto permite que el contenido se expanda y empuje el footer hacia abajo */
+  }

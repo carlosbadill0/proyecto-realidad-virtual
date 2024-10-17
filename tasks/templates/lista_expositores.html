@@ -59,12 +59,20 @@
         background-color: #017c8c;
         color: white;
       }
+      .btn-custom2 {
+        background-color: #1ea6c6; /* Color de fondo */
+        color: white; /* Color del texto */
+        border: none; /* Sin borde */
+      }
+      .btn-custom2:hover {
+        background-color: #1ea6c6; /* Mismo color que el estado normal */
+        }
     </style>
   </head>
 
   <body>
     <div class="container mt-4">
-      <h1>Listado de expositores</h1>
+      <h1 style="color: #233666;">Listado de expositores</h1>
       <div class="row mb-3">
         <div class="col-md-6 d-flex align-items-center">
           <input
@@ -73,12 +81,12 @@
             class="form-control me-2"
             placeholder="Búsqueda"
           />
-          <button type="button" class="btn btn-primary">Filtrar</button>
+          <button type="button" class="btn btn-custom2">Filtrar</button>
         </div>
         <div class="col-md-6 text-right">
           <button
             type="button"
-            class="btn btn-primary"
+            class="btn btn-custom2"
             data-toggle="modal"
             data-target="#crearExpositorModal"
           >
