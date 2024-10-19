@@ -687,9 +687,9 @@ def recibir_datos(request):
             return JsonResponse({"status": "error", "message": "No data received"})
     return JsonResponse({"status": "error", "message": "Invalid request method"})
 
-from django.http import JsonResponse
+from django.http import JsonResponse # type: ignore
 from .models import ECGData2
-from django.utils import timezone
+from django.utils import timezone # type: ignore
 from datetime import timedelta
 
 def obtener_datos(request):
