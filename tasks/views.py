@@ -8,6 +8,7 @@ from django.http import JsonResponse # type: ignore
 from django.views.decorators.csrf import csrf_exempt # type: ignore
 import json
 from datetime import timedelta
+from collections import Counter
 # views.py
 
 from .models import EvaluacionScenario, Evaluation
@@ -21,9 +22,30 @@ from django.contrib.auth.decorators import login_required # type: ignore
 from django.shortcuts import render, get_object_or_404 # type: ignore
 
 @login_required
-def home(request):   
-    return render(request, 'home.html')
+def home(request):
+    cantidad_usuarios = Expositores.objects.count()
+    cantidad_evaluaciones_realizadas = EvaluacionRealizada.objects.count()
+    
+    expositores = Expositores.objects.all()
+    edades = [expositor.edad for expositor in expositores]
+    edad_counter = Counter(edades)
+    expositores_labels = sorted(edad_counter.keys())
+    expositores_data = [edad_counter[edad] for edad in expositores_labels]
 
+    # Obtener todas las evaluaciones y sus conteos
+    evaluaciones = EvaluacionRealizada.objects.values_list('evaluacion_aplicada__nombre', flat=True)
+    evaluacion_counter = Counter(evaluaciones)
+    evaluacion_labels = list(evaluacion_counter.keys())
+    evaluacion_data = list(evaluacion_counter.values())
+
+    return render(request, 'home.html', {
+        'cantidad_usuarios': cantidad_usuarios,
+        'cantidad_evaluaciones_realizadas': cantidad_evaluaciones_realizadas,
+        'expositores_labels': expositores_labels,
+        'expositores_data': expositores_data,
+        'evaluacion_labels': evaluacion_labels,
+        'evaluacion_data': evaluacion_data
+    })
 from .forms import UserForm
 
 def signup(request):
