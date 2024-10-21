@@ -1,0 +1,96 @@
+
+body {
+  background-color: #f0f8ff; /* Fondo claro */
+  font-family: 'Arial', sans-serif;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+}
+
+.left-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+.left-section img {
+  max-width: 80%;
+}
+
+.right-section {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #ffffff;
+}
+
+.right-section h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.right-section .avatar {
+  display: block;
+  margin: 0 auto 20px auto;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  background-image: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.form-control {
+  border-radius: 20px;
+  border: 1px solid #ccc;
+}
+
+.form-control:focus {
+  border-color: #a3a3ff;
+  box-shadow: none;
+}
+
+.btn-primary {
+  background-color: #a3a3ff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-primary:hover {
+  background-color: #8989ff;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.custom-link {
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+.custom-link a {
+  color: #a3a3ff;
+  text-decoration: none;
+}
+
+.custom-link a:hover {
+  text-decoration: underline;
+}

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>APP Monitoreo</title>
+    <title>{% block title %}Monitoreo{% endblock %}</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -12,72 +12,113 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css"
     />
-    {% comment %} {% block extra_css %}{% endblock %} {% endcomment %}
-    <style>
-      html{
-        min-height: 100%;
-        position: relative;
-      }
-      
-      body {
-        margin: 0;
-        margin-bottom: 40px;
-      }
 
-      .container {
-        flex: 1;
-      }
-
-      .navbar {
-        z-index: 1000;
-        
-      }
-      
-    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    {% block extra_css %}{% endblock %}
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
-      <div class="container-fluid">
+    <header class="py-3 mb-3 border-bottom">
+      <div
+        class="container-fluid d-flex justify-content-between align-items-center"
+      >
         {% load static %}
         <img
           src="{% static 'images/logo-ubb.png' %}"
           alt="Logo"
           width="200px"
         />
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == '/home/' %}fw-bold{% endif %}" aria-current="page" href="/home/" style="color: #233666;">Inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == '/evaluaciones_realizadas/' %}fw-bold{% endif %}" href="/evaluaciones_realizadas/" style="color: #233666;">Evaluaciones</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == '/diseñar/' %}fw-bold{% endif %}" href="/diseñar/" style="color: #233666;">Diseñar evaluación</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == '/expositores/' %}fw-bold{% endif %}" href="/expositores/" style="color: #233666;">Expositores</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == '/administrar/' %}fw-bold{% endif %}" href="/administrar/" style="color: #233666;">Administrar</a>
-          </li>
-          {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="/logout" style="color: #cf3342;">Cerrar sesión</a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == '/signup/' %}fw-bold{% endif %}" href="/signup">Registrarse</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == '/signin/' %}fw-bold{% endif %}" href="/signin">Iniciar sesión</a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
-    </nav>
 
-    <div class="container mt-5 pt-5">{% block content %}{% endblock %}</div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Sidebar Toggle Button -->
+        <button id="toggle-sidebar" class="btn btn-light text-right">☰</button>
+
+        <!-- Search Form -->
+        <form class="search-bar">
+          {% load static %}
+          <img
+            src="{% static 'images/EasyFlow.png' %}"
+            alt="Logo"
+            width="200px"
+          />
+        </form>
+
+        <!-- Header Icons and Profile Section -->
+
+    
+        
+        <h5>Monitoreo de realidad virtual</h5>
+      </div>
+    </header>
+
+    <div class="sidebar">
+      <!-- User Profile Section -->
+      {% comment %} <div class="user-info">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
+          alt="User Avatar"
+          class="avatar"
+        />
+        <h6>Monitoreo de realidad virtual</h6>
+      </div> {% endcomment %}
+
+      <!-- Navigation Links -->
+       <br>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.path == '/home/' %}fw-bold{% endif %}"
+            href="/home/"
+            ><i class="bi bi-house-door"></i> Inicio</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.path == '/evaluaciones_realizadas/' %}fw-bold{% endif %}"
+            href="/evaluaciones_realizadas/"
+            ><i class="bi bi-calendar"></i> Evaluaciones</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.path == '/diseñar/' %}fw-bold{% endif %}"
+            href="/diseñar/"
+            ><i class="bi bi-pencil-square"></i> Diseñar evaluación</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.path == '/expositores/' %}fw-bold{% endif %}"
+            href="/expositores/"
+            ><i class="bi bi-people"></i> Expositores</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.path == '/administrar/' %}fw-bold{% endif %}"
+            href="/administrar/"
+            ><i class="bi bi-gear"></i> Administrar</a
+          >
+        </li>
+        {% if user.is_authenticated %}
+            <li><a class="dropdown-item bi bi-box-arrow-left" href="/logout"> Cerrar sesión</a></li>
+            {% endif %}
+      </ul>
+    </div>
+
+    <div class="content">
+      <div class="container mt-5 pt-5">{% block content %}{% endblock %}</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // JavaScript para alternar la visibilidad de la sidebar
+      document
+        .getElementById("toggle-sidebar")
+        .addEventListener("click", function () {
+          document.querySelector(".sidebar").classList.toggle("hidden");
+          document.querySelector(".content").classList.toggle("full-width");
+        });
+    </script>
     {% block extra_js %}{% endblock %}
   </body>
 </html>
