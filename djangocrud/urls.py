@@ -98,5 +98,6 @@ urlpatterns = [
      
     path('listar_datos/', views.listar_datos, name='listar_datos'),
     path('api/verificar/', views.verificar_guardado, name='verificar_guardado'),
+    path('exportar_evaluacion/<int:pk>/', views.exportar_evaluacion_excel, name='exportar_evaluacion_excel'),
  ]
 
