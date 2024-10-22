@@ -66,6 +66,8 @@
     <div class="row">
       <div class="col-lg-8 content-left">
         <div>
+          <button onclick="iniciarGuardado()">Iniciar Guardado</button>
+          <button onclick="detenerGuardado()">Detener Guardado</button>
           <div id="stage-1" class="stage-container">
             <div class="row">
               <div class="col-9">
@@ -179,137 +181,211 @@
             </div>
         </div>
         </div>
-       
+        <div id="bpm-value">0</div> <!-- Este valor se actualizará dinámicamente -->
+
         
-<script>
-  let currentStage = 1;
-
-  document.getElementById('nextStage1').addEventListener('click', function() {
-    showStage(2);
-  });
-
-  document.getElementById('nextStage2').addEventListener('click', function() {
-    showStage(3);
-  });
-
-  function showStage(stage) {
-    document.querySelectorAll('.stage-container').forEach(function(container) {
-      container.style.display = 'none';
-    });
-    document.getElementById('stage-' + stage).style.display = 'block';
-    currentStage = stage;
-  }
-
-  // Inicializa en la primera etapa
-  showStage(1);
+        <script>
+          const serverUrlPost = 'http://localhost:127/api/frecuencia/'; // Cambiar a localhost
+          const serverUrlGet = 'http://localhost:127/api/ultima_frecuencia/'; // Cambiar a localhost
+          const evaluacionId = "{{ evaluacion.id }}"; 
+          console.log(evaluacionId);
+          let currentStage = 1;
           let isEvaluating = false;
           let startTime;
           let timerInterval;
+          let chart;
         
-          document.getElementById('evaluationButton').addEventListener('click', function(event) {
-            event.preventDefault();
-            const button = this;
-            if (!isEvaluating) {
-                // Start evaluation
+          document.addEventListener("DOMContentLoaded", function () {
+            // Inicializa en la primera etapa
+            showStage(1);
+        
+            // Configura los botones de navegación de etapas
+            document.getElementById('nextStage1').addEventListener('click', function() {
+              showStage(2);
+            });
+        
+            document.getElementById('nextStage2').addEventListener('click', function() {
+              showStage(3);
+            });
+        
+            // Configura el botón de evaluación
+            document.getElementById('evaluationButton').addEventListener('click', function(event) {
+              event.preventDefault();
+              const button = this;
+              if (!isEvaluating) {
+                // Iniciar evaluación
                 button.textContent = 'Finalizar evaluación';
                 isEvaluating = true;
                 startTime = new Date();
                 timerInterval = setInterval(updateTimer, 1000);
-            } else {
-                // End evaluation
+              } else {
+                // Finalizar evaluación
                 button.textContent = 'Iniciar evaluación';
                 isEvaluating = false;
                 clearInterval(timerInterval);
-                
-                // Calculate total time
+        
+                // Calcular tiempo total
                 const now = new Date();
                 const elapsedTime = Math.floor((now - startTime) / 1000);
                 document.getElementById('tiempo_total').value = elapsedTime;
         
-                // Submit the form
+                // Enviar el formulario
                 document.getElementById('evaluacionForm').submit();
-            }
-        });
+              }
+            });
         
-        function updateTimer() {
-          const now = new Date();
-          const elapsedTime = Math.floor((now - startTime) / 1000);
-          const minutes = Math.floor(elapsedTime / 60);
-          const seconds = elapsedTime % 60;
-          document.getElementById('timer').textContent = `${minutes}m ${seconds}s`;
-      }
-    // Inicializa el gráfico
-    const ctx = document.getElementById('graficoFrecuencia').getContext('2d');
-    const chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: [], // Etiquetas de tiempo
-        datasets: [{
-          label: 'Frecuencia Cardíaca (BPM)',
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          borderColor: 'rgba(255, 99, 132, 1)',
-          data: [], // Datos de frecuencia
-          fill: false
-        }]
-      },
-      options: {
-        scales: {
-          x: {
-            type: 'time',
-            time: {
-              unit: 'second'
-            },
-            title: {
-              display: true,
-              text: 'Tiempo'
-            }
-          },
-          y: {
-            beginAtZero: true,
-            suggestedMax: 150,
-            title: {
-              display: true,
-              text: 'BPM'
-            }
+            // Inicializa el gráfico
+            const ctx = document.getElementById('graficoFrecuencia').getContext('2d');
+            chart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: [], // Etiquetas de tiempo
+                datasets: [{
+                  label: 'Frecuencia Cardíaca (BPM)',
+                  backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                  borderColor: 'rgba(255, 99, 132, 1)',
+                  data: [], // Datos de frecuencia
+                  fill: false
+                }]
+              },
+              options: {
+                scales: {
+                  x: {
+                    type: 'time',
+                    time: {
+                      unit: 'second'
+                    },
+                    title: {
+                      display: true,
+                      text: 'Tiempo'
+                    }
+                  },
+                  y: {
+                    beginAtZero: true,
+                    suggestedMax: 150,
+                    title: {
+                      display: true,
+                      text: 'BPM'
+                    }
+                  }
+                }
+              }
+            });
+        
+            // Obtener y enviar datos de evaluación
+            const bpm = document.getElementById("bpm-value").textContent;
+            enviarDatosAlServidor(bpm, evaluacionId);
+        
+            // Obtener la última frecuencia inicialmente y luego cada 3 segundos
+            obtenerFrecuencia();
+            setInterval(obtenerFrecuencia, 1000);
+          });
+        
+          function showStage(stage) {
+            document.querySelectorAll('.stage-container').forEach(function(container) {
+              container.style.display = 'none';
+            });
+            document.getElementById('stage-' + stage).style.display = 'block';
+            currentStage = stage;
           }
-        }
-      }
-    });
-
-    // Función para obtener la última frecuencia
-    function obtenerFrecuencia() {
-      fetch('/ultima_frecuencia2/')  // Asegúrate de que esta URL esté definida en Django
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === 'success') {
-            const frecuencia = data.value;
-            const tiempoActual = new Date(data.timestamp);
-
-            document.getElementById('frecuencia').textContent = frecuencia + ' BPM';
-
-            // Agrega los datos al gráfico
-            chart.data.labels.push(tiempoActual);
-            chart.data.datasets[0].data.push(frecuencia);
-            chart.update();
-
-            // Limita el número de puntos en el gráfico
-            if (chart.data.labels.length > 30) {
-              chart.data.labels.shift();
-              chart.data.datasets[0].data.shift();
-            }
-          } else {
-            console.error('Error al obtener la frecuencia cardíaca:', data.message);
+        
+          function updateTimer() {
+            const now = new Date();
+            const elapsedTime = Math.floor((now - startTime) / 1000);
+            const minutes = Math.floor(elapsedTime / 60);
+            const seconds = elapsedTime % 60;
+            document.getElementById('timer').textContent = `${minutes}m ${seconds}s`;
           }
-        })
-        .catch(error => {
-          console.error('Error en la solicitud:', error);
-        });
-    }
-
-    // Llama a la función para obtener la frecuencia inicialmente y luego cada 5 segundos
-    obtenerFrecuencia();
-    setInterval(obtenerFrecuencia, 3000);
-</script>
+        
+          function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+              const cookies = document.cookie.split(";");
+              for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === name + "=") {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+                }
+              }
+            }
+            return cookieValue;
+          }
+        
+          function iniciarGuardado() {
+            axios.post('/api/iniciar_guardado/')
+                .then(response => {
+                    console.log('Guardado iniciado:', response.data);
+                })
+                .catch(error => {
+                    console.error('Error al iniciar guardado:', error);
+                });
+          }
+        
+          function detenerGuardado() {
+            axios.post('/api/detener_guardado/')
+                .then(response => {
+                    console.log('Guardado detenido:', response.data);
+                })
+                .catch(error => {
+                    console.error('Error al detener guardado:', error);
+                });
+          }
+        
+          function enviarDatosAlServidor(bpm, evaluationId) {
+            axios.post('/api/frecuencia/', { bpm: parseInt(bpm), evaluationId: parseInt(evaluationId) })
+                .then(response => {
+                    console.log('Datos enviados correctamente:', response.data);
+                })
+                .catch(error => {
+                    console.error('Error al enviar datos:', error);
+                    if (error.response) {
+                        console.error('Detalles del error:', error.response);
+                    } else if (error.request) {
+                        console.error('No se recibió respuesta del servidor:', error.request);
+                    } else {
+                        console.error('Error al configurar la solicitud:', error.message);
+                    }
+                });
+          }
+        
+          function obtenerFrecuencia() {
+            axios.get(serverUrlGet)
+                .then(response => {
+                    console.log('Frecuencia obtenida:', response.data);
+                    if (response.data.status === 'success') {
+                        const frecuencia = response.data.frecuencia;
+                        const now = new Date();
+                        chart.data.labels.push(now);
+                        chart.data.datasets[0].data.push(frecuencia);
+                        chart.update();
+                        document.getElementById('frecuencia').textContent = frecuencia;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al obtener frecuencia:', error);
+                    if (error.response) {
+                        console.error('Detalles del error:', error.response);
+                    } else if (error.request) {
+                        console.error('No se recibió respuesta del servidor:', error.request);
+                    } else {
+                        console.error('Error al configurar la solicitud:', error.message);
+                    }
+                });
+          }
+        
+          // Ejemplo de cómo podrías llamar a esta función
+          document.addEventListener("DOMContentLoaded", function() {
+            const bpmElement = document.getElementById("bpm-value");
+            if (bpmElement) {
+                const frecuencia = bpmElement.textContent;
+                enviarDatosAlServidor(frecuencia);
+            }
+          });
+        </script>
+      </div>
+      </div>
+    </div>
 </body>
 </html>
 

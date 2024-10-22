@@ -178,7 +178,12 @@ class ECGData(models.Model):
 
 class ECGData2(models.Model):
     bpm = models.IntegerField()
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    idEvaluacion = models.ForeignKey('EvaluacionRealizada', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.bpm} BPM at {self.timestamp}"
+        return f"{self.bpm} BPM at {self.timestamp} (Evaluación ID: {self.idEvaluacion_id})"
+
+class EvaluacionData(models.Model):
+    evaluacion_realizada = models.ForeignKey(Evaluacion, on_delete=models.CASCADE)
+    bpm_data = models.JSONField()  # Almacena los datos de BPM como JSON    
