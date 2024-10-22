@@ -10,7 +10,7 @@ import json
 from datetime import timedelta
 from collections import Counter
 # views.py
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods # type: ignore
 
 
 from .models import EvaluacionScenario, Evaluation
@@ -753,36 +753,34 @@ def iniciar_guardado(request):
 
 @csrf_exempt
 def recibir_datos(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            bpm = data.get('bpm')
-            evaluation_id = data.get('evaluationId')
-            
-            # Log the received data
-            print(f"Datos recibidos del Arduino: {data}")
-
-            # Convert bpm and evaluation_id to integers if they are not
+        if request.method == 'POST':
             try:
-                bpm = int(bpm)
-                evaluation_id = int(evaluation_id)
-            except ValueError as e:
-                return JsonResponse({'status': 'error', 'message': f'bpm y evaluationId deben ser enteros: {str(e)}'})
+                data = json.loads(request.body)
+                bpm = data.get('bpm')
+                evaluation_id = data.get('evaluationId')
+                
+                # Convertir bpm y evaluation_id a enteros si no lo son
+                try:
+                    bpm = int(bpm)
+                    evaluation_id = int(evaluation_id)
+                except ValueError as e:
+                    return JsonResponse({'status': 'error', 'message': f'bpm y evaluationId deben ser enteros: {str(e)}'})
+ 
+                # Agregar depuración para verificar los valores antes de guardar
+                print(f"Datos recibidos - BPM: {bpm}, Evaluation ID: {evaluation_id}")
 
-            # Log the values before saving
-            print(f"Datos convertidos - BPM: {bpm}, Evaluation ID: {evaluation_id}")
+                ecg_data = ECGData2(bpm=bpm, idEvaluacion_id=evaluation_id)
+                ecg_data.save()
+                return JsonResponse({'status': 'success'})
+            except json.JSONDecodeError as e:
+                return JsonResponse({'status': 'error', 'message': f'JSON inválido: {str(e)}'})
+            except Exception as e:
+                import traceback
+                print(f"Error interno del servidor: {str(e)}")
+                print(traceback.format_exc())  # Esto te da un traceback más detallado
+                return JsonResponse({'status': 'error', 'message': f'Error interno del servidor: {str(e)}'})
+        return JsonResponse({'status': 'error', 'message': 'Método de solicitud inválido'})
 
-            ecg_data = ECGData2(bpm=bpm, idEvaluacion_id=evaluation_id)
-            ecg_data.save()
-            return JsonResponse({'status': 'success'})
-        except json.JSONDecodeError as e:
-            return JsonResponse({'status': 'error', 'message': f'JSON inválido: {str(e)}'})
-        except Exception as e:
-            import traceback
-            print(f"Error interno del servidor: {str(e)}")
-            print(traceback.format_exc())  # Esto te da un traceback más detallado
-            return JsonResponse({'status': 'error', 'message': f'Error interno del servidor: {str(e)}'})
-    return JsonResponse({'status': 'error', 'message': 'Método de solicitud inválido'})
 
 
 @csrf_exempt
@@ -846,3 +844,52 @@ def get_latest_ecg2(request):
 def listar_datos(request):
     datos = ECGData2.objects.all()
     return render(request, 'listardatosecgdata2.html', {'datos': datos})
+
+import openpyxl
+from .models import EvaluacionRealizada, ECGData2
+
+def exportar_evaluacion_excel(request, pk):
+    evaluacion = get_object_or_404(EvaluacionRealizada, pk=pk)
+    pulsos = ECGData2.objects.filter(idEvaluacion_id=pk)
+
+    # Depuración: Imprimir datos obtenidos
+    print(f"Evaluación: {evaluacion}")
+    print(f"ECG Data Count: {pulsos.count()}")
+    for pulso in pulsos:
+        print(f"Pulso: {pulso}")
+
+    # if not pulsos.exists():
+    #     print("No se encontraron datos de ECG para esta evaluación.")
+    #     return HttpResponse("No se encontraron datos de ECG para esta evaluación.", status=404)
+
+    # Crear un libro de trabajo y una hoja
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Evaluación"
+
+    # Escribir encabezados
+    headers = [
+        "Nombre del Evaluador", "Nombre de la Evaluación", "Nombre del Expositor",
+        "Casos de Estrés", "Fecha de Evaluación", "Hora de Evaluación", "Pulsaciones", "Timestamp"
+    ]
+    ws.append(headers)
+
+    # Escribir datos de la evaluación
+    for pulso in pulsos:
+        row = [
+            evaluacion.nombre_evaluador,
+            evaluacion.evaluacion_aplicada.nombre,
+            evaluacion.expositor.nombre,
+            ", ".join([scenario.function_name for scenario in evaluacion.evaluacion_aplicada.scenarios.all()]),
+            evaluacion.fecha_evaluacion,
+            evaluacion.fecha_evaluacion.strftime("%H:%M:%S"),
+            pulso.bpm,
+            pulso.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        ]
+        ws.append(row)
+
+    # Preparar la respuesta HTTP
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename=evaluacion_{pk}.xlsx'
+    wb.save(response)
+    return response

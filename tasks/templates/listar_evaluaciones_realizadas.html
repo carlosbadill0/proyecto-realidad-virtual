@@ -25,7 +25,7 @@
       </div>
       <div class="table-responsive">
         <table class="table table-striped">
-          <thead>
+          <thead class="text-center">
             <tr>
               <th>Expositor</th>
               <th>Evaluador</th>
@@ -34,7 +34,7 @@
               <th>Exportar excel</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="text-center">
             {% for evaluacion in evaluaciones_realizadas %}
             <tr>
               <td>{{ evaluacion.expositor }}</td>
@@ -51,6 +51,8 @@
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </td>
+              <td><button class="btn btn-success bi bi-file-earmark-excel" onclick="window.location.href='{% url 'exportar_evaluacion_excel' evaluacion.id %}'">
+            </button></td>
             </tr>
             {% endfor %}
           </tbody>

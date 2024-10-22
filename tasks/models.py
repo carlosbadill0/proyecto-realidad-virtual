@@ -5,7 +5,6 @@ from django.db.models.signals import post_migrate # type: ignore
 from django.dispatch import receiver # type: ignore
 from django import forms # type: ignore
 from django.core.exceptions import ValidationError # type: ignore
-from django.utils import timezone
 
 @receiver(post_migrate)
 def create_user_roles(sender, **kwargs):
