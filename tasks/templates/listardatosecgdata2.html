@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos de ECG</title>
+</head>
+<body>
+    <h1>Datos de ECG</h1>
+    <table border="1">
+        <tr>
+            <th>BPM</th>
+            <th>Evaluacion ID</th>
+            <th>Timestamp</th>
+        </tr>
+        {% for dato in datos %}
+        <tr>
+            <td>{{ dato.bpm }}</td>
+            <td>{{ dato.idEvaluacion.id }}</td>
+            <td>{{ dato.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

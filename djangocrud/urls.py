@@ -78,7 +78,10 @@ urlpatterns = [
     path('ecg-chart/', views.ecg_chart, name='ecg_chart'),
     path('ecg-data/', views.get_ecg_data, name='get_ecg_data'),
     path('ultima_frecuencia/', views.get_latest_ecg, name='get_latest_ecg'),
-    path('recibir_datos/', views.recibir_datos, name='recibir_datos'),
+    
+    path('iniciar_guardado/', views.iniciar_guardado, name='iniciar_guardado'),
+    path('detener_guardado/', views.detener_guardado, name='detener_guardado'),
+    path('recibir_datos/<int:evaluacion_id>/', views.recibir_datos, name='recibir_datos'),
     path('obtener_datos/', views.obtener_datos, name='obtener_datos'),
     path('ultima_frecuencia2/', views.get_latest_ecg2, name='get_latest_ecg2'),
     #url para evaluar a un expositor
@@ -86,5 +89,14 @@ urlpatterns = [
     ## para mandar el json
     path('evaluar_expositor/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
     
+    path('api/frecuencia/', views.recibir_frecuencia, name='recibir_frecuencia'),
+    path('api/ultima_frecuencia/', views.obtener_frecuencia, name='obtener_frecuencia'),
+    path('api/iniciar_guardado/', views.iniciar_guardado, name='iniciar_guardado'),
+    path('api/detener_guardado/', views.detener_guardado, name='detener_guardado'),
+    path('api/estado_guardado/', views.estado_guardado, name='estado_guardado'),
+    path('api/obtener_id_evaluacion/', views.obtener_id_evaluacionRealizada, name='obtener_id_evaluacion'),
+     
+    path('listar_datos/', views.listar_datos, name='listar_datos'),
+    path('api/verificar/', views.verificar_guardado, name='verificar_guardado'),
  ]
 

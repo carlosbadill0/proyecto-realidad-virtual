@@ -10,6 +10,8 @@ import json
 from datetime import timedelta
 from collections import Counter
 # views.py
+from django.views.decorators.http import require_http_methods
+
 
 from .models import EvaluacionScenario, Evaluation
 from .models import Evaluacion, CasoDeEstres, Scenario, EvaluacionRealizada
@@ -116,24 +118,64 @@ def signout(request):
 def tasks(request):
     return render(request, 'tasks.html')
 
+from .models import EvaluacionData
+
+ultima_frecuencia = None
+
+
+@csrf_exempt
+def obtener_id_evaluacionRealizada(request):
+    if request.method == 'GET':
+        id_evaluacionRealizada = EvaluacionRealizada.objects.latest('id').id
+        return JsonResponse({'id_evaluacionRealizada': id_evaluacionRealizada})
+    return JsonResponse({'status': 'error', 'message': 'Método no soportado'})
   
 @csrf_exempt
+@require_http_methods(["POST"])
 def recibir_frecuencia(request):
-    if request.method == 'POST':
+    global ultima_frecuencia, guardar_datos  # Asegúrate de declarar las variables como globales
+    try:
+        data = json.loads(request.body)
+        frecuencia = data.get('bpm')
+        evaluation_id = data.get('evaluationId')
+        print(f"Frecuencia recibida: {frecuencia}, Evaluation ID: {evaluation_id}")  # Agrega esta línea para depuración
+        
+        # Convertir frecuencia a entero si no lo es
         try:
-            frecuencia = float(request.POST.get('bpm', '0'))
-            if 30 <= frecuencia <= 220:  # Rango típico de frecuencia cardíaca
-                ECGData.objects.create(value=frecuencia)
+            frecuencia = int(frecuencia)
+            evaluation_id = int(evaluation_id)
+        except ValueError as e:
+            return JsonResponse({'status': 'error', 'message': f'Frecuencia y evaluationId deben ser enteros: {str(e)}'})
+
+        if frecuencia is not None:
+            if 0 <= frecuencia <= 220:  # Rango típico de frecuencia cardíaca
+                if guardar_datos:
+                    # Guardar la frecuencia en el modelo
+                    ecg_data = ECGData2(bpm=frecuencia, idEvaluacion_id=evaluation_id)
+                    ecg_data.save()
+                
+                ultima_frecuencia = frecuencia  # Actualiza la variable global
+                print(f"ultima_frecuencia actualizada: {ultima_frecuencia}")  # Agrega esta línea para depuración
                 return JsonResponse({'status': 'success', 'frecuencia': frecuencia})
             else:
                 return JsonResponse({'status': 'error', 'message': 'Frecuencia fuera de rango'})
-        except (ValueError, TypeError):
-            return JsonResponse({'status': 'error', 'message': 'Frecuencia no válida'})
-    return JsonResponse({'status': 'error', 'message': 'Método no soportado'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'No se recibió frecuencia'})
+    except json.JSONDecodeError as e:
+        return JsonResponse({'status': 'error', 'message': f'Error al decodificar JSON: {str(e)}'})
+    except Exception as e:
+        # Agregar depuración para capturar el error exacto
+        print(f"Error interno del servidor: {str(e)}")
+        return JsonResponse({'status': 'error', 'message': f'Error interno del servidor: {str(e)}'})
 
+
+
+@require_http_methods(["GET"])
 def obtener_frecuencia(request):
     global ultima_frecuencia
+    print(f"Valor de ultima_frecuencia antes de GET: {ultima_frecuencia}")  # Agrega esta línea para depuración
     if request.method == 'GET':
+        print(f"Valor de ultima_frecuencia en GET: {ultima_frecuencia}")  # Agrega esta línea para depuración
         if ultima_frecuencia is not None:
             return JsonResponse({'status': 'success', 'frecuencia': ultima_frecuencia})
         else:
@@ -144,6 +186,8 @@ def obtener_frecuencia(request):
 def mostrar_frecuencia_cardiaca(request):
     # Renderiza el archivo HTML para mostrar la frecuencia cardíaca
     return render(request, 'frecuencia_cardiaca.html')
+
+
 
 
 
@@ -179,9 +223,6 @@ def guardar_evaluacion(request):
         
         except json.JSONDecodeError:
             return JsonResponse({'status': 'error', 'message': 'Error al parsear JSON.'}, status=400)
-        
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': f'Error interno del servidor: {str(e)}'}, status=500)
     
     # Si no es POST, retornamos error de método no permitido
     return JsonResponse({'status': 'error', 'message': 'Método no permitido.'}, status=405)
@@ -697,17 +738,80 @@ def borrar_evaluacionRealizada(request, pk):
     return JsonResponse({'success': False, 'errors': 'Invalid request method'})
 
 
+guardar_datos = False
+
+@csrf_exempt
+def iniciar_guardado(request):
+    global guardar_datos
+    if request.method == 'POST':
+        guardar_datos = True
+        print("Guardado iniciado")  # Depuración
+        return JsonResponse({"status": "success", "message": "Guardado iniciado"})
+    return JsonResponse({"status": "error", "message": "Método no soportado"})
+
+
+
 @csrf_exempt
 def recibir_datos(request):
     if request.method == 'POST':
-        bpm_value = request.POST.get('bpm', None)
-        if bpm_value:
-            # Guardar el BPM en la base de datos
-            ECGData2.objects.create(bpm=bpm_value)
-            return JsonResponse({"status": "success", "bpm": bpm_value})
-        else:
-            return JsonResponse({"status": "error", "message": "No data received"})
-    return JsonResponse({"status": "error", "message": "Invalid request method"})
+        try:
+            data = json.loads(request.body)
+            bpm = data.get('bpm')
+            evaluation_id = data.get('evaluationId')
+            
+            # Log the received data
+            print(f"Datos recibidos del Arduino: {data}")
+
+            # Convert bpm and evaluation_id to integers if they are not
+            try:
+                bpm = int(bpm)
+                evaluation_id = int(evaluation_id)
+            except ValueError as e:
+                return JsonResponse({'status': 'error', 'message': f'bpm y evaluationId deben ser enteros: {str(e)}'})
+
+            # Log the values before saving
+            print(f"Datos convertidos - BPM: {bpm}, Evaluation ID: {evaluation_id}")
+
+            ecg_data = ECGData2(bpm=bpm, idEvaluacion_id=evaluation_id)
+            ecg_data.save()
+            return JsonResponse({'status': 'success'})
+        except json.JSONDecodeError as e:
+            return JsonResponse({'status': 'error', 'message': f'JSON inválido: {str(e)}'})
+        except Exception as e:
+            import traceback
+            print(f"Error interno del servidor: {str(e)}")
+            print(traceback.format_exc())  # Esto te da un traceback más detallado
+            return JsonResponse({'status': 'error', 'message': f'Error interno del servidor: {str(e)}'})
+    return JsonResponse({'status': 'error', 'message': 'Método de solicitud inválido'})
+
+
+@csrf_exempt
+def verificar_guardado(request):
+    if request.method == 'GET':
+        try:
+            registros = ECGData2.objects.all().values()
+            return JsonResponse({'status': 'success', 'data': list(registros)})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@csrf_exempt
+def detener_guardado(request):
+    global guardar_datos
+    if request.method == 'POST':
+        guardar_datos = False
+        print("Guardado detenido")  # Depuración
+        return JsonResponse({"status": "success", "message": "Guardado detenido"})
+    return JsonResponse({"status": "error", "message": "Método no soportado"})
+
+@csrf_exempt
+def estado_guardado(request):
+    global guardar_datos
+    if request.method == 'GET':
+        return JsonResponse({"guardar_datos": guardar_datos})
+    return JsonResponse({"status": "error", "message": "Método no soportado"})
+
 
 from .models import ECGData2
 from django.utils import timezone # type: ignore
@@ -726,10 +830,19 @@ def mostrar_grafico(request):
     return render(request, 'grafico.html')
 
 def get_latest_ecg2(request):
-    latest_data = ECGData2.objects.latest('timestamp')
-    return JsonResponse({
-        'timestamp': latest_data.timestamp,
-        'value': latest_data.bpm,
-        'status': 'success'
-    })
-    
+    try:
+        latest_data = ECGData2.objects.latest('timestamp')
+        return JsonResponse({
+            'timestamp': latest_data.timestamp,
+            'value': latest_data.bpm,
+            'status': 'success'
+        })
+    except ECGData2.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'No data available'
+        })
+
+def listar_datos(request):
+    datos = ECGData2.objects.all()
+    return render(request, 'listardatosecgdata2.html', {'datos': datos})
