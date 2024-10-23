@@ -67,3 +67,26 @@ body {
 .card-text {
   font-size: 1.2rem;
 }
+
+.pagination .page-item .page-link {
+  color: #233666; /* Color de texto */
+  background-color: #f2f2f2; /* Fondo de los enlaces */
+  border: 1px solid #233666; /* Borde del paginador */
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #246a7c; /* Fondo del botón activo */
+  color: white; /* Color de texto en el botón activo */
+  border-color: #233666;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #ccc; /* Color de botones deshabilitados */
+  background-color: #e9ecef;
+  border-color: #ddd;
+}
+
+.pagination .page-item .page-link:hover {
+  background-color: #41729f; /* Color de fondo cuando pasas el mouse */
+  color: white; /* Color de texto cuando pasas el mouse */
+}

@@ -4,11 +4,12 @@ from django.contrib.auth.models import User, Group, Permission # type: ignore
 from django.http import HttpResponse # type: ignore
 from django.contrib.auth import login, logout, authenticate # type: ignore
 # imports de prueba para la frecuencia cardiaca.
-from django.http import JsonResponse # type: ignore
+from django.http import JsonResponse, Http404 # type: ignore
 from django.views.decorators.csrf import csrf_exempt # type: ignore
 import json
-from datetime import timedelta
+from datetime import datetime, timedelta
 from collections import Counter
+from django.db.models import Q
 # views.py
 
 from .models import EvaluacionScenario, Evaluation
@@ -20,6 +21,9 @@ from .forms import UsuarioForm, PracticanteForm, EvaluacionRealizadaForm ,Evalua
 from .models import ECGData
 from django.contrib.auth.decorators import login_required # type: ignore
 from django.shortcuts import render, get_object_or_404 # type: ignore
+
+#importaciones para paginacion 
+from django.core.paginator import Paginator
 
 @login_required
 def home(request):
@@ -657,12 +661,56 @@ def evaluar_expositor(request, id, id_evaluacion):
     })
     
 
+from datetime import datetime
+from django.db.models import Q
+from django.contrib import messages
+
 def listar_evaluaciones_realizadas(request):
     evaluaciones_realizadas = EvaluacionRealizada.objects.all()
+    page = request.GET.get('page', 1)
+    busqueda = request.GET.get("buscar")
+    fecha_formateada = None
+    
+    
+    if busqueda:
+        # Verificamos si la búsqueda tiene un formato de fecha potencial (con barras /).
+        if "/" in busqueda:
+            try:
+                # Intentamos formatear la fecha
+                fecha_formateada = datetime.strptime(busqueda, "%d/%m/%Y").strftime("%Y-%m-%d")
+                # Filtrar por fecha formateada
+                evaluaciones_realizadas = EvaluacionRealizada.objects.filter(
+                    Q(fecha_evaluacion__icontains=fecha_formateada)
+                ).distinct()
+            except ValueError:
+                # Si falla el formateo, mostrar la alerta
+                messages.error(request, "El formato de la fecha es incorrecto. Usa el formato 'DD/MM/YYYY'.")
+        elif busqueda.isdigit() and len(busqueda) == 2:
+            # Si es un número de dos dígitos (posible día), mostrar alerta
+            messages.error(request, "Debes ingresar una fecha completa o el nombre del evaluador.")
+        else:
+            # Filtrar por nombre del evaluador y nombre de la evaluación aplicada
+            evaluaciones_realizadas = EvaluacionRealizada.objects.filter(
+                Q(nombre_evaluador__icontains=busqueda) |
+                Q(expositor__nombre__icontains=busqueda)  # Acceso al campo 'nombre' de Evaluacion
+            ).distinct()
+
+        # Verificar si no se encontraron resultados
+        if not evaluaciones_realizadas.exists():
+            messages.warning(request, "No se encontraron resultados para la búsqueda.")
+
+    # Paginación
+    paginator = Paginator(evaluaciones_realizadas, 6)
+    try:
+        evaluaciones_realizadas = paginator.page(page)
+    except:
+        evaluaciones_realizadas = paginator.page(1)
+
     return render(request, 'listar_evaluaciones_realizadas.html', {
-        'evaluaciones_realizadas': evaluaciones_realizadas
+        'evaluaciones_realizadas': evaluaciones_realizadas,
+        'busqueda': busqueda,
     })
- 
+
 def detalle_evaluacionRealizada(request, pk):
     evaluacion = get_object_or_404(EvaluacionRealizada, pk=pk)
     data = {

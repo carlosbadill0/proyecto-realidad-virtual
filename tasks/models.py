@@ -182,3 +182,10 @@ class ECGData2(models.Model):
 
     def __str__(self):
         return f"{self.bpm} BPM at {self.timestamp}"
+    
+class ECGData3(models.Model):
+    bpm = models.IntegerField()
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.bpm} BPM at {self.timestamp}"
