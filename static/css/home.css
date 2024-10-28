@@ -12,12 +12,12 @@ body {
 
 .container {
     max-width: 100%;
-    padding: 0 15px;
+    padding: 0 5px;
     margin: auto;
 }
 
 .section {
-    padding: 20px 0;
+    padding: 10px 0;
     /* Reduce el padding superior e inferior */
     min-height: 100vh;
     display: flex;
