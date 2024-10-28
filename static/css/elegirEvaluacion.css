@@ -1,0 +1,110 @@
+        .container {
+            display: flex;
+            justify-content: space-between;
+            color: #233666;
+            padding: 20px;
+
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .section {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+        }
+
+        .section:last-child {
+            border-right: none;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .button input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .button input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .stress-cases {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .stress-cases div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .stress-cases div span {
+            padding: 5px 10px;
+            background-color: #1ea6c6;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        /* estos estan todos en f2f2f2 para no interferir en el codigo, solo cambia el color del fondo de los casos de estres */
+        .green {
+            background-color: #f2f2f2;
+        }
+
+        .yellow {
+            background-color: #f2f2f2;
+        }
+
+        .red {
+            background-color: #f2f2f2;
+        }
+
+        .btn-custom2 {
+            background-color: #1ea6c6;
+            /* Color de fondo */
+            color: white;
+            /* Color del texto */
+            border: none;
+            /* Sin borde */
+        }
+
+        .btn-custom2:hover {
+            background-color: #1ea6c6;
+            /* Mismo color que el estado normal */
+        }

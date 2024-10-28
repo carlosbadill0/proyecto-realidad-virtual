@@ -12,40 +12,9 @@
     />
 
     <script src="{% static 'js/filtrar.js' %}"></script>
-    <style>
-      .modal-header {
-        background-color: #007bff;
-        color: white;
-      }
-      .modal-title {
-        font-weight: bold;
-      }
-      .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-      }
-      .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-      }
-      .table th,
-      .table td {
-        text-align: center;
-      }
-      .table-responsive {
-        margin-top: 20px;
-      }
-      .container {
-        margin-top: 20px;
-      }
-      body {
-        font-family: Arial, sans-serif;
-      }
-      .table thead th {
-        background-color: #017c8c;
-        color: white;
-      }
-    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    {% block extra_css %}{% endblock %}
   </head>
   <body>
     <div class="container mt-4">

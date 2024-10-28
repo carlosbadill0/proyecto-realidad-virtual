@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/barraProgreso.css' %}" />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="main-container">
+        <button onclick="resetLocalStorage()">Reiniciar Progreso</button>
+        <h1>Instrucciones</h1>
+
+        <!-- Barra de progreso -->
+        <div class="progress-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Etapas -->
+        <div id="stage-1" class="stage-container active">
+          <div class="row">
+            <div class="col-9">
+              <i class="bi bi-1-circle active-stage"><strong> Colocación de instrumentos</strong></i>
+              <i class="bi bi-chevron-right"></i>
+              <i class="bi bi-2-circle"> Ambientación</i>
+              <i class="bi bi-chevron-right"></i>
+              <i class="bi bi-3-circle"> Evaluación</i>
+              <p>Coloca los instrumentos necesarios en la persona.</p>
+            </div>
+            <div class="col-3">
+              <button id="nextStage1" class="btn btn-custom">Siguiente etapa</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="stage-2" class="stage-container">
+          <div class="row">
+            <div class="col-9">
+              <i class="bi bi-check2-circle"> Colocación de instrumentos</i>
+              <strong><i class="bi bi-chevron-right"></i><i class="bi bi-2-circle"> Ambientación</i></strong>
+              <i class="bi bi-chevron-right"></i>
+              <i class="bi bi-3-circle"> Evaluación</i>
+              <p>Prepara a la persona para la evaluación.</p>
+            </div>
+            <div class="col-3">
+              <button id="nextStage2" class="btn btn-custom">Siguiente etapa</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="stage-3" class="stage-container">
+          <div class="row">
+            <div class="col-9">
+              <i class="bi bi-check2-circle"> Colocación de instrumentos</i>
+              <strong><i class="bi bi-chevron-right"></i><i class="bi bi-check2-circle"> Ambientación</i></strong>
+              <i class="bi bi-chevron-right"></i>
+              <i class="bi bi-3-circle"> Evaluación</i>
+            </div>
+            <div class="col-3">
+              <div class="d-grid">
+                <button type="submit" id="evaluationButton" class="btn btn-custom btn-evaluation">Iniciar evaluación</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      let progress = localStorage.getItem("progress")
+        ? parseFloat(localStorage.getItem("progress"))
+        : 0;
+      const steps = 3;
+      const stageIds = ["stage-1", "stage-2", "stage-3"];
+      let currentStage = Math.floor(progress / (100 / steps)) + 1;
+
+      const id = {{ expositor_seleccionado.id }}; // Ajusta según el contexto
+      const id_evaluacion = {{ evaluacion_realizada.id }}; // Ajusta según el contexto
+
+      updateProgressBar(progress);
+      showStage(currentStage);
+
+      function updateProgressBar(percentage) {
+        const progressBar = document.getElementById("progressBar");
+        progressBar.style.width = percentage + "%";
+      }
+
+      function advanceProgress() {
+        if (progress < 100) {
+          progress += 100 / steps;
+          localStorage.setItem("progress", progress);
+          updateProgressBar(progress);
+          showStage(Math.floor(progress / (100 / steps)) + 1);
+        }
+      }
+
+      function resetLocalStorage() {
+        localStorage.removeItem("progress");
+        progress = 0;
+        updateProgressBar(progress);
+        showStage(1);
+      }
+
+      function showStage(stage) {
+        stageIds.forEach((id, index) => {
+          const stageElement = document.getElementById(id);
+          if (index + 1 === stage) {
+            stageElement.classList.add("active");
+          } else {
+            stageElement.classList.remove("active");
+          }
+        });
+      }
+
+      document.getElementById("nextStage1").addEventListener("click", function () {
+        advanceProgress();
+        setTimeout(function () {
+          window.location.href = "{% url 'ambientacion' id=id id_evaluacion=id_evaluacion %}";
+        }, 1000);
+      });
+
+      document.getElementById("nextStage2").addEventListener("click", function () {
+        advanceProgress();
+        setTimeout(function () {
+          window.location.href = "{% url 'evaluar_expositor' id=id id_evaluacion=id_evaluacion %}";
+        }, 1000);
+      });
+
+      document.getElementById("evaluationButton").addEventListener("click", function () {
+        advanceProgress();
+        setTimeout(function () {
+          window.location.href = "{% url 'evaluar_expositor' id=id id_evaluacion=id_evaluacion %}";
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>

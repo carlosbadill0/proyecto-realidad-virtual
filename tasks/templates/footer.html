@@ -12,7 +12,10 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
     />
     <title>Footer Fijo</title>
-    <style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    {% block extra_css %}{% endblock %}
+    {% comment %} <style>
       footer {
         bottom: 0;
         width: 100%;
@@ -50,7 +53,7 @@
       .contact-info i {
         margin-right: 8px;
       }
-    </style>
+    </style> {% endcomment %}
   </head>
   <body>   
     <footer>

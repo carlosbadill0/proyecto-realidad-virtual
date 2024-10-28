@@ -1,0 +1,44 @@
+.main-container {
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 15px;
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Progress Bar Styles */
+.progress-container {
+  width: 100%;
+  background-color: #f3f3f3;
+  border-radius: 25px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 30px;
+  background-color: #4caf50;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+  border-radius: 25px;
+  transition: width 1s ease;
+}
+
+.stage-container {
+  display: none;
+}
+
+.stage-container.active {
+  display: block;
+}
+
+.active-stage {
+  font-weight: bold;
+  color: #007bff;
+}
