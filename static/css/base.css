@@ -12,17 +12,17 @@ header {
     z-index: 1000;
     background-color: #1aa0d5;
     color: white;
-    height: 70px; /* Altura fija para el header */
+    height: 10vh; /* Altura relativa para el header */
 }
 
 .sidebar {
-    height: calc(100% - 70px); /* Ajusta la altura de la sidebar */
-    width: 250px;
+    height: calc(100% - 10vh); /* Ajusta la altura de la sidebar */
+    width: 20vw; /* Ancho relativo para el sidebar */
     position: fixed;
-    top: 70px; /* Comienza después del header */
+    top: 10vh; /* Comienza después del header */
     left: 0;
     background-color: white;
-    padding-top: 20px;
+    padding-top: 2vh;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
@@ -32,9 +32,9 @@ header {
 }
 
 .sidebar a {
-    padding: 10px 15px;
+    padding: 1vh 1.5vw;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 1.8vh;
     color: #000;
     display: block;
     width: 100%;
@@ -46,12 +46,12 @@ header {
 }
 
 .sidebar .nav-item {
-    padding: 5px 0;
+    padding: 0.5vh 0;
 }
 
 .avatar {
-    width: 50px;
-    height: 50px;
+    width: 5vh;
+    height: 5vh;
     border-radius: 50%;
     display: block;
     margin: 0 auto;
@@ -59,11 +59,11 @@ header {
 
 .user-info {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 2vh;
 }
 
 .user-info h6 {
-    margin: 10px 0 5px;
+    margin: 1vh 0 0.5vh;
     color: black;
 }
 
@@ -73,9 +73,9 @@ header {
 }
 
 .content {
-    margin-left: 250px;
-    padding: 20px;
-    margin-top: 70px;
+    margin-left: 20vw;
+    padding: 2vh;
+    margin-top: 10vh;
     transition: margin-left 0.3s ease;
 }
 
@@ -84,8 +84,8 @@ header {
 }
 
 .header-icons img {
-    width: 32px;
-    height: 32px;
+    width: 3.2vh;
+    height: 3.2vh;
     border-radius: 50%;
 }
 
@@ -97,21 +97,21 @@ form.search-bar {
 
 form.search-bar input {
     width: 50%;
-    border-radius: 10px;
+    border-radius: 1vh;
     border: none;
-    padding: 5px 10px;
+    padding: 0.5vh 1vh;
 }
 
 #toggle-sidebar {
     position: absolute;
-    left: 205px;
-    top: 15px;
+    left: 20vw;
+    top: 1.5vh;
     z-index: 1100;
     background-color: #1aa0d5;
     color: rgb(16, 14, 125);
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 1vh 1.5vw;
+    border-radius: 0.5vh;
     cursor: pointer;
 }
 
@@ -122,15 +122,15 @@ form.search-bar input {
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
     .sidebar {
-        width: 200px;
+        width: 25vw;
     }
 
     .content {
-        margin-left: 200px;
+        margin-left: 25vw;
     }
 
     #toggle-sidebar {
-        left: 155px;
+        left: 25vw;
     }
 }
 
@@ -152,7 +152,7 @@ form.search-bar input {
     }
 
     #toggle-sidebar {
-        left: 10px;
-        top: 10px;
+        left: 1vw;
+        top: 1vh;
     }
 }
