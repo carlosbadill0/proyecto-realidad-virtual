@@ -11,20 +11,19 @@ header {
     width: 100%;
     z-index: 1000;
     background-color: #1aa0d5;
-    /* Updated to match the blue header */
     color: white;
+    height: 70px; /* Altura fija para el header */
 }
 
 .sidebar {
-    height: 100%;
+    height: calc(100% - 70px); /* Ajusta la altura de la sidebar */
     width: 250px;
     position: fixed;
-    top: 0;
+    top: 70px; /* Comienza después del header */
     left: 0;
     background-color: white;
     padding-top: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    margin-top: 70px;
     transition: transform 0.3s ease;
 }
 
@@ -66,7 +65,6 @@ header {
 .user-info h6 {
     margin: 10px 0 5px;
     color: black;
-    /* Updated for better contrast */
 }
 
 .user-info p {
@@ -119,4 +117,42 @@ form.search-bar input {
 
 #toggle-sidebar:hover {
     background-color: #0056b3;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .content {
+        margin-left: 200px;
+    }
+
+    #toggle-sidebar {
+        left: 155px;
+    }
+}
+
+@media (max-width: 576px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        margin-top: 0;
+    }
+
+    .sidebar.hidden {
+        transform: translateY(-100%);
+    }
+
+    .content {
+        margin-left: 0;
+        margin-top: 0;
+    }
+
+    #toggle-sidebar {
+        left: 10px;
+        top: 10px;
+    }
 }
