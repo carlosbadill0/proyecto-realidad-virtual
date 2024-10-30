@@ -13,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
     {% block extra_css %}{% endblock %}
   </head>
 
@@ -70,6 +71,7 @@
                 ></button>
                 <button
                   data-id="{{ expositor.id }}"
+                  data-nombre="{{ expositor.nombre }}"
                   data-toggle="modal"
                   data-target="#borrarExpositorModal"
                   class="btn btn-danger bi bi-trash"
@@ -90,124 +92,125 @@
       </div>
     </div>
 
-    <!-- Crear Expositor Modal -->
-    <div
-      class="modal fade"
-      id="crearExpositorModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="crearExpositorModalLabel"
-      aria-hidden="true"
-    >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="crearExpositorModalLabel">
-            Crear Expositor
-          </h5>
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="crearExpositorForm">
-            <div class="container">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="nombre">Nombre</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="nombre"
-                      name="nombre"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="fecha_ingreso">Fecha de Ingreso</label>
-                    <input
-                      type="date"
-                      class="form-control"
-                      id="fecha_ingreso"
-                      name="fecha_ingreso"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="fecha_nacimiento">Fecha de Nacimiento</label>
-                    <input
-                      type="date"
-                      class="form-control"
-                      id="fecha_nacimiento"
-                      name="fecha_nacimiento"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="edad">Edad</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="edad"
-                      name="edad"
-                      required
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="genero">Género</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="genero"
-                      name="genero"
-                    />
-                  </div>
+
+<!-- Crear Expositor Modal -->
+<div
+  class="modal fade"
+  id="crearExpositorModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="crearExpositorModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="crearExpositorModalLabel">
+          Crear Expositor
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="crearExpositorForm">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="nombre">Nombre</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="nombre"
+                    name="nombre"
+                  />
                 </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="semestre_academico">Semestre Académico</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="semestre_academico"
-                      name="semestre_academico"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="carrera">Carrera</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="carrera"
-                      name="carrera"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="observacion_inicial">Observación Inicial</label>
-                    <textarea
-                      class="form-control"
-                      id="observacion_inicial"
-                      name="observacion_inicial"
-                    ></textarea>
-                  </div>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    id="crearExpositorBtn"
-                  >
-                    Guardar
-                  </button>
+                <div class="form-group">
+                  <label for="fecha_ingreso">Fecha de Ingreso</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="fecha_ingreso"
+                    name="fecha_ingreso"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="fecha_nacimiento"
+                    name="fecha_nacimiento"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="edad">Edad</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="edad"
+                    name="edad"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="genero">Género</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="genero"
+                    name="genero"
+                  />
                 </div>
               </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="semestre_academico">Semestre Académico</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="semestre_academico"
+                    name="semestre_academico"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="carrera">Carrera</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="carrera"
+                    name="carrera"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="observacion_inicial">Observación Inicial</label>
+                  <textarea
+                    class="form-control"
+                    id="observacion_inicial"
+                    name="observacion_inicial"
+                  ></textarea>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-custom2"
+                  id="crearExpositorBtn"
+                >
+                  Guardar
+                </button>
+              </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
-    </div>
+  </div>
+</div>
 
     <!-- Ver Expositor Modal -->
     <div
@@ -324,33 +327,37 @@
       </div>
     </div>
 
-    <!-- Editar Expositor Modal -->
-    <div
-      class="modal fade"
-      id="editarExpositorModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="editarExpositorModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editarExpositorModalLabel">
-              Editar Expositor
-            </h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form id="editarExpositorForm">
-              <input type="hidden" id="editarId" />
+
+<!-- Editar Expositor Modal -->
+<div
+  class="modal fade"
+  id="editarExpositorModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="editarExpositorModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editarExpositorModalLabel">
+          Editar Expositor
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="editarExpositorForm">
+          <input type="hidden" id="editarId" />
+
+          <div class="row">
+            <div class="col">
               <div class="form-group">
                 <label for="editarNombre">Nombre</label>
                 <input
@@ -370,30 +377,12 @@
                 />
               </div>
               <div class="form-group">
-                <label for="editarFecha_nacimiento">Fecha de Nacimiento</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  id="editarFecha_nacimiento"
-                  name="fecha_nacimiento"
-                />
-              </div>
-              <div class="form-group">
                 <label for="EditarEdad">Edad</label>
                 <input
                   type="number"
                   class="form-control"
                   id="EditarEdad"
                   name="edad"
-                />
-              </div>
-              <div class="form-group">
-                <label for="editarGenero">Género</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="editarGenero"
-                  name="genero"
                 />
               </div>
               <div class="form-group">
@@ -406,6 +395,35 @@
                 />
               </div>
               <div class="form-group">
+                <label for="editarObservacion_inicial">Observación Inicial</label>
+                <textarea
+                  class="form-control"
+                  id="editarObservacion_inicial"
+                  name="observacion_inicial"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-group">
+                <label for="editarFecha_nacimiento">Fecha de Nacimiento</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="editarFecha_nacimiento"
+                  name="fecha_nacimiento"
+                />
+              </div>
+              <div class="form-group">
+                <label for="editarGenero">Género</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editarGenero"
+                  name="genero"
+                />
+              </div>
+              <div class="form-group">
                 <label for="editarCarrera">Carrera</label>
                 <input
                   type="text"
@@ -415,16 +433,6 @@
                 />
               </div>
               <div class="form-group">
-                <label for="editarObservacion_inicial"
-                  >Observación Inicial</label
-                >
-                <textarea
-                  class="form-control"
-                  id="editarObservacion_inicial"
-                  name="observacion_inicial"
-                ></textarea>
-              </div>
-              <div class="form-group">
                 <label for="editarObservacion_final">Observación Final</label>
                 <textarea
                   class="form-control"
@@ -432,58 +440,64 @@
                   name="observacion_final"
                 ></textarea>
               </div>
-              <button
-                type="button"
-                class="btn btn-primary"
-                id="editarExpositorBtn"
-              >
-                Guardar
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Borrar Expositor Modal -->
-    <div
-      class="modal fade"
-      id="borrarExpositorModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="borrarExpositorModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title text-center" id="borrarExpositorModalLabel">
-              Borrar Expositor
-            </h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body text-center">
-            <p>¿Estás seguro de que quieres borrar este expositor?</p>
-            <div class="d-flex justify-content-end">
-              <button
-                type="button"
-                class="btn btn-danger"
-                id="borrarExpositorBtn"
-              >
-                Borrar
-              </button>
             </div>
           </div>
-        </div>
+
+          <button
+            type="button"
+            class="btn btn-custom2"
+            id="editarExpositorBtn"
+          >
+            Guardar
+          </button>
+        </form>
       </div>
     </div>
+  </div>
+</div>
+
+
+    <!-- Borrar Expositor Modal -->
+<div
+class="modal fade"
+id="borrarExpositorModal"
+tabindex="-1"
+role="dialog"
+aria-labelledby="borrarExpositorModalLabel"
+aria-hidden="true"
+>
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title text-center" id="borrarExpositorModalLabel">
+        Borrar Expositor
+      </h5>
+      <button
+        type="button"
+        class="close"
+        data-dismiss="modal"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body text-center">
+      <h5>¿Estás seguro de que quieres borrar a <strong id="nombreExpositorBorrar"></strong>?</j5>
+      <div class="d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="borrarExpositorBtn"
+        >
+          Borrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../../static/js/filtrar.js"></script>
@@ -542,6 +556,15 @@
           });
         });
 
+$('#crearExpositorModal').on('show.bs.modal', function () {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0'); // Obtener el día
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Obtener el mes (0-11)
+    const year = today.getFullYear(); // Obtener el año
+    const formattedDate = `${year}-${month}-${day}`; // Formato 'YYYY-MM-DD'
+    $('#fecha_ingreso').val(formattedDate); // Asignar la fecha actual
+});
+
         $("#crearExpositorBtn").click(function () {
           $.ajax({
             url: '{% url "crear_expositor" %}',
@@ -599,8 +622,13 @@
 
         $("#borrarExpositorModal").on("show.bs.modal", function (event) {
           var button = $(event.relatedTarget);
+          var nombreExpositor = button.data('nombre'); // Obtener el nombre del expositor
           var id = button.data("id");
           var url = "{% url 'borrar_expositor' 0 %}".replace("0", id);
+        
+          // Establecer el nombre del expositor en el modal
+          $("#nombreExpositorBorrar").text(nombreExpositor);
+        
           $("#borrarExpositorBtn")
             .off("click")
             .on("click", function () {

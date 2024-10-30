@@ -14,6 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
     {% block extra_css %}{% endblock %}
   </head>
   <body>
@@ -181,7 +182,7 @@
                 id="scenarios_orden"
                 name="scenarios_orden"
               />
-              <button type="button" class="btn btn-primary" id="crearBtn">
+              <button type="button" class="btn btn-custom2" id="crearBtn">
                 Guardar
               </button>
             </form>
@@ -309,7 +310,7 @@
                 id="editarScenariosIds"
                 name="scenarios_ids"
               />
-              <button type="button" class="btn btn-primary" id="editarBtn">
+              <button type="button" class="btn btn-custom2" id="editarBtn">
                 Guardar
               </button>
             </form>
