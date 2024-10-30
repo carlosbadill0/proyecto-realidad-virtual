@@ -1,0 +1,65 @@
+/* Estilos para todos los modales */
+.modal-dialog {
+    max-width: 1200px !important;
+  }
+  
+  .modal-content {
+    border-radius: 10px !important;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3) !important;
+    background-color: #ffffff !important;
+  }
+  
+  .modal-header {
+    background-color: #1EA6C6 !important;
+    color: #ffffff !important;
+  }
+  
+  .modal-body .form-control {
+    background-color: #f2f2f2 !important;
+    color: #343a40 !important;
+  }
+  
+  
+  .modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .modal-header .close {
+    color: #ffffff;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .modal-body .form-group label {
+    font-weight: bold;
+    color: #233666;
+  }
+  
+  .modal-body .form-control {
+    background-color: #e9ecef;
+    color: #495057;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .modal-body .form-control[readonly] {
+    background-color: #f8f9fa;
+  }
+  
+  .modal-footer {
+    border-top: none;
+    padding-top: 10px;
+  }
+  
+  /* Ajustes de columnas y filas dentro del modal */
+  .modal-body .row {
+    margin-bottom: 15px;
+  }
+  
+  .modal-body .col {
+    margin-top: 10px;
+  }
+  
