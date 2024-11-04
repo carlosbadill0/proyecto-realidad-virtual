@@ -22,31 +22,16 @@ from tasks import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', views.home, name='home'),
-    # path('signup/', views.signup, name='signup'),
-    path('tasks/', views.tasks, name='tasks'),
     path('logout/', views.signout, name='logout'),
     path('', views.signin, name='signin'),
-    path('api/frecuencia/', views.recibir_frecuencia, name='recibir_frecuencia'),
-#     path('api/ultima_frecuencia/', views.obtener_frecuencia, name='obtener_frecuencia'),
-##  path('frecuencia-cardiaca/', views.mostrar_frecuencia_cardiaca, name='frecuencia_cardiaca'),
-     path('a/', views.evaluation_list, name='disenar_evaluacion'),
-     path('api/guardar_evaluacion/', views.guardar_evaluacion, name='guardar_evaluacion'),
-#    path('frecuencia-cardiaca/', views.frecuencia_cardiaca, name='frecuencia_cardiaca'),
-#codigo lucho 
-    #path('', views.index, name='index'),
-#    path('practicantes/', views.listar_practicantes, name='listar_practicantes'),
-    # path('practicantes-agregar/', views.agregar_practicante, name='agregar_practicante'),
+
+    # urls usuario
     path('administrar/', views.listar_usuarios, name='listar_usuarios'),
     path('usuarios/crear/', views.crear_usuario, name='crear_usuario'),
     path('usuarios/editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
     path('usuarios/eliminar/<int:id>/', views.eliminar_usuario, name='borrar_usuario'),
-    # urls para practicante
-    # path('practicantes/', views.listar_practicantes, name='listar_practicantes'),
-    # path('practicantes-agregar/', views.agregar_practicante, name='agregar_practicante'),
-    # path('practicantes-editar/<int:id>/', views.editar_practicante, name='editar_practicante'),
-    # path('practicantes-borrar/<int:id>/', views.borrar_practicante, name='borrar_practicante'),
-    #urls para evaluacion
-#     path('crear_evaluacion/', views.crear_evaluacion, name='crear_evaluacion'),
+
+    # urls evaluacion
     path('diseñar/', views.lista_evaluaciones, name='lista_evaluaciones'),
     path('evaluaciones_realizadas/', views.listar_evaluaciones_realizadas, name='listar_evaluaciones_realizadas'),
     path('evaluaciones_realizadas/<int:pk>/', views.detalle_evaluacionRealizada, name='detalle_evaluacionRealizada'),
@@ -60,8 +45,6 @@ urlpatterns = [
     path('evaluacion/<int:pk>/borrar/', views.borrar_evaluacion, name='borrar_evaluacion'),
     
     path('elegir-evaluacion/<int:pk>/', views.elegir_evaluacion, name='elegir_evaluacion'),
-    
-    # path('elegir-evaluacion/', views.elegir_evaluacion, name='elegir_evaluacion'),
 
     # urls expositor
     path('expositores/', views.lista_expositores, name='lista_expositores'),
@@ -70,10 +53,7 @@ urlpatterns = [
     path('expositor/<int:pk>/editar/', views.editar_expositor, name='editar_expositor'),
     path('expositor/<int:pk>/borrar/', views.borrar_expositor, name='borrar_expositor'),
     
-    #pruebas 
-    # path('frecuencia-cardiaca/', views.frecuencia_cardiaca_view, name='frecuencia_cardiaca_view'),
-    # path('api/frecuencia-cardiaca/', views.frecuencia_cardiaca, name='frecuencia_cardiaca'),
-    # path('api/ultima_frecuencia/', views.ultima_frecuencia, name='ultima_frecuencia'),
+    #pruebas datos sensor
     path('frecuencia-cardiaca/', views.receive_ecg_data, name='receive_ecg_data'),
     path('ecg-chart/', views.ecg_chart, name='ecg_chart'),
     path('ecg-data/', views.get_ecg_data, name='get_ecg_data'),
@@ -84,13 +64,15 @@ urlpatterns = [
     path('recibir_datos/<int:evaluacion_id>/', views.recibir_datos, name='recibir_datos'),
     path('obtener_datos/', views.obtener_datos, name='obtener_datos'),
     path('ultima_frecuencia2/', views.get_latest_ecg2, name='get_latest_ecg2'),
+    
     #url para evaluar a un expositor
     path('evaluar/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
     path('instrumentos/<int:id>/<int:id_evaluacion>/', views.colocar_instrumentos, name='colocar_instrumentos'),
     path('ambientacion/<int:id>/<int:id_evaluacion>/', views.colocar_ambientacion, name='ambientacion'),
-    ## para mandar el json
+    ## para mandar el json de la evaluacion a oculus
     path('evaluar_expositor/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
     
+    #urls para la api arduino-web
     path('api/frecuencia/', views.recibir_frecuencia, name='recibir_frecuencia'),
     path('api/ultima_frecuencia/', views.obtener_frecuencia, name='obtener_frecuencia'),
     path('api/iniciar_guardado/', views.iniciar_guardado, name='iniciar_guardado'),

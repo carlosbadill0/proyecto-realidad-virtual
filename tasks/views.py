@@ -1,27 +1,24 @@
-from django.shortcuts import render, redirect # type: ignore
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm # type: ignore
-from django.contrib.auth.models import User, Group, Permission # type: ignore
-from django.http import HttpResponse # type: ignore
-from django.contrib.auth import login, logout, authenticate # type: ignore
-# imports de prueba para la frecuencia cardiaca.
-from django.http import JsonResponse # type: ignore
-from django.views.decorators.csrf import csrf_exempt # type: ignore
 import json
-from datetime import timedelta
+import openpyxl # type: ignore
 from collections import Counter
-# views.py
+from datetime import timedelta
+
+from django.contrib.auth import authenticate, login, logout # type: ignore
+from django.contrib.auth.decorators import login_required, user_passes_test # type: ignore
+from django.contrib.auth.forms import AuthenticationForm # type: ignore
+from django.contrib.auth.models import Group, User # type: ignore
+from django.http import HttpResponse, JsonResponse # type: ignore
+from django.shortcuts import get_object_or_404, redirect, render # type: ignore
+from django.utils import timezone # type: ignore
+from django.views.decorators.csrf import csrf_exempt # type: ignore
 from django.views.decorators.http import require_http_methods # type: ignore
 
+from .forms import (EvaluacionForm, EvaluacionRealizadaForm, ExpositorForm,
+                    PracticanteForm, UserForm)
+from .models import (ECGData, ECGData2, Evaluacion, EvaluacionRealizada,
+                     EvaluacionScenario, Evaluation, Expositores, Practicante,
+                     Scenario)
 
-from .models import EvaluacionScenario, Evaluation
-from .models import Evaluacion, CasoDeEstres, Scenario, EvaluacionRealizada
-import json
-# codigo lucho
-from .models import Usuario, Rol, Practicante, DisenarEvaluacion, User, Group
-from .forms import UsuarioForm, PracticanteForm, EvaluacionRealizadaForm ,EvaluacionForm, CasoDeEstresForm, ScenarioForm
-from .models import ECGData
-from django.contrib.auth.decorators import login_required # type: ignore
-from django.shortcuts import render, get_object_or_404 # type: ignore
 
 @login_required
 def home(request):
@@ -48,7 +45,7 @@ def home(request):
         'evaluacion_labels': evaluacion_labels,
         'evaluacion_data': evaluacion_data
     })
-from .forms import UserForm
+
 
 def signup(request):
     if request.method == 'GET':
@@ -92,8 +89,6 @@ def signup(request):
                 'error': 'Formulario inválido.'
             })
     
-def tasks(request):
-    return render(request, 'tasks.html')
 def signin(request):
     if request.method == 'GET':
         return render(request, 'signin.html', {
@@ -115,10 +110,6 @@ def signout(request):
     logout(request)
     return redirect('signin')
 
-def tasks(request):
-    return render(request, 'tasks.html')
-
-from .models import EvaluacionData
 
 ultima_frecuencia = None
 
@@ -168,8 +159,6 @@ def recibir_frecuencia(request):
         print(f"Error interno del servidor: {str(e)}")
         return JsonResponse({'status': 'error', 'message': f'Error interno del servidor: {str(e)}'})
 
-
-
 @require_http_methods(["GET"])
 def obtener_frecuencia(request):
     global ultima_frecuencia
@@ -182,77 +171,12 @@ def obtener_frecuencia(request):
             return JsonResponse({'status': 'error', 'message': 'No hay datos disponibles'})
     return JsonResponse({'status': 'error', 'message': 'Método no soportado'})
 
-
 def mostrar_frecuencia_cardiaca(request):
     # Renderiza el archivo HTML para mostrar la frecuencia cardíaca
     return render(request, 'frecuencia_cardiaca.html')
 
 
-
-
-
-def evaluation_list(request):
-    try:
-        evaluations = Evaluation.objects.all()
-        return render(request, 'disenar_evaluacion.html', {'evaluations': evaluations})
-    except Exception as e:
-        return render(request, 'disenar_evaluacion.html', {'error': str(e)})
-
-def guardar_evaluacion(request):
-    if request.method == 'POST':
-        try:
-            # Cargar los datos del cuerpo de la solicitud
-            data = json.loads(request.body)
-            
-            # Validar que los campos esperados están en el JSON recibido
-            required_fields = ['tiempo_exposicion', 'fecha_evaluacion', 'nombre_evaluador', 'observaciones']
-            for field in required_fields:
-                if field not in data:
-                    return JsonResponse({'status': 'error', 'message': f'Falta el campo {field}.'}, status=400)
-
-            # Crear nueva instancia de Evaluacion con los datos recibidos
-            evaluacion = Evaluacion(
-                tiempo_exposicion=data['tiempo_exposicion'],
-                fecha_evaluacion=data['fecha_evaluacion'],
-                nombre_evaluador=data['nombre_evaluador'],
-                observaciones=data['observaciones']
-            )
-            evaluacion.save()
-            
-            return JsonResponse({'status': 'success', 'message': 'Datos guardados correctamente.'})
-        
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Error al parsear JSON.'}, status=400)
-    
-    # Si no es POST, retornamos error de método no permitido
-    return JsonResponse({'status': 'error', 'message': 'Método no permitido.'}, status=405)
-
-
-# codigo del lucho 
-
-from django.http import HttpResponse # type: ignore
-from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
-from .models import Usuario, Rol, Practicante
-from .forms import UsuarioForm, PracticanteForm
-# Create your views here.
-TEMPLATE_DIRS = (
-    'os.path.join(BASE_DIR, "templates"),'
-)
-
-def index(request):
-    return render(request, "index.html")
-
-def practicantes(request):
-    return render(request, "practicantes.html")
-
-def disenar(request):
-    return render(request, "disenar.html")
-
-def administrar(request):
-    return render(request, "administrar.html")
-
 #usuarios
-
 def listar_usuarios(request):
     usuarios = User.objects.all()
     grupos = Group.objects.all()
@@ -261,7 +185,6 @@ def listar_usuarios(request):
         'grupos': grupos
     }
     return render(request, 'listar_usuarios.html', contexto)
-
 
 def crear_usuario(request):
     if request.method == 'GET':
@@ -304,7 +227,6 @@ def crear_usuario(request):
                 })
     return render(request, 'formulario_usuario.html', {'form': form})
 
-
 def editar_usuario(request, id):
     usuario = get_object_or_404(User, id=id)
     grupo_id = request.POST.get('grupo')
@@ -319,47 +241,8 @@ def eliminar_usuario(request, id):
     usuario.delete()
     return redirect('listar_usuarios')
 
-#practicantes
 
-def listar_practicantes(request):
-    practicantes = Practicante.objects.all()
-    return render(request, 'practicantes.html', {'practicantes': practicantes})
-
-def agregar_practicante(request):
-    if request.method == 'POST':
-        form = PracticanteForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('listar_practicantes')
-    else:
-        form = PracticanteForm()
-    return render(request, 'practicantes.html', {'form': form})
-
-def editar_practicante(request, id):
-    practicante = get_object_or_404(Practicante, id=id)
-    if request.method == 'POST':
-        form = PracticanteForm(request.POST, instance=practicante)
-        if form.is_valid():
-            form.save()
-            return redirect('listar_practicantes')
-    else:
-        form = PracticanteForm(instance=practicante)
-    return render(request, 'practicantes/editar_practicante.html', {'form': form})
-
-def borrar_practicante(request, id):
-    practicante = get_object_or_404(Practicante, id=id)
-    if request.method == 'POST':
-        practicante.delete()
-        return redirect('listar_practicantes')
-    return render(request, 'practicantes/borrar_practicante.html', {'practicante': practicante})
-
-#Diseñar evaluación
-
-from django.shortcuts import render, get_object_or_404, redirect # type: ignore
-from django.http import JsonResponse # type: ignore
-from .models import Evaluacion
-from .forms import EvaluacionForm
-
+#evaluaciones
 def lista_evaluaciones(request):
     evaluaciones = Evaluacion.objects.all()
     scenarios = Scenario.objects.all()
@@ -483,49 +366,19 @@ def borrar_evaluacion(request, pk):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'errors': 'Invalid request method'})
 
-#roles de los usuarios
-from django.contrib.auth.decorators import login_required, user_passes_test # type: ignore
-from .forms import UserForm
-from django.contrib.auth.models import User # type: ignore
+
 
 def is_admin(user):
     return user.groups.filter(name='Administrador').exists()
 
-@login_required
-@user_passes_test(is_admin)
-def manage_users(request):
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            user.save()
-            user.groups.add(form.cleaned_data['group'])
-            return redirect('manage_users')
-    else:
-        form = UserForm()
-    users = User.objects.all()
-    return render(request, 'manage_users.html', {'form': form, 'users': users})
 
-#proteger vistas segun roles 
-from django.contrib.auth.decorators import login_required, user_passes_test # type: ignore
 
 def is_evaluator(user):
     return user.groups.filter(name='Evaluador').exists()
 
-@login_required
-@user_passes_test(is_evaluator)
-def disenar(request):
-    # Lógica para diseñar evaluación
-    return render(request, 'disenar.html')
 
 
-
-# CRUD Expositor
-from django.http import JsonResponse # type: ignore # type: ignore
-from .models import Expositores
-from .forms import ExpositorForm
-
+#expositores
 def lista_expositores(request):
     expositores = Expositores.objects.all()
     evaluations = Evaluacion.objects.all()
@@ -548,7 +401,6 @@ def crear_expositor(request):
             return JsonResponse({'success': False, 'errors': form.errors})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
-
 def editar_expositor(request, pk):
     expositor = get_object_or_404(Expositores, pk=pk)
     if request.method == 'POST':
@@ -564,6 +416,7 @@ def borrar_expositor(request, pk):
         expositor.delete()
         return JsonResponse({'success': True})
 
+#elegir evaluacion a realizar
 def elegir_evaluacion(request, pk):
     expositor_seleccionado = get_object_or_404(Expositores, pk=pk)
     expositores = Expositores.objects.all()
@@ -596,8 +449,8 @@ def elegir_evaluacion(request, pk):
         'evaluations': evaluations
     })
 
-# conexion sensor ecg
 
+# conexion sensor ecg
 @csrf_exempt
 def receive_ecg_data(request):
     if request.method == 'POST':
@@ -611,12 +464,6 @@ def receive_ecg_data(request):
 
 def ecg_chart(request):
      return render(request, 'ecg_chart.html')
-
-# from django.http import JsonResponse # type: ignore
-# from .models import ECGData
-
-
-
 
 def get_ecg_data(request):
     data = list(ECGData.objects.all().values('timestamp', 'value'))
@@ -697,7 +544,7 @@ def evaluar_expositor(request, id, id_evaluacion):
         'ultima_evaluacion': ultima_evaluacion,
     })
     
-
+#evaluaciones realizadas
 def listar_evaluaciones_realizadas(request):
     evaluaciones_realizadas = EvaluacionRealizada.objects.all()
     return render(request, 'listar_evaluaciones_realizadas.html', {
@@ -737,6 +584,7 @@ def borrar_evaluacionRealizada(request, pk):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'errors': 'Invalid request method'})
 
+#etapas de evaluacion
 def colocar_instrumentos(request, id, id_evaluacion):
     expositor_seleccionado = get_object_or_404(Expositores, id=id)
     evaluacion_realizada = get_object_or_404(EvaluacionRealizada, id=id_evaluacion)
@@ -761,6 +609,7 @@ def colocar_ambientacion(request, id, id_evaluacion):
         'id_evaluacion': id_evaluacion,
     })
 
+#guardar datos de la conexion csg_data
 guardar_datos = False
 
 @csrf_exempt
@@ -771,8 +620,6 @@ def iniciar_guardado(request):
         print("Guardado iniciado")  # Depuración
         return JsonResponse({"status": "success", "message": "Guardado iniciado"})
     return JsonResponse({"status": "error", "message": "Método no soportado"})
-
-
 
 @csrf_exempt
 def recibir_datos(request):
@@ -804,8 +651,6 @@ def recibir_datos(request):
                 return JsonResponse({'status': 'error', 'message': f'Error interno del servidor: {str(e)}'})
         return JsonResponse({'status': 'error', 'message': 'Método de solicitud inválido'})
 
-
-
 @csrf_exempt
 def verificar_guardado(request):
     if request.method == 'GET':
@@ -815,7 +660,6 @@ def verificar_guardado(request):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
-
 
 @csrf_exempt
 def detener_guardado(request):
@@ -833,10 +677,6 @@ def estado_guardado(request):
         return JsonResponse({"guardar_datos": guardar_datos})
     return JsonResponse({"status": "error", "message": "Método no soportado"})
 
-
-from .models import ECGData2
-from django.utils import timezone # type: ignore
-from datetime import timedelta
 
 def obtener_datos(request):
     # Obtener los últimos 10 datos de BPM
@@ -868,9 +708,6 @@ def listar_datos(request):
     datos = ECGData2.objects.all()
     return render(request, 'listardatosecgdata2.html', {'datos': datos})
 
-import openpyxl # type: ignore
-from .models import EvaluacionRealizada, ECGData2
-
 def exportar_evaluacion_excel(request, pk):
     evaluacion = get_object_or_404(EvaluacionRealizada, pk=pk)
     pulsos = ECGData2.objects.filter(idEvaluacion_id=pk)
@@ -880,10 +717,6 @@ def exportar_evaluacion_excel(request, pk):
     print(f"ECG Data Count: {pulsos.count()}")
     for pulso in pulsos:
         print(f"Pulso: {pulso}")
-
-    # if not pulsos.exists():
-    #     print("No se encontraron datos de ECG para esta evaluación.")
-    #     return HttpResponse("No se encontraron datos de ECG para esta evaluación.", status=404)
 
     # Crear un libro de trabajo y una hoja
     wb = openpyxl.Workbook()
