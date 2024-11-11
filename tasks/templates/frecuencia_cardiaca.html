@@ -1,6 +1,6 @@
 {% extends 'base.html' %} {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <link
@@ -16,149 +16,345 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/evaluar.css' %}" />
-   
   </head>
   <body>
-    <div class="contenedor">
-      <div class="container main-container">
-        <div class="row mb-4">
+    <div style="margin-top: -90px">
+      <!-- Barra de Progreso -->
+      <div class="container mt-3">
+        <div class="progress">
+          <div
+            id="progress-bar"
+            class="progress-bar"
+            role="progressbar"
+            style="width: 0%"
+            aria-valuenow="0"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
+        </div>
+      </div>
+
+      <div class="container mt-5">
+        <!-- Etapa 1: Instrucciones -->
+        <div id="stage-1" class="stage-container">
+          <h3>Instrucciones</h3>
           <div class="row">
-            <div class="col-lg-8 content-left">
-              <div>
-                <button onclick="iniciarGuardado()">Iniciar Guardado</button>
-                <button onclick="detenerGuardado()">Detener Guardado</button>
-              
-                <div class="col-md-12 mt-3 section-card">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title">Contenido en Vivo</h5>
-                      <button id="startCapture" class="btn btn-primary">
-                        Iniciar Transmisión
-                      </button>
-                      <video
-                        id="liveVideo"
-                        width="100%"
-                        height="400px"
-                        style="border: none"
-                        autoplay
-                      ></video>
-                    </div>
-                  </div>
-                </div>
-                <div class="mt-3">
-                  {% for expositor in expositores %} {% if expositor.id == expositor_seleccionado.id %}
-                  <label for="nombre_expositor" class="form-label"
-                    >Nombre Expositor</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="nombre_expositor"
-                    value="{{ expositor.nombre }}"
-                  />
-                  {% endif %} {% endfor %}
-                </div>
-                <div class="mt-3">
-                  <form
-                    method="POST"
-                    action="{% url 'evaluar_expositor' expositor_seleccionado.id evaluacion.id %}"
-                  >
-                    {% csrf_token %}
-                    <label for="tiempo-exposicion" class="form-label"
-                      >Tiempo de Exposición</label
-                    >
-                    <div id="timer" class="form-control"></div>
-                  </form>
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Paso 1</h5>
+                  <p class="card-text">
+                    Descripción del primer paso de la instrucción.
+                  </p>
                 </div>
               </div>
             </div>
-            <div class="col-lg-4 content-right">
-              <div class="info-box">
-                <label for="fecha_evaluacion" class="form-label"
-                  >Fecha Evaluación</label
-                >
-                <input
-                  type="date"
-                  class="form-control"
-                  id="fecha_evaluacion"
-                  value="2024-08-20"
-                />
-              </div>
-              <div class="info-box">
-                {% for evaluacion in evaluaciones %} {% if evaluacion.id == ultima_evaluacion.id %} {% if evaluacion.expositor_id == expositor_seleccionado.id %}
-                <label for="nombre_evaluador" class="form-label"
-                  >Nombre Evaluador</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="nombre_evaluador"
-                  value="{{ evaluacion.nombre_evaluador }}"
-                />
-                {% endif %} {% endif %} {% endfor %}
-              </div>
-              <div class="info-box">
-                <form
-                  id="evaluacionForm"
-                  method="POST"
-                  action="{% url 'evaluar_expositor' expositor_seleccionado.id evaluacion.id %}"
-                >
-                  {% csrf_token %}
-                  <input
-                    type="hidden"
-                    name="tiempo_total"
-                    id="tiempo_total"
-                    value=""
-                  />
-                  <div class="info-box">
-                    <label for="observacionFinal" class="form-label"
-                      >Observación Final</label
-                    >
-                    <textarea
-                      id="observacionFinal"
-                      class="form-control"
-                      name="observacion_final"
-                      rows="3"
-                      required
-                    ></textarea>
-                  </div>
-                </form>
-              </div>
-              <div class="info-box">
-                <label class="form-label">Evaluación de prueba</label>
-                <div class="d-grid gap-2">
-                  {% for escenario in escenarios %}
-                  <button
-                    class="btn {% if escenario.tag_name == 'high' %}btn-danger{% elif escenario.tag_name == 'medium' %}btn-warning{% elif escenario.tag_name == 'low' %}btn-success{% else %}btn-custom2{% endif %}"
-                  >
-                    {{ escenario.function_name }} - {{ escenario.duration }}
-                    segundos
-                  </button>
-                  {% endfor %}
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Paso 2</h5>
+                  <p class="card-text">
+                    Descripción del segundo paso de la instrucción.
+                  </p>
                 </div>
               </div>
-              <div class="chart-container text-center" id="frecuencia_cardiaca">
-                <label class="form-label">
-                  <pre>Frecuencia actual:   <span id="frecuencia"></span></pre>
-                </label>
-                <canvas id="graficoFrecuencia"></canvas>
+            </div>
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Paso 3</h5>
+                  <p class="card-text">
+                    Descripción del tercer paso de la instrucción.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
+          <button id="nextStage1" class="btn btn-primary mt-4">
+            Siguiente Etapa
+          </button>
+        </div>
+
+        <!-- Etapa 2: Transmisión en Vivo -->
+        <div id="stage-2" class="stage-container" style="display: none">
+          <h3>Transmisión en Vivo</h3>
+          <button id="startCapture" class="btn btn-primary mb-3">
+            Iniciar Transmisión
+          </button>
+          <video id="liveVideo" width="100%" height="400px" autoplay></video>
+          <button id="prevStage2" class="btn btn-secondary mt-4">
+            Volver Atrás
+          </button>
+          <button id="nextStage2" class="btn btn-primary mt-4">
+            Siguiente Etapa
+          </button>
+        </div>
+
+        <!-- Etapa 3: Evaluación -->
+        <div
+          id="stage-3"
+          class="stage-container"
+          style="display: flex; margin-top: 250px"
+        >
+          <div class="row">
+            <div class="contenedor">
+              <div class="container main-container">
+                <div class="row mb-4">
+                  <div class="row">
+                    <div class="col-lg-8 content-left">
+                      <div>
+                        <button onclick="iniciarGuardado()">
+                          Iniciar Guardado
+                        </button>
+                        <button onclick="detenerGuardado()">
+                          Detener Guardado
+                        </button>
+                        
+                        <h3>Evaluación del Expositor</h3>
+                        <div class="col-md-12 mt-3 section-card">
+                          <div class="card">
+                            <div class="card-body">
+                              <h5 class="card-title">Contenido en Vivo</h5>
+                              <button
+                                id="startCapture2"
+                                class="btn btn-primary"
+                              >
+                                Iniciar Transmisión
+                              </button>
+                              <video
+                                id="liveVideo"
+                                width="100%"
+                                height="400px"
+                                style="border: none"
+                                autoplay
+                              ></video>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mt-3">
+                          {% for expositor in expositores %} {% if expositor.id == expositor_seleccionado.id %}
+                          <label for="nombre_expositor" class="form-label"
+                            >Nombre Expositor</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="nombre_expositor"
+                            value="{{ expositor.nombre }}"
+                          />
+                          {% endif %} {% endfor %}
+                        </div>
+                        <div class="mt-3">
+                          <form
+                            method="POST"
+                            action="{% url 'evaluar_expositor' expositor_seleccionado.id evaluacion.id %}"
+                          >
+                            {% csrf_token %}
+                            <label for="tiempo-exposicion" class="form-label"
+                              >Tiempo de Exposición</label
+                            >
+                            <div id="timer" class="form-control"></div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4 content-right">
+                      <div class="info-box">
+                        <label for="fecha_evaluacion" class="form-label"
+                          >Fecha Evaluación</label
+                        >
+                        <input
+                          type="date"
+                          class="form-control"
+                          id="fecha_evaluacion"
+                          value="2024-08-20"
+                        />
+                      </div>
+                      <div class="info-box">
+                        {% for evaluacion in evaluaciones %} {% if evaluacion.id == ultima_evaluacion.id %} {% if evaluacion.expositor_id == expositor_seleccionado.id %}
+                        <label for="nombre_evaluador" class="form-label"
+                          >Nombre Evaluador</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="nombre_evaluador"
+                          value="{{ evaluacion.nombre_evaluador }}"
+                        />
+                        {% endif %} {% endif %} {% endfor %}
+                      </div>
+                      <div class="info-box">
+                        <form
+                          id="evaluacionForm"
+                          method="POST"
+                          action="{% url 'evaluar_expositor' expositor_seleccionado.id evaluacion.id %}"
+                        >
+                          {% csrf_token %}
+                          <input
+                            type="hidden"
+                            name="tiempo_total"
+                            id="tiempo_total"
+                            value=""
+                          />
+                          <div class="info-box">
+                            <label for="observacionFinal" class="form-label"
+                              >Observación Final</label
+                            >
+                            <textarea
+                              id="observacionFinal"
+                              class="form-control"
+                              name="observacion_final"
+                              rows="3"
+                              required
+                            ></textarea>
+                          </div>
+                        </form>
+                      </div>
+                      <div class="info-box">
+                        <label class="form-label">Evaluación de prueba</label>
+                        <div class="d-grid gap-2">
+                          {% for escenario in escenarios %}
+                          <button
+                            class="btn {% if escenario.tag_name == 'high' %}btn-danger{% elif escenario.tag_name == 'medium' %}btn-warning{% elif escenario.tag_name == 'low' %}btn-success{% else %}btn-custom2{% endif %}"
+                          >
+                            {{ escenario.function_name }} - {{
+                            escenario.duration }} segundos
+                          </button>
+                          {% endfor %}
+                        </div>
+                      </div>
+                      <div
+                        class="chart-container text-center"
+                        id="frecuencia_cardiaca"
+                      >
+                        <label class="form-label">
+                          <pre>Frecuencia actual:   <span id="frecuencia"></span></pre>
+                        </label>
+                        <canvas id="graficoFrecuencia"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button id="prevStage3" class="btn btn-secondary mt-4">
+            Volver Atrás
+          </button>
+          <div class="btn btn-secondary mt-4">
+            <button type="submit" id="evaluationButton" class="btn btn-secondary btn-custom">Iniciar evaluación</button>
+          </div>
         </div>
       </div>
-    </div>  
-    
+    </div>
+
     <script>
-      const serverUrlPost = "http://localhost:127/api/frecuencia/"; // Cambiar a localhost
-      const serverUrlGet = "http://localhost:127/api/ultima_frecuencia/"; // Cambiar a localhost
-      const evaluacionId = "{{ evaluacion.id }}";
-      console.log(evaluacionId);
       let currentStage = 1;
       let isEvaluating = false;
       let startTime;
       let timerInterval;
       let chart;
+      const serverUrlPost = "http://localhost:127/api/frecuencia/"; // Cambiar a localhost
+      const serverUrlGet = "http://localhost:127/api/ultima_frecuencia/"; // Cambiar a localhost
+      const evaluacionId = "{{ evaluacion.id }}";
+      console.log(evaluacionId);
+
+      document.addEventListener("DOMContentLoaded", function () {
+        updateProgressBar();
+        showStage(currentStage);
+
+        document
+          .getElementById("nextStage1")
+          .addEventListener("click", function () {
+            currentStage++;
+            updateProgressBar();
+            showStage(currentStage);
+          });
+
+        document
+          .getElementById("prevStage2")
+          .addEventListener("click", function () {
+            currentStage--;
+            updateProgressBar();
+            showStage(currentStage);
+          });
+
+        document
+          .getElementById("nextStage2")
+          .addEventListener("click", function () {
+            currentStage++;
+            updateProgressBar();
+            showStage(currentStage);
+          });
+        document
+          .getElementById("prevStage3")
+          .addEventListener("click", function () {
+            currentStage--;
+            updateProgressBar();
+            showStage(currentStage);
+          });
+
+
+        const ctx = document
+          .getElementById("graficoFrecuencia")
+          .getContext("2d");
+        chart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: [],
+            datasets: [
+              {
+                label: "Frecuencia Cardíaca (BPM)",
+                backgroundColor: "rgba(255, 99, 132, 0.2)",
+                borderColor: "rgba(255, 99, 132, 1)",
+                data: [],
+                fill: false,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              x: {
+                type: "time",
+                time: { unit: "second" },
+                title: { display: true, text: "Tiempo" },
+              },
+              y: {
+                beginAtZero: true,
+                suggestedMax: 150,
+                title: { display: true, text: "BPM" },
+              },
+            },
+          },
+        });
+
+        obtenerFrecuencia();
+        setInterval(obtenerFrecuencia, 1000);
+      });
+
+      function updateProgressBar() {
+        const progressValues = { 1: 33, 2: 66, 3: 100 };
+        const progressBar = document.getElementById("progress-bar");
+        progressBar.style.width = `${progressValues[currentStage]}%`;
+        progressBar.setAttribute("aria-valuenow", progressValues[currentStage]);
+      }
+
+      function showStage(stage) {
+        document.querySelectorAll(".stage-container").forEach((container) => {
+          container.style.display = "none";
+        });
+        document.getElementById("stage-" + stage).style.display = "block";
+      }
+
+      function updateTimer() {
+        const now = new Date();
+        const elapsedTime = Math.floor((now - startTime) / 1000);
+        const minutes = Math.floor(elapsedTime / 60);
+        const seconds = elapsedTime % 60;
+        document.getElementById(
+          "timer"
+        ).textContent = `${minutes}m ${seconds}s`;
+      }
 
       document.addEventListener("DOMContentLoaded", function () {
         // Inicializa en la primera etapa
@@ -179,31 +375,34 @@
 
         // Configura el botón de evaluación
         document
-          .getElementById("evaluationButton")
-          .addEventListener("click", function (event) {
-            event.preventDefault();
-            const button = this;
-            if (!isEvaluating) {
-              // Iniciar evaluación
-              button.textContent = "Finalizar evaluación";
-              isEvaluating = true;
-              startTime = new Date();
-              timerInterval = setInterval(updateTimer, 1000);
-            } else {
-              // Finalizar evaluación
-              button.textContent = "Iniciar evaluación";
-              isEvaluating = false;
-              clearInterval(timerInterval);
+      .getElementById("evaluationButton")
+      .addEventListener("click", function (event) {
+        event.preventDefault();
+        const button = this;
+        const backButton = document.getElementById("prevStage3");
+        if (!isEvaluating) {
+          // Iniciar evaluación
+          button.textContent = "Finalizar evaluación";
+          isEvaluating = true;
+          startTime = new Date();
+          timerInterval = setInterval(updateTimer, 1000);
+          backButton.disabled = true; // Bloquear el botón de volver atrás
+        } else {
+          // Finalizar evaluación
+          button.textContent = "Iniciar evaluación";
+          isEvaluating = false;
+          clearInterval(timerInterval);
+          backButton.disabled = false; // Desbloquear el botón de volver atrás
 
-              // Calcular tiempo total
-              const now = new Date();
-              const elapsedTime = Math.floor((now - startTime) / 1000);
-              document.getElementById("tiempo_total").value = elapsedTime;
+          // Calcular tiempo total
+          const now = new Date();
+          const elapsedTime = Math.floor((now - startTime) / 1000);
+          document.getElementById("tiempo_total").value = elapsedTime;
 
-              // Enviar el formulario
-              document.getElementById("evaluacionForm").submit();
-            }
-          });
+          // Enviar el formulario
+          document.getElementById("evaluacionForm").submit();
+        }
+      });
 
         // Inicializa el gráfico
         const ctx = document
@@ -390,8 +589,20 @@
             console.error("Error: " + err);
           }
         });
+      document
+        .getElementById("startCapture2")
+        .addEventListener("click", async function () {
+          try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+              video: true,
+            });
+            const videoElement = document.getElementById("liveVideo");
+            videoElement.srcObject = stream;
+          } catch (err) {
+            console.error("Error: " + err);
+          }
+        });
     </script>
   </body>
 </html>
-
 {% endblock %}

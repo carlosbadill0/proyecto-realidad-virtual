@@ -585,30 +585,6 @@ def borrar_evaluacionRealizada(request, pk):
     return JsonResponse({'success': False, 'errors': 'Invalid request method'})
 
 #etapas de evaluacion
-def colocar_instrumentos(request, id, id_evaluacion):
-    expositor_seleccionado = get_object_or_404(Expositores, id=id)
-    evaluacion_realizada = get_object_or_404(EvaluacionRealizada, id=id_evaluacion)
-    
-    return render(request, 'Colocar_instrumentos.html', {
-        'expositor_seleccionado': expositor_seleccionado,
-        'evaluacion_realizada': evaluacion_realizada,
-        'id': id,
-        'id_evaluacion': id_evaluacion,
-    })
-
-def colocar_ambientacion(request, id, id_evaluacion):
-    # Obtén el expositor seleccionado y la evaluación realizada usando los ids proporcionados
-    expositor_seleccionado = get_object_or_404(Expositores, id=id)
-    evaluacion_realizada = get_object_or_404(EvaluacionRealizada, id=id_evaluacion)
-
-    # Renderiza la plantilla con los datos necesarios
-    return render(request, 'Ambientacion.html', {
-        'expositor_seleccionado': expositor_seleccionado,
-        'evaluacion_realizada': evaluacion_realizada,
-        'id': id,
-        'id_evaluacion': id_evaluacion,
-    })
-
 #guardar datos de la conexion csg_data
 guardar_datos = False
 
