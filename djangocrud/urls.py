@@ -67,8 +67,6 @@ urlpatterns = [
     
     #url para evaluar a un expositor
     path('evaluar/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
-    path('instrumentos/<int:id>/<int:id_evaluacion>/', views.colocar_instrumentos, name='colocar_instrumentos'),
-    path('ambientacion/<int:id>/<int:id_evaluacion>/', views.colocar_ambientacion, name='ambientacion'),
     ## para mandar el json de la evaluacion a oculus
     path('evaluar_expositor/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
     
