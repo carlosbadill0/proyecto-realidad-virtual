@@ -1,26 +1,34 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
-    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
     {% block extra_css %}{% endblock %}
-
   </head>
   <body>
     <div class="container mt-4">
-      <h1 style="color: #233666; margin-top: -85px">Lista de Evaluaciones Realizadas</h1>
+      <h1 style="color: #233666; margin-top: -85px">
+        Lista de Evaluaciones Realizadas
+      </h1>
       <div class="row mb-3">
         <div class="col-md-6 d-flex align-items-center">
-          <input type="text" id="searchInput" class="form-control me-2" placeholder="Búsqueda" /> 
+          <input
+            type="text"
+            id="searchInput"
+            class="form-control me-2"
+            placeholder="Búsqueda"
+          />
           <button type="button" class="btn btn-custom2">Filtrar</button>
         </div>
       </div>
@@ -36,74 +44,162 @@
             </tr>
           </thead>
           <tbody class="text-center">
-            {% for evaluacion in evaluaciones_realizadas %}
+            {% for evaluacion in page_obj %}
             <tr>
               <td>{{ evaluacion.expositor }}</td>
               <td>{{ evaluacion.nombre_evaluador }}</td>
               <td>{{ evaluacion.fecha_evaluacion }}</td>
               <td>
-                <button class="btn btn-info bi bi-eye verEvaluacionBtn" data-id="{{ evaluacion.id }}">
+                <button
+                  class="btn btn-info bi bi-eye verEvaluacionBtn"
+                  data-id="{{ evaluacion.id }}"
+                  data-url="{% url 'detalle_evaluacionRealizada' evaluacion.id %}"
+                >
                   <i class="fas fa-eye"></i>
                 </button>
-                <button class="btn btn-warning bi bi-pencil-square editarEvaluacionBtn" data-id="{{ evaluacion.id }}">
+                <button
+                  class="btn btn-warning bi bi-pencil-square editarEvaluacionBtn"
+                  data-id="{{ evaluacion.id }}"
+                  data-url="{% url 'detalle_evaluacionRealizada' evaluacion.id %}"
+                >
                   <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn btn-danger bi bi-trash borrarEvaluacionBtn" data-id="{{ evaluacion.id }}">
+                <button
+                  class="btn btn-danger bi bi-trash borrarEvaluacionBtn"
+                  data-id="{{ evaluacion.id }}"
+                  data-url="{% url 'borrar_evaluacionRealizada' evaluacion.id %}"
+                >
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </td>
-              <td><button class="btn btn-success bi bi-file-earmark-excel" onclick="window.location.href='{% url 'exportar_evaluacion_excel' evaluacion.id %}'">
-            </button></td>
+              <td>
+                <button
+                  class="btn btn-success bi bi-file-earmark-excel"
+                  onclick="window.location.href='{% url 'exportar_evaluacion_excel' evaluacion.id %}'"
+                ></button>
+              </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
+      <div class="d-flex justify-content-center">
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a
+                class="page-link"
+                href="?page={{ page_obj.previous_page_number }}"
+                aria-label="Previous"
+              >
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            {% endif %} {% for num in page_obj.paginator.page_range %}
+            <li
+              class="page-item {% if page_obj.number == num %}active{% endif %}"
+            >
+              <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %} {% if page_obj.has_next %}
+            <li class="page-item">
+              <a
+                class="page-link"
+                href="?page={{ page_obj.next_page_number }}"
+                aria-label="Next"
+              >
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
     </div>
 
-    <!-- Modal Ver Evaluación -->
-    <div class="modal fade" id="verEvaluacionModal" tabindex="-1" role="dialog" aria-labelledby="verEvaluacionModalLabel" aria-hidden="true">
+    <!-- Ver Evaluación Modal -->
+    <div
+      class="modal fade"
+      id="verEvaluacionModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="verEvaluacionModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="verEvaluacionModalLabel">Detalles de la Evaluación</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <h5 class="modal-title" id="verEvaluacionModalLabel">
+              Ver Evaluación
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col">
+              <div class="col-md-6">
                 <div class="form-group">
                   <label for="verExpositor">Expositor</label>
-                  <input type="text" class="form-control" id="verExpositor" readonly />
+                  <input
+                    type="text"
+                    id="verExpositor"
+                    readonly
+                    class="form-control mb-2"
+                  />
                 </div>
                 <div class="form-group">
                   <label for="verEvaluador">Evaluador</label>
-                  <input type="text" class="form-control" id="verEvaluador" readonly />
+                  <input
+                    type="text"
+                    id="verEvaluador"
+                    readonly
+                    class="form-control mb-2"
+                  />
                 </div>
                 <div class="form-group">
-                  <label for="verFechaEvaluacion">Fecha</label>
-                  <input type="date" class="form-control" id="verFechaEvaluacion" readonly />
-                </div>
-                <div class="form-group">
-                  <label for="verObservacionInicial">Observación Inicial</label>
-                  <textarea class="form-control" id="verObservacionInicial" readonly></textarea>
+                  <label for="verFechaEvaluacion">Fecha de Evaluación</label>
+                  <input
+                    type="date"
+                    id="verFechaEvaluacion"
+                    readonly
+                    class="form-control mb-2"
+                  />
                 </div>
               </div>
-              <div class="col">
+              <div class="col-md-6">
                 <div class="form-group">
-                  <label for="verTiempoExposicion">Tiempo de Exposición</label>
-                  <input type="text" class="form-control" id="verTiempoExposicion" readonly />
-                </div>
-                <div class="form-group">
-                  <label for="verVideoEvaluacion">Video</label>
-                  <div id="verVideoEvaluacion"></div>
+                  <label for="verObservacionInicial">Observación Inicial</label>
+                  <textarea
+                    id="verObservacionInicial"
+                    readonly
+                    class="form-control mb-2"
+                  ></textarea>
                 </div>
                 <div class="form-group">
                   <label for="verObservacionFinal">Observación Final</label>
-                  <textarea class="form-control" id="verObservacionFinal" readonly></textarea>
+                  <textarea
+                    id="verObservacionFinal"
+                    readonly
+                    class="form-control mb-2"
+                  ></textarea>
                 </div>
+                <div class="form-group">
+                  <label for="verTiempoExposicion">Tiempo de Exposición</label>
+                  <input
+                    type="text"
+                    id="verTiempoExposicion"
+                    readonly
+                    class="form-control mb-2"
+                  />
+                </div>
+                <div id="verVideoEvaluacion"></div>
               </div>
             </div>
           </div>
@@ -111,174 +207,164 @@
       </div>
     </div>
 
-    <!-- Modal Editar Evaluación -->
-    <div class="modal fade" id="editarEvaluacionModal" tabindex="-1" role="dialog" aria-labelledby="editarEvaluacionModalLabel" aria-hidden="true">
+    <!-- Editar Evaluación Modal -->
+    <div
+      class="modal fade"
+      id="editarEvaluacionModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="editarEvaluacionModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="editarEvaluacionModalLabel">Editar Evaluación</h5>
+            <h5 class="modal-title" id="editarEvaluacionModalLabel">
+              Editar Evaluación
+            </h5>
             <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
           <div class="modal-body">
-            <form id="editarEvaluacionForm">
-              <input type="hidden" id="editarEvaluacionId" name="evaluacion_id" />
-              <input type="hidden" id="editarEvaluacionAplicada" name="evaluacion_aplicada" />
-              <input type="hidden" id="editarExpositor" name="expositor" />
-              <div class="row">
-                <div class="col">
-                  <div class="form-group">
-                    <label for="editarEvaluador">Evaluador</label>
-                    <input type="text" class="form-control" id="editarEvaluador" name="nombre_evaluador" />
-                  </div>
-                  <div class="form-group">
-                    <label for="editarFechaEvaluacion">Fecha</label>
-                    <input type="date" class="form-control" id="editarFechaEvaluacion" name="fecha_evaluacion" />
-                  </div>
-                  <div class="form-group">
-                    <label for="editarObservacionInicial">Observación Inicial</label>
-                    <textarea class="form-control" id="editarObservacionInicial" name="observacion_inicial"></textarea>
-                  </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="editarExpositor">Expositor</label>
+                  <input
+                    type="text"
+                    id="editarExpositor"
+                    class="form-control mb-2"
+                  />
                 </div>
-                <div class="col">
-                  <div class="form-group">
-                    <label for="editarTiempoExposicion">Tiempo de Exposición</label>
-                    <input type="text" class="form-control" id="editarTiempoExposicion" name="tiempo_exposicion" />
-                  </div>
-                  <div class="form-group">
-                    <label for="editarVideoEvaluacion">Video</label>
-                    <input type="text" class="form-control" id="editarVideoEvaluacion" name="video_evaluacion" />
-                  </div>
-                  <div class="form-group">
-                    <label for="editarObservacionFinal">Observación Final</label>
-                    <textarea class="form-control" id="editarObservacionFinal" name="observacion_final"></textarea>
-                  </div>
+                <div class="form-group">
+                  <label for="editarEvaluador">Evaluador</label>
+                  <input
+                    type="text"
+                    id="editarEvaluador"
+                    class="form-control mb-2"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="editarFechaEvaluacion">Fecha de Evaluación</label>
+                  <input
+                    type="date"
+                    id="editarFechaEvaluacion"
+                    class="form-control mb-2"
+                  />
                 </div>
               </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="editarObservacionInicial"
+                    >Observación Inicial</label
+                  >
+                  <textarea
+                    id="editarObservacionInicial"
+                    class="form-control mb-2"
+                  ></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="editarObservacionFinal">Observación Final</label>
+                  <textarea
+                    id="editarObservacionFinal"
+                    class="form-control mb-2"
+                  ></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="editarTiempoExposicion"
+                    >Tiempo de Exposición</label
+                  >
+                  <input
+                    type="text"
+                    id="editarTiempoExposicion"
+                    class="form-control mb-2"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="editarVideoEvaluacion">Video de Evaluación</label>
+                  <input
+                    type="text"
+                    id="editarVideoEvaluacion"
+                    class="form-control mb-2"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          </form>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Cerrar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="guardarCambiosBtn"
+            >
+              Guardar cambios
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-    <script>
-      
-      document.addEventListener("DOMContentLoaded", function () {
-        // Ver evaluación
-        document.querySelectorAll(".verEvaluacionBtn").forEach(function (button) {
-          button.addEventListener("click", function () {
-            var evaluacionId = this.getAttribute("data-id");
-            fetch("{% url 'detalle_evaluacionRealizada' 0 %}".replace("0", evaluacionId))
-              .then((response) => response.json())
-              .then((data) => {
-                document.getElementById("verExpositor").value = data.expositor;
-                document.getElementById("verEvaluador").value = data.nombre_evaluador;
-                document.getElementById("verFechaEvaluacion").value = data.fecha_evaluacion;
-                document.getElementById("verObservacionInicial").value = data.observacion_inicial;
-                document.getElementById("verObservacionFinal").value = data.observacion_final;
-                document.getElementById("verTiempoExposicion").value = data.tiempo_exposicion;
-                document.getElementById("verVideoEvaluacion").innerHTML = data.video_evaluacion
-                  ? '<a href="' + data.video_evaluacion + '">Ver Video</a>'
-                  : "No disponible";
-                var verEvaluacionModal = new bootstrap.Modal(document.getElementById("verEvaluacionModal"));
-                verEvaluacionModal.show();
-              });
-          });
-        });
+    <!-- Borrar Evaluación Modal -->
+    <div
+      class="modal fade"
+      id="borrarEvaluacionModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="borrarEvaluacionModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="borrarEvaluacionModalLabel">
+              Eliminar Evaluación
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>¿Estás seguro de que deseas eliminar esta evaluación?</p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="confirmarBorrarBtn"
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        // Editar evaluación
-        document.querySelectorAll(".editarEvaluacionBtn").forEach(function (button) {
-          button.addEventListener("click", function () {
-            var evaluacionId = this.getAttribute("data-id");
-            fetch("{% url 'detalle_evaluacionRealizada' 0 %}".replace("0", evaluacionId))
-              .then((response) => response.json())
-              .then((data) => {
-                document.getElementById("editarEvaluacionId").value = evaluacionId;
-                document.getElementById("editarExpositor").value = data.expositor;
-                document.getElementById("editarEvaluador").value = data.nombre_evaluador;
-                document.getElementById("editarFechaEvaluacion").value = data.fecha_evaluacion;
-                document.getElementById("editarObservacionInicial").value = data.observacion_inicial;
-                document.getElementById("editarObservacionFinal").value = data.observacion_final;
-                document.getElementById("editarTiempoExposicion").value = data.tiempo_exposicion;
-                document.getElementById("editarVideoEvaluacion").value = data.video_evaluacion;
-                
-                var editarEvaluacionModal = new bootstrap.Modal(document.getElementById("editarEvaluacionModal"));
-                editarEvaluacionModal.show();
-              });
-          });
-        });
-
-        //controlar editar
-
-        document.getElementById("editarEvaluacionForm").addEventListener("submit", function (e) {
-          e.preventDefault();
-        
-          var evaluacionId = document.getElementById("editarEvaluacionId").value;
-          var formData = new FormData(this);
-        
-          fetch("{% url 'editar_evaluacionRealizada' 0 %}".replace("0", evaluacionId), {
-            method: "POST",
-            body: formData,
-            headers: {
-              "X-CSRFToken": "{{ csrf_token }}",
-            },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                location.reload();  // Recargar la página tras la edición exitosa
-              } else {
-                console.log(data);  
-                alert("Hubo un error al editar la evaluación.");
-              }
-            });
-        });
-
-        // Borrar evaluación
-        document
-          .querySelectorAll(".borrarEvaluacionBtn")
-          .forEach(function (button) {
-            button.addEventListener("click", function () {
-              var evaluacionId = this.getAttribute("data-id");
-              if (
-                confirm("¿Estás seguro de que deseas eliminar esta evaluación?")
-              ) {
-                fetch(
-                  "{% url 'borrar_evaluacionRealizada' 0 %}".replace(
-                    "0",
-                    evaluacionId
-                  ),
-                  {
-                    method: "POST",
-                    headers: {
-                      "X-CSRFToken": "{{ csrf_token }}",
-                    },
-                  }
-                )
-                  .then((response) => response.json())
-                  .then((data) => {
-                    if (data.success) {
-                      location.reload();
-                    } else {
-                      alert("Error al borrar la evaluación.");
-                    }
-                  });
-              }
-            });
-          });
-      });
-    </script>
+    <script src="{% static 'js/evaluacionesRealizadas.js' %}"></script>
   </body>
   {% include 'footer.html' %}
 </html>
