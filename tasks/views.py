@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404, redirect, render # type: ignore
 from django.utils import timezone # type: ignore
 from django.views.decorators.csrf import csrf_exempt # type: ignore
 from django.views.decorators.http import require_http_methods # type: ignore
+from django.core.paginator import Paginator # type: ignore
 
 from .forms import (EvaluacionForm, EvaluacionRealizadaForm, ExpositorForm,
                     PracticanteForm, UserForm)
@@ -377,12 +378,21 @@ def is_evaluator(user):
     return user.groups.filter(name='Evaluador').exists()
 
 
-
 #expositores
 def lista_expositores(request):
+    query = request.GET.get('q')
+    if query:
+        expositores = Expositores.objects.filter(nombre__icontains=query)
+    else:
+        expositores = Expositores.objects.all()
+        
     expositores = Expositores.objects.all()
     evaluations = Evaluacion.objects.all()
-    return render(request, 'lista_expositores.html', {'expositores': expositores, 'evaluations': evaluations})
+    paginator = Paginator(expositores, 5)  # Mostrar 8 evaluaciones por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'lista_expositores.html', {'expositores': expositores, 'evaluations': evaluations, 'page_obj': page_obj})
 
 def detalle_expositor(request, pk):
     expositor = get_object_or_404(Expositores, pk=pk)
@@ -547,8 +557,13 @@ def evaluar_expositor(request, id, id_evaluacion):
 #evaluaciones realizadas
 def listar_evaluaciones_realizadas(request):
     evaluaciones_realizadas = EvaluacionRealizada.objects.all()
+    paginator = Paginator(evaluaciones_realizadas, 5)  # Mostrar 8 evaluaciones por página
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     return render(request, 'listar_evaluaciones_realizadas.html', {
-        'evaluaciones_realizadas': evaluaciones_realizadas
+        'page_obj': page_obj
     })
  
 def detalle_evaluacionRealizada(request, pk):
