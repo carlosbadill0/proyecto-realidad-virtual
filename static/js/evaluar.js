@@ -339,3 +339,35 @@ document
       console.error("Error: " + err);
     }
   });
+
+// WebSocket para transmisión de video
+const videoElement = document.getElementById('player-view');
+const signalingServerUrl = "ws://pacheco.chillan.ubiobio.cl:127/"; // Cambiar aca con el del protocolo y nombre del servidor
+const pc = new RTCPeerConnection();
+
+const signaling = new WebSocket(signalingServerUrl);
+
+signaling.onopen = () => {
+    console.log("WebSocket conectado");
+};
+
+signaling.onmessage = async (event) => {
+    const message = JSON.parse(event.data);
+
+    if (message.type === 'offer') {
+        await pc.setRemoteDescription(new RTCSessionDescription(message));
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+
+        signaling.send(JSON.stringify({
+            type: 'answer',
+            sdp: pc.localDescription.sdp
+        }));
+    }
+};
+
+pc.ontrack = (event) => {
+    videoElement.srcObject = event.streams[0];
+};
+
+pc.addTransceiver('video', { direction: 'recvonly' });
