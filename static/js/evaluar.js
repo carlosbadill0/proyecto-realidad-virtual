@@ -8,7 +8,6 @@ let chart;
 const serverUrlPost = "http://localhost:127/api/frecuencia/"; // Cambiar a localhost
 const serverUrlGet = "http://localhost:127/api/ultima_frecuencia/"; // Cambiar a localhost
 const evaluacionId = "{{ evaluacion.id }}";
-console.log(evaluacionId);
 
 function updateProgressBar() {
   const progressValues = { 1: 33, 2: 66, 3: 100 };
@@ -342,7 +341,7 @@ document
 
 // WebSocket para transmisión de video
 const videoElement = document.getElementById('player-view');
-const signalingServerUrl = "ws://pacheco.chillan.ubiobio.cl:127/"; // Cambiar aca con el del protocolo y nombre del servidor
+const signalingServerUrl = "ws://localhost:8000"; // Cambiar aca con el del protocolo y nombre del servidor
 const pc = new RTCPeerConnection();
 
 const signaling = new WebSocket(signalingServerUrl);
@@ -351,10 +350,16 @@ signaling.onopen = () => {
     console.log("WebSocket conectado");
 };
 
+signaling.onerror = (error) => {
+    console.error("WebSocket error:", error);
+};
+
 signaling.onmessage = async (event) => {
     const message = JSON.parse(event.data);
+    console.log("Mensaje recibido:", message);
 
     if (message.type === 'offer') {
+        console.log("Oferta recibida");
         await pc.setRemoteDescription(new RTCSessionDescription(message));
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
@@ -363,10 +368,15 @@ signaling.onmessage = async (event) => {
             type: 'answer',
             sdp: pc.localDescription.sdp
         }));
+        console.log("Respuesta enviada");
+    } else if (message.type === 'candidate') {
+        console.log("Candidato ICE recibido");
+        await pc.addIceCandidate(message.candidate);
     }
 };
 
 pc.ontrack = (event) => {
+    console.log("Track recibido");
     videoElement.srcObject = event.streams[0];
 };
 

@@ -18,7 +18,19 @@ services:
     ports:
       - "127:8000"
     depends_on:
-      - db    
+      - db
+
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    command: node /app/static/js/server.js
+    volumes:
+      - .:/app
+    ports:
+      - "8001:8000"
+    depends_on:
+      - web
 
 volumes:
   mysql_data:

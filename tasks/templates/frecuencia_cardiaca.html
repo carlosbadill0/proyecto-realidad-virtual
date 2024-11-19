@@ -199,6 +199,7 @@
                   <p class="card-text">
                     Descripción del primer paso de la instrucción.
                   </p>
+                  <video id="player-view" autoplay playsinline></video>
                 </div>
               </div>
             </div>
@@ -297,7 +298,8 @@
                             <button id="startCapture2" class="btn btn-primary">
                               Iniciar Transmisión
                             </button>
-                            <video id="liveVideo2" autoplay></video>
+                            {% comment %} <video id="liveVideo2" autoplay></video> {% endcomment %}
+                            <video id="player-view" autoplay playsinline></video>
                           </div>
                         </div>
                       </div>
@@ -323,7 +325,7 @@
                           <label for="tiempo-exposicion" class="form-label"
                             >Tiempo de Exposición</label
                           >
-                          <div id="timer" class="form-control">0m 2s</div>
+                          <div id="timer" class="form-control">0m 0s</div>
                         </form>
                       </div>
                     </div>
@@ -434,7 +436,57 @@
       </div>
     </div>
 
-    <script src="{% static 'js/evaluar.js' %}"></script>
+    {% comment %} <script src="{% static 'js/evaluar.js' %}"></script> {% endcomment %}
+    <script>
+      // WebSocket para transmisión de video
+      const videoElement = document.getElementById('player-view');
+      const signalingServerUrl = "ws://pacheco.chillan.ubiobio.cl:127"; // Cambiar aca con el del protocolo y nombre del servidor
+      const pc = new RTCPeerConnection();
+    
+      const signaling = new WebSocket(signalingServerUrl);
+    
+      signaling.onopen = () => {
+        console.log("WebSocket conectado");
+      };
+    
+      signaling.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
+    
+      signaling.onclose = () => {
+        console.log("WebSocket desconectado");
+      };
+    
+      signaling.onmessage = async (event) => {
+        const message = JSON.parse(event.data);
+        console.log("Mensaje recibido:", message);
+    
+        if (message.type === 'offer') {
+          console.log("Oferta recibida");
+          await pc.setRemoteDescription(new RTCSessionDescription(message));
+          const answer = await pc.createAnswer();
+          await pc.setLocalDescription(answer);
+    
+          signaling.send(JSON.stringify({
+            type: 'answer',
+            sdp: pc.localDescription.sdp
+          }));
+          console.log("Respuesta enviada");
+        } else if (message.type === 'candidate') {
+          console.log("Candidato ICE recibido");
+          await pc.addIceCandidate(message.candidate);
+        }
+      };
+    
+      pc.ontrack = (event) => {
+        console.log("Track recibido", event);
+        videoElement.srcObject = event.streams[0];
+      };
+    
+      pc.addTransceiver('video', { direction: 'recvonly' });
+    </script>
+
+
   </body>
 </html>
 {% endblock %}
