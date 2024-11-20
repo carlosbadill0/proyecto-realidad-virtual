@@ -10,15 +10,17 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
-
     <script src="{% static 'js/filtrar.js' %}"></script>
+    <link rel="stylesheet" href="../../static/css/estilos.css" />
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
     {% block extra_css %}{% endblock %}
   </head>
   <body>
+    <h3 style="color: #233666; text-align: left; margin-top: -45px">
+      <i class="bi bi-gear"></i> Administrar Usuarios
+    </h3>
+    <hr class="custom-hr">
     <div class="container mt-4">
-      <h1 style="color: #233666; margin-top: -85px">Administrar Usuarios</h1>
       <div class="row mb-3">
         <div class="col-md-6 d-flex align-items-center">
           <input
@@ -60,13 +62,13 @@
               <td>
                 <button
                   data-id="{{ usuario.id }}"
-                  class="btn btn-warning bi bi-pencil-square"
+                  class="btn btn-edit bi bi-pencil-square"
                   data-toggle="modal"
                   data-target="#editarUsuarioModal{{ usuario.id }}"
                 ></button>
                 <button
                   data-id="{{ usuario.id }}"
-                  class="btn btn-danger bi bi-trash"
+                  class="btn btn-delete bi bi-trash"
                   data-toggle="modal"
                   data-target="#borrarUsuarioModal{{ usuario.id }}"
                 ></button>

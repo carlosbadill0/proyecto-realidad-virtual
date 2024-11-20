@@ -5,27 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/estilos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
     <title>Formulario de Usuario</title>
 </head>
 <body>
     <div class="container">
-        <h2>{{ form.instance.id_usuario|default:"Crear" }} Usuario</h2>
+        <h3 style="color: #233666; text-align: left; margin-top: -45px"><i class="bi bi-person-add"></i> {{ form.instance.id_usuario|default:"Crear" }} Usuario</h3>
+        <hr class="custom-hr">
         <form method="post">
             {% csrf_token %}
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="id_username">RUT</label>
-                        <input type="text" class="form-control" id="id_username" name="username" required>
+                        <input type="text" class="form-control" id="id_username" name="username" required placeholder="12.345.678-9">
                     </div>
+                    <br>
                     <div class="form-group">
                         <label for="id_first_name">Nombre</label>
                         <input type="text" class="form-control" id="id_first_name" name="first_name" required>
                     </div>
+                    <br>
                     <div class="form-group">
                         <label for="id_password1">Contraseña</label>
-                        <input type="password" class="form-control" id="id_password1" name="password1" required>
+                        <input type="password" class="form-control" id="id_password1" name="password1" required placeholder="******">
+                        <h6 style="color: #233666; text-align: left; margin-top: 10px"> La contraseña debe contener almenos 6 caracteres</h6>
                     </div>
                     <div class="form-group">
                         <label for="id_group">Rol</label>
@@ -39,22 +43,30 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="id_email">Correo electrónico</label>
-                        <input type="email" class="form-control" id="id_email" name="email" required>
+                        <input type="email" class="form-control" id="id_email" name="email" required placeholder="correo@ubiobio.cl"> 
                     </div>
+                    <br>
                     <div class="form-group">
                         <label for="id_last_name">Apellido</label>
                         <input type="text" class="form-control" id="id_last_name" name="last_name" required>
                     </div>
+                    <br>
                     <div class="form-group">
                         <label for="id_password2">Confirmar Contraseña</label>
-                        <input type="password" class="form-control" id="id_password2" name="password2" required>
+                        <input type="password" class="form-control" id="id_password2" name="password2" required placeholder="******">
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary btn-block mt-3">Registrarse</button>
-            <button onclick="location.href='{% url 'listar_usuarios' %}'" class="btn btn-secondary btn-block mt-3">Volver</button>
-
+            <div class="container mt-3">
+                <div class="row">
+                  <div class="col text-end">
+                    <button type="submit" class="btn btn-custom2 btn-block mt-3">Registrar</button>
+                    <button onclick="location.href='{% url 'listar_usuarios' %}'" class="btn btn-custom btn-block mt-3">Volver</button>
+                  </div>
+                </div>
+              </div>
         </form>
+        <br>
     </div>
 </body>
 {% include 'footer.html' %}

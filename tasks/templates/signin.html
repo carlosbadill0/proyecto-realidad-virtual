@@ -7,18 +7,19 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/signin.css' %}">
+  <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
   <title>Iniciar sesión</title>
  
 </head>
 <body>
   <div class="container">
     <div class="left-section">
-      <img src="{% static 'images/prueba2.jpg' %}" alt="imagen" />
+      <img src="{% static 'images/prueba4.png' %}" alt="imagen" width="350" height="474" />
       
     </div>
     <div class="right-section">
-      <div class="avatar"></div>
-      <h1>EasyFlow</h1>
+      <img src="{% static 'images/recurso1.png' %} " alt="imagen" class="text-center" width="280" height="150"/>
+      <h6 class="text-center" style="color: #1ea6c6;">Por favor, ingrese sus credenciales</h6>
       <form action="{% url 'signin' %}" method="POST">
         {{ error }}
         {% csrf_token %}
@@ -33,7 +34,7 @@
           <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" />
         </div>
 
-        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+        <button type="submit" class="btn btn-custom2 text-end">Iniciar sesión</button>
       </form>
     </div>
   </div>
