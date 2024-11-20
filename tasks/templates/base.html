@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Monitoreo{% endblock %}</title>
+    <title>{% block title %}EasyFlow{% endblock %}</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -18,37 +18,37 @@
     {% block extra_css %}{% endblock %}
   </head>
   <body>
-    <header class="py-3 mb-3 border-bottom">
-      <div
-        class="container-fluid d-flex justify-content-between align-items-center"
-      >
+    <header class="py-2 mb-2 border-bottom">
+      <div class="row">
+        <div class="col-1">
+          <button id="toggle-sidebar" class="btn btn-custom3 btn-left-absolute">☰</button>
+        </div>
+        <div class="col-9">
+      <div class="container-fluid d-flex justify-content-between align-items-center mt-2">
         {% load static %}
+
         <img
           src="{% static 'images/logo-ubb.png' %}"
           alt="Logo"
           width="200px"
         />
-
-        <!-- Sidebar Toggle Button -->
-        <button id="toggle-sidebar" class="btn btn-light text-right">☰</button>
-
-        <!-- Search Form -->
         <form class="search-bar">
-          {% load static %}
           <img
-            src="{% static 'images/EasyFlow.png' %}"
+            src="{% static 'images/Recurso2.png' %}"
             alt="Logo"
             width="200px"
           />
         </form>
-
-        <!-- Header Icons and Profile Section -->
-
-    
-        
-        <h5>Monitoreo de realidad virtual</h5>
       </div>
-    </header>
+        </div>
+      <div class="col-2 mt-4 text-start">
+        {% if user.is_authenticated %}
+            <a class="dropdown-item bi bi-box-arrow-left" href="/logout"> Cerrar sesión</a>
+            {% endif %}
+      </div>
+      </div>
+    </div>
+    </header>      
 
     <div class="sidebar">
       <!-- User Profile Section -->
@@ -99,14 +99,20 @@
             ><i class="bi bi-gear"></i> Administrar</a
           >
         </li>
-        {% if user.is_authenticated %}
-            <li><a class="dropdown-item bi bi-box-arrow-left" href="/logout"> Cerrar sesión</a></li>
-            {% endif %}
+
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="/administrar/"
+            ><i class="bi bi-info-circle"></i> Acerca de</a
+          >
+        </li>
       </ul>
+   
     </div>
 
     <div class="content">
-      <div class="container mt-5 pt-5">{% block content %}{% endblock %}</div>
+      <div class="container mt-4 pt-4">{% block content %}{% endblock %}</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

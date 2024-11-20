@@ -1,6 +1,6 @@
 
 body {
-  background-color: #f0f8ff; /* Fondo claro */
+  background-color: #F0F8FF;; /* Fondo claro */
   font-family: 'Arial', sans-serif;
 }
 
@@ -40,17 +40,7 @@ body {
   margin-bottom: 20px;
 }
 
-.right-section .avatar {
-  display: block;
-  margin: 0 auto 20px auto;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background-color: #f0f0f0;
-  background-image: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png');
-  background-size: cover;
-  background-position: center;
-}
+
 
 .form-control {
   border-radius: 20px;

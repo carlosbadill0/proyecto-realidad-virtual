@@ -10,12 +10,25 @@ footer {
   align-items: center; /* Alinea verticalmente al centro */
   text-align: left; /* El texto también alineado en el centro */
   z-index: 1000;
+  background-color: #FFFFFF; /* Cambia este color al que desees */
 }
 .footer-content {
   display: flex;
-  justify-content: left;
   flex-grow: 1;
 }
+
+.contact-info div {
+  margin-top: 30px !important; /* Espaciado entre correo y teléfono */
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.contact-info i {
+  margin-right: 5px; /* Espacio entre el icono y el texto */
+}
+
+
 .btn-custom2 {
   background-color: #1ea6c6; /* Color de fondo */
   color: white; /* Color del texto */
@@ -24,13 +37,16 @@ footer {
 .btn-custom2:hover {
   background-color: #1ea6c6; /* Mismo color que el estado normal */
   }
-.contact-info {
-  display: flex-left;
-  align-items: left;
-  justify-content: flex-end;
-  gap: 20px;
-  flex-grow: 1;
-}
-.contact-info i {
-  margin-right: 8px;
-}
+
+  .btn-custom {
+    background-color: #246a7c;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease; /* Transición suave para hover */
+  }
+  
+  .btn-custom:hover {
+    background-color: #1ea6c6;
+  }
+  
+

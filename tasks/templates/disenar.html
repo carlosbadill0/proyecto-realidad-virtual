@@ -15,11 +15,15 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     {% block extra_css %}{% endblock %}
   </head>
   <body>
+    <h3 style="color: #233666; text-align: left; margin-top: -45px">
+      <i class="bi bi-pencil-square"></i> Diseñar evaluaciones
+    </h3>
+    <hr class="custom-hr">
     <div class="container mt-4">
-      <h1 style="color: #233666; margin-top: -85px">Diseñar evaluaciones</h1>
       <div class="row mb-3">
         <div class="col-md-6 d-flex align-items-center">
           <input type="text" id="searchInput" class="form-control me-2" placeholder="Búsqueda" /> 
@@ -56,21 +60,21 @@
                   data-id="{{ evaluacion.id }}"
                   data-toggle="modal"
                   data-target="#verModal"
-                  class="btn btn-info bi bi-eye"
+                  class="btn btn-view bi bi-eye"
                 >
                 </button>
                 <button
                   data-id="{{ evaluacion.id }}"
                   data-toggle="modal"
                   data-target="#editarModal"
-                  class="btn btn-warning bi bi-pencil-square "
+                  class="btn btn-edit bi bi-pencil-square "
                 >
                 </button>
                 <button
                   data-id="{{ evaluacion.id }}"
                   data-toggle="modal"
                   data-target="#borrarModal"
-                  class="btn btn-danger bi bi-trash "
+                  class="btn btn-delete bi bi-trash "
                 >
                 </button>
               </td>

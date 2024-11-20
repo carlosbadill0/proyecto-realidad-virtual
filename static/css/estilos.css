@@ -18,19 +18,50 @@ body {
 }
 
 .btn-view {
-  background-color: #17a2b8;
-  color: white;
+  background-color: #7ED7ED !important;
+  border-color: none !important;
+  color: #2C3E50 !important;
 }
+
+.btn-view:hover {
+  background-color: #6CC4D3 !important; /* Mismo color que el estado normal */
+  color: #2c3e50 !important; 
+  }
+
 
 .btn-edit {
-  background-color: #ffc107;
-  color: white;
+  background-color: #F7CA79 !important;
+  border-color: none !important;
+  color: #2C3E50 !important;
 }
 
+.btn-edit:hover {
+  background-color: #D6AA65 !important; /* Mismo color que el estado normal */
+  color: #2c3e50 !important; 
+  }
+
+
 .btn-delete {
-  background-color: #dc3545;
-  color: white;
+  background-color: #D35266 !important;
+  border-color: none !important;
+  color: white !important;
 }
+
+.btn-delete:hover {
+  background-color: #AF4156 !important; /* Mismo color que el estado normal */
+  color: white !important; 
+  }
+
+.btn-excel {
+  background-color: #65A464 !important;
+  border-color: none !important;
+  color: white !important;
+}
+
+.btn-excel:hover {
+  background-color: #4F824D !important; /* Mismo color que el estado normal */
+  color: white !important; 
+  }
 
 .modal-header {
   background-color: #007bff;
@@ -72,3 +103,211 @@ body {
   color: #1ea6c6;
   font-size: 24px;
 }
+
+/* Estilos generales */
+body {
+  background-color: #F2F2F2; /* Fondo del cuerpo */
+  color: #233666; /* Color principal del texto */
+  font-family: Arial, sans-serif;
+}
+
+/* Encabezados */
+h1, h2, h3 {
+  color: #2C3E50; /* Color de los encabezados */
+  font-weight: bold !important;
+}
+
+/* Botones */
+button, .btn {
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #246A7C; /* Botones principales */
+  color: #FFFFFF;
+}
+
+.btn-secondary {
+  background-color: #7ED7ED; /* Botones secundarios */
+  color: #233666;
+}
+
+.btn-tertiary {
+  background-color: #1EA6C6; /* Botones terciarios */
+  color: #FFFFFF;
+}
+
+/* Tablas */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background-color: #FFFFFF; /* Fondo claro */
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #D6AA65; /* Línea de división */
+}
+
+tr:nth-child(even) {
+  background-color: #F0F8FF; /* Filas oscuras de la tabla */
+}
+
+/* Menú */
+nav {
+  background-color: #FFFFFF; /* Fondo secundario (Menú) */
+  color: #FFFFFF;
+  padding: 15px;
+}
+
+/* Fotos */
+.photo-overlay {
+  background-color: #233666;
+  opacity: 0.3; /* Opacidad del filtro */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* Otros componentes */
+.progress-bar {
+  background-color: #246A7C; /* Línea de carga */
+  height: 5px;
+  width: 50%;
+}
+
+.tooltip {
+  background-color: #AF4156; /* Color de la leyenda */
+  color: #FFFFFF;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+/* Footer */
+footer {
+  background-color: #FFFFFF;
+  color: #FFFFFF;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 14px;
+}
+
+.custom-hr {
+  border: none;
+  height: 2px;
+  background: #233666; ;
+  margin: 20px 0;
+}
+
+.pagination .page-item .page-link {
+  color: #233666; /* Color de texto */
+  background-color: #f2f2f2; /* Fondo de los enlaces */
+  border: 1px solid #233666; /* Borde del paginador */
+}
+.pagination .page-item.active .page-link {
+  background-color: #1EA6C6; /* Fondo del botón activo */
+  color: white; /* Color de texto en el botón activo */
+  border-color: #233666;
+}
+.pagination .page-item.disabled .page-link {
+  color: #ccc; /* Color de botones deshabilitados */
+  background-color: #e9ecef;
+  border-color: #ddd;
+}
+.pagination .page-item .page-link:hover {
+  background-color: #2188A1; /* Color de fondo cuando pasas el mouse */
+  color: white; /* Color de texto cuando pasas el mouse */
+}
+
+.btn-custom2 {
+  background-color: #1ea6c6; /* Color de fondo */
+  color: white; /* Color del texto */
+  border: none; /* Sin borde */
+}
+.btn-custom2:hover {
+  background-color: #2188A1 !important; /* Mismo color que el estado normal */
+  color: white !important; 
+  }
+
+  .btn-custom {
+    background-color: white !important;
+    color: #246A7C !important;
+    border: 1px solid #246A7C !important;
+}
+.btn-custom:hover {
+    background-color: #246A7C !important;
+    color: white !important; /* Mismo color que el estado normal */
+    }
+
+/* Color para las etiquetas */
+form label {
+  color: #2C3E50;
+  font-weight: bold; /* Opcional: Negrita */
+}
+
+/* Color para el texto de entrada */
+form .form-control {
+  color: #2C3E50;
+  border: 1px solid #2C3E50; /* Borde del mismo color */
+}
+
+/* Placeholder en el mismo color */
+form .form-control::placeholder {
+  color: #2C3E50;
+  opacity: 0.6; /* Opcional: Transparencia para diferenciar del texto ingresado */
+}
+
+/* Color para los bordes en foco */
+form .form-control:focus {
+  border-color: #246A7C;
+  box-shadow: 0 0 5px rgba(44, 62, 80, 0.5); /* Efecto de sombra al enfocar */
+}
+
+/* Color del texto en el select */
+form select.form-control {
+  color: #2C3E50;
+  border: 1px solid #2C3E50;
+  background-color: white; /* Fondo blanco */
+}
+
+form select.form-control:focus {
+  border-color: #1EA6C6; /* Color del borde en foco */
+  box-shadow: 0 0 5px rgba(30, 166, 198, 0.5); /* Sombra alrededor */
+  outline: none; /* Elimina el contorno predeterminado */
+}
+
+/* Estilo de las opciones */
+form select.form-control option {
+  color: #2C3E50; /* Color del texto de las opciones */
+  background-color: white; /* Fondo blanco */
+  padding: 5px; /* Espaciado interno */
+}
+
+/* Opciones al pasar el cursor */
+form select.form-control option:hover {
+  background-color: #1EA6C6; /* Fondo azul claro */
+  color: white; /* Texto blanco */
+}
+
+
+/* Texto de la tabla */
+.table th{
+  color: white !important; /* Color blanco */
+  text-align: center; /* Alineación centrada */
+}
+.table td {
+    color: #246A7C !important; /* Color azul oscuro */
+    text-align: center !important;
+    
+}
+
+

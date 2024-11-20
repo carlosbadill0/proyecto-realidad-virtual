@@ -11,6 +11,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+
+    <link rel="stylesheet" href="../../static/css/home.css" />
+    <link rel="stylesheet" href="../../static/css/base.css">
+
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
@@ -18,8 +22,11 @@
   </head>
 
   <body>
+    <h3 style="color: #233666; text-align: left; margin-top: -45px">
+      <i class="bi bi-people"></i> Lista de Expositores
+    </h3>
+    <hr class="custom-hr">
     <div class="container mt-4">
-      <h1 style="color: #233666; margin-top: -85px">Listado de expositores</h1>
       <div class="row mb-3">
         <div class="col-md-6 d-flex align-items-center">
           <input
@@ -61,20 +68,20 @@
                   data-id="{{ expositor.id }}"
                   data-toggle="modal"
                   data-target="#verExpositorModal"
-                  class="btn btn-info bi bi-eye btn-md"
+                  class="btn btn-view bi bi-eye btn-md"
                 ></button>
                 <button
                   data-id="{{ expositor.id }}"
                   data-toggle="modal"
                   data-target="#editarExpositorModal"
-                  class="btn btn-warning bi bi-pencil-square btn-md"
+                  class="btn btn-edit bi bi-pencil-square btn-md"
                 ></button>
                 <button
                   data-id="{{ expositor.id }}"
                   data-nombre="{{ expositor.nombre }}"
                   data-toggle="modal"
                   data-target="#borrarExpositorModal"
-                  class="btn btn-danger bi bi-trash btn-md"
+                  class="btn btn-delete bi bi-trash btn-md"
                 ></button>
               </td>
               <td>
