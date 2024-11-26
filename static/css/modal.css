@@ -21,8 +21,14 @@
   
   
   .modal-title {
-    font-size: 1.5rem;
     font-weight: bold;
+    margin: 0 auto !important;
+    text-align: center !important;
+  }
+
+  .custom-modal-position {
+    top: 50% !important; /* Ajusta este valor según sea necesario */
+    transform: translateY(-50%) !important;
   }
   
   .modal-header .close {
@@ -63,3 +69,4 @@
     margin-top: 10px;
   }
   
+ 

@@ -52,6 +52,18 @@ body {
   color: white !important; 
   }
 
+  .btn-delete2 {
+    background-color: white !important;
+    border-color: #D35266 !important;
+    color: #D35266 !important;
+  }
+
+  .btn-delete2:hover {
+    background-color: #AF4156 !important; /* Mismo color que el estado normal */
+    color: white !important; 
+    }
+
+
 .btn-excel {
   background-color: #65A464 !important;
   border-color: none !important;

@@ -4,13 +4,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
@@ -332,24 +333,32 @@
       aria-labelledby="borrarModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog custom-modal-position"" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="borrarModalLabel">Borrar Evaluación</h5>
+          <div class="modal-header  d-flex justify-content-center">
+            <div class="col-1"></div>
+            <h5 class="modal-title text-decoration-none col-10 text-center py-3" id="borrarModalLabel">Borrar evaluación</h5>
             <button
               type="button"
-              class="close"
+              class="close col-1"
               data-dismiss="modal"
               aria-label="Close"
             >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            <p>¿Estás seguro de que quieres borrar esta evaluación?</p>
-            <button type="button" class="btn btn-danger" id="borrarBtn">
-              Borrar
+          <div class="modal-body text-center">
+            <h6>¿Estás seguro de que quieres borrar esta evaluación?</h6>
+            <p>Esta acción no se puede deshacer.</p>
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-delete2 btn-link fs-6 text-decoration-none col-5 py-3 rounded-0" id="borrarBtn">
+              Eliminar
             </button>
+            <button type="button" class="btn btn-custom btn-link fs-6 text-decoration-none col-5 py-3 rounded-0" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">No, cancelar</span>
+            </button>
+          </div>
           </div>
         </div>
       </div>
@@ -421,12 +430,12 @@
               if (response.success) {
                 location.reload();
               } else {
-                alert("Error al crear la evaluación.");
+                swal("Error", "Error al crear la evaluación.", "error");
               }
             },
             error: function (xhr, status, error) {
               console.log("Error:", error); // Verifica el error
-              alert("Error al crear la evaluación.");
+              swal("Error", "Error al crear la evaluación.", "error");
             },
           });
         });
@@ -485,12 +494,12 @@
                 alert("Evaluación actualizada correctamente.");
                 location.reload();
               } else {
-                alert("Error2222: " + response.error);
+                swal("Error", response.error, "error");
               }
             },
             error: function (xhr, status, error) {
               console.error("Error:", error);
-              alert("Ocurrió un error al actualizar la evaluación.");
+              swal("Error", "Ocurrió un error al actualizar la evaluación.", "error");
             },
           });
         });
@@ -509,7 +518,7 @@
                   if (response.success) {
                     location.reload();
                   } else {
-                    alert("Error al borrar la evaluación.");
+                    swal("Error", "Error al borrar la evaluación.", "error");
                   }
                 },
               });
