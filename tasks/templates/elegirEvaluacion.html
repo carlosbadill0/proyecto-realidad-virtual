@@ -8,13 +8,20 @@
     <title>Formulario de Evaluación</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/elegirEvaluacion.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body> 
+    <div class="row">
+        <h3 style="color: #233666; text-align: left; margin-top: -45px">
+            <i class="bi bi-people"></i> Formulario previo a la evaluación
+          </h3>
+          <hr class="custom-hr">
+    </div>
 
-<div class="container" style="margin-top: -70px">
-    <div class="section">
-        <h2 >Datos del expositor</h2>
+<div class="row">
+    <div class="col-6">
+        <h3 ><i class="bi bi-card-text"></i> Datos del expositor</h3>
         {% for expositor in expositores %}
             {% if expositor.id == expositor_seleccionado.id %}
                 <label for="nombre">Nombre</label>
@@ -27,10 +34,10 @@
         <br>
     </div>
 
-    <div class="section">
+    <div class="col-6">
         <form method="POST" action="{% url 'elegir_evaluacion' expositor_seleccionado.id %}">
             {% csrf_token %}
-            <h2>Datos del evaluador</h2>
+            <h3><i class="bi bi-card-text"></i> Datos del evaluador</h3>
             <label for="fecha-evaluacion">Fecha de Evaluación</label>
             <input type="date" id="fecha-evaluacion" name="fecha_evaluacion" required>
             
@@ -64,6 +71,7 @@
             {% endfor %}
         </form>     
     </div>
+</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

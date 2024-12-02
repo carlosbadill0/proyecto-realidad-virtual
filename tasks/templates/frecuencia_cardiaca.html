@@ -14,9 +14,10 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-    {% load static %} {% comment %}
-    <link rel="stylesheet" href="{% static 'css/evaluar.css' %}" />
-    {% endcomment %}
+    {% load static %} 
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/barraProgreso.css' %}" />
+
     <style>
       /* Estilos generales */
       .contenedor {
@@ -100,7 +101,7 @@
       }
 
       #progress-bar {
-        background-color: #007bff; /* Color de progreso */
+        background-color: #246A7C; /* Color de progreso */
       }
 
       .stage-names {
@@ -112,7 +113,7 @@
         left: 0;
         width: 100%;
         font-size: 0.8rem;
-        color: #495057;
+        color: #233666;
       }
 
       .stage-name {
@@ -121,40 +122,22 @@
         z-index: 1;
         width: 33.3%; /* Cada nombre ocupa un tercio de la barra */
         text-align: center;
-      }
-
-      @media (min-width: 768px) {
-        .content-left,
-        .content-right {
-          flex: 1;
-          min-width: 0; /* Asegura que no se desborde */
-          overflow: hidden; /* Evita desbordamientos */
-        }
+        color: #233666;
       }
 
       /* Estilos para dispositivos móviles pequeños */
-      @media (max-width: 576px) {
-        .content-left,
-        .content-right {
-          padding: 10px;
-          font-size: 14px;
-        }
-
-        #liveVideo {
-          height: 200px;
-        }
-      }
 
       /* Ajuste para dispositivos medianos */
-      @media (max-width: 992px) {
-        .main-container {
-          flex-direction: column;
-        }
-      }
     </style>
   </head>
   <body>
-    <div style="margin-top: -90px">
+    <div>
+      <h3 style="color: #233666; text-align: left; margin-top: -45px">
+        <i class="bi bi-clipboard-pulse"></i> Proceso de evaluación
+      </h3>
+      <hr class="custom-hr">
+    </div>
+    <div style="margin-top: -10px">
       <!-- Barra de Progreso -->
       <div class="container mt-3">
         <div class="progress" style="position: relative; height: 30px">
@@ -169,23 +152,23 @@
           ></div>
         </div>
         <div class="stage-names d-flex justify-content-between mt-2">
-          <span id="stage-name-1" class="stage-name"
-            >1 Colocación de instrumentos</span
+          <span id="stage-name-1" class="stage-name" 
+            ><i class="bi bi-1-circle"></i> Colocación de instrumentos</span
           >
-          <span id="stage-name-2" class="stage-name">2 Ambientación</span>
-          <span id="stage-name-3" class="stage-name">3 Evaluación</span>
+          <span id="stage-name-2" class="stage-name"><i class="bi bi-2-circle"></i> Ambientación</span>
+          <span id="stage-name-3" class="stage-name"><i class="bi bi-3-circle"></i> Evaluación</span>
         </div>
       </div>
 
-      <div class="container mt-5">
+      <div class="container mt-3">
         <!-- Etapa 1: Instrucciones -->
         <div id="stage-1" class="stage-container">
           <div class="row align-items-left">
             <div class="col-md-6">
-              <h3>Instrucciones</h3>
+              <h3><i class="bi bi-card-checklist"></i> Instrucciones de uso</h3>
             </div>
             <div class="col-md-6 text-end">
-              <button id="nextStage1" class="btn btn-primary mt-2">
+              <button id="nextStage1" class="btn btn-custom2 mt-2 mb-2">
                 Siguiente Etapa
               </button>
             </div>
@@ -195,9 +178,20 @@
             <div class="col-md-4">
               <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title">Paso 1</h5>
-                  <p class="card-text">
-                    Descripción del primer paso de la instrucción.
+                  <h5 class="card-title" style="color: #233666">Paso 1</h5>
+                  <p class="card-text text-center">
+                    Encienda los dispositivos de monitoreo (visores y sensores).
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title" style="color: #233666" >Paso 2</h5>
+                  <p class="card-text text-center">
+                    Inicie la aplicación dentro del visor.
                   </p>
                 </div>
               </div>
@@ -205,19 +199,9 @@
             <div class="col-md-4">
               <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title">Paso 2</h5>
-                  <p class="card-text">
-                    Descripción del segundo paso de la instrucción.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Paso 3</h5>
-                  <p class="card-text">
-                    Descripción del tercer paso de la instrucción.
+                  <h5 class="card-title" style="color: #233666" >Paso 3</h5>
+                  <p class="card-text text-center">
+                    Compruebe la conexión del sensor de frecuencia.
                   </p>
                 </div>
               </div>
@@ -229,13 +213,13 @@
         <div id="stage-2" class="stage-container" style="display: none">
           <div class="row align-items-left">
             <div class="col-md-6">
-              <h3>Transmisión en Vivo</h3>
+              <h3><i class="bi bi-camera-video"></i> Transmisión en vivo</h3>
             </div>
             <div class="col-md-6 text-end">
-              <button id="prevStage2" class="btn btn-secondary mt-2">
+              <button id="prevStage2" class="btn btn-custom mt-2">
                 Volver Atrás
               </button>
-              <button id="nextStage2" class="btn btn-primary mt-2">
+              <button id="nextStage2" class="btn btn-custom2 mt-2">
                 Siguiente Etapa
               </button>
             </div>
@@ -243,7 +227,7 @@
           <div class="col-md-12 mt-5 section-card">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Transmisión en Vivo</h5>
+                <h5 class="card-title">Transmisión en vivo</h5>
                 <video id="player-view" autoplay playsinline></video>
               </div>
             </div>
@@ -259,24 +243,24 @@
         >
           <div class="row align-items-left">
             <div class="col-md-6">
-              <h3>Evaluación del Expositor</h3>
+              <h3><i class="bi bi-heart-pulse"></i> Evaluación del expositor</h3>
             </div>
             <div class="col-md-6 text-end">
-              <button id="prevStage3" class="btn btn-secondary mt-4">
+              <button id="prevStage3" class="btn btn-custom mt-2">
                 Volver Atrás
               </button>
 
               <button
                 type="submit"
                 id="evaluationButton"
-                class="btn btn-primary mt-4"
+                class="btn btn-custom2 mt-2"
               >
                 Iniciar evaluación
               </button>
             </div>
           </div>
-          <div class="row">
-            <div class="contenedor">
+          <div class="row mt-2">
+
               <div class="container main-container">
                 <div class="row mb-4">
                   <div class="row">
@@ -294,7 +278,7 @@
                         <div class="card">
                           <div class="card-body">
                             <h5 class="card-title">Visor</h5>
-                            <button id="startCapture2" class="btn btn-primary">
+                            <button id="startCapture2" class="btn btn-custom">
                               Iniciar Transmisión
                             </button>
                             <video id="liveVideo2" autoplay></video>
@@ -328,32 +312,25 @@
                       </div>
                     </div>
 
-                    <div class="col-lg-4 content-right">
-                      <div class="info-box">
-                        <label for="fecha_evaluacion" class="form-label"
-                          >Fecha de Evaluación</label
-                        >
-                        <input
-                          type="date"
-                          class="form-control"
-                          id="fecha_evaluacion"
-                          value="2024-08-20"
-                        />
-                      </div>
 
-                      <div class="info-box">
-                        {% for evaluacion in evaluaciones %} {% if evaluacion.id == ultima_evaluacion.id %} {% if evaluacion.expositor_id == expositor_seleccionado.id %}
-                        <label for="nombre_evaluador" class="form-label"
-                          >Nombre del Evaluador</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="nombre_evaluador"
-                          value="{{ evaluacion.nombre_evaluador }}"
-                        />
-                        {% endif %} {% endif %} {% endfor %}
+
+                    <div class="col-lg-4 content-right">
+                      <div
+                      class="chart-container text-center"
+                      id="frecuencia_cardiaca"
+                    >
+                      <label class="form-label"
+                        >Frecuencia actual:
+                        <span id="frecuencia">{{frecuencia}}</span></label
+                      >
+                      <div class="row">
+                        <canvas
+                          id="graficoFrecuencia"
+                          width="200"
+                          height="100"
+                        ></canvas>
                       </div>
+                    </div>
 
                       <div class="info-box">
                         <form
@@ -382,7 +359,33 @@
                       </div>
 
                       <div class="info-box">
-                        <label class="form-label mt-2">Evaluación de prueba</label>
+                        <label for="fecha_evaluacion" class="form-label"
+                          >Fecha de Evaluación</label
+                        >
+                        <input
+                          type="date"
+                          class="form-control"
+                          id="fecha_evaluacion"
+                          value="2024-08-20"
+                        />
+                      </div>
+
+                      <div class="info-box">
+                        {% for evaluacion in evaluaciones %} {% if evaluacion.id == ultima_evaluacion.id %} {% if evaluacion.expositor_id == expositor_seleccionado.id %}
+                        <label for="nombre_evaluador" class="form-label"
+                          >Nombre del Evaluador</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="nombre_evaluador"
+                          value="{{ evaluacion.nombre_evaluador }}"
+                        />
+                        {% endif %} {% endif %} {% endfor %}
+                      </div>
+
+                      <div class="info-box">
+
                         <button
                           class="btn btn-info text-white fw-bold shadow-sm mt-2"
                           type="button"
@@ -408,25 +411,8 @@
                         </div>
                       </div>
 
-                      <div
-                        class="chart-container text-center"
-                        id="frecuencia_cardiaca"
-                      >
-                        <label class="form-label"
-                          >Frecuencia actual:
-                          <span id="frecuencia">{{frecuencia}}</span></label
-                        >
-                        <div class="row">
-                          <canvas
-                            id="graficoFrecuencia"
-                            width="200"
-                            height="100"
-                          ></canvas>
-                        </div>
-                      </div>
                     </div>
                   </div>
-                </div>
               </div>
             </div>
           </div>

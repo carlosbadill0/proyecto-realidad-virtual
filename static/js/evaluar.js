@@ -24,10 +24,10 @@ function updateProgressBar() {
     const element = document.getElementById(stage);
     if (index + 1 === currentStage) {
       element.style.fontWeight = "bold";
-      element.style.color = "#007bff"; // Color destacado
+      element.style.color = "#233666"; // Color destacado
     } else {
       element.style.fontWeight = "normal";
-      element.style.color = "#495057"; // Color normal
+      element.style.color = "233666"; // Color normal
     }
   });
 }

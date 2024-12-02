@@ -132,6 +132,11 @@ button, .btn {
   color: #FFFFFF;
 }
 
+.btn-primary:hover {
+  background-color: #2188A1 !important; /* Mismo color que el estado normal */
+  color: white !important; 
+  }
+
 .btn-secondary {
   background-color: #7ED7ED; /* Botones secundarios */
   color: #233666;
@@ -309,5 +314,9 @@ form select.form-control option:hover {
     text-align: center !important;
     
 }
+
+
+
+
 
 
