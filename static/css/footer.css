@@ -10,7 +10,6 @@ footer {
   align-items: center; /* Alinea verticalmente al centro */
   text-align: left; /* El texto también alineado en el centro */
   z-index: 1000;
-  background-color: #FFFFFF; /* Cambia este color al que desees */
 }
 .footer-content {
   display: flex;

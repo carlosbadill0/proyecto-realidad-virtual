@@ -14,46 +14,8 @@
     <title>Footer Fijo</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+
     {% block extra_css %}{% endblock %}
-    {% comment %} <style>
-      footer {
-        bottom: 0;
-        width: 100%;
-        background-color: #; /* Añadí un color de fondo para que se vea */
-        border-top: 1px solid #233666;
-        padding: 15px 0;
-        font-size: 18px;
-        color: #233666;
-        display: flex;
-        /* Cambié a center */
-        align-items: center; /* Alinea verticalmente al centro */
-        text-align: left; /* El texto también alineado en el centro */
-        z-index: 1000;
-      }
-      .footer-content {
-        display: flex;
-        justify-content: left;
-        flex-grow: 1;
-      }
-      .btn-custom2 {
-        background-color: #1ea6c6; /* Color de fondo */
-        color: white; /* Color del texto */
-        border: none; /* Sin borde */
-      }
-      .btn-custom2:hover {
-        background-color: #1ea6c6; /* Mismo color que el estado normal */
-        }
-      .contact-info {
-        display: flex-left;
-        align-items: left;
-        justify-content: flex-end;
-        gap: 20px;
-        flex-grow: 1;
-      }
-      .contact-info i {
-        margin-right: 8px;
-      }
-    </style> {% endcomment %}
   </head>
   <body>   
     <footer>

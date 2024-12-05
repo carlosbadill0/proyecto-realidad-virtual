@@ -315,8 +315,25 @@ form select.form-control option:hover {
     
 }
 
+.dropdown-menu {
+  background-color: #f8f9fa !important; /* Fondo claro */
+  border: 1px solid #ddd !important; /* Borde */
+  border-radius: 5px !important; /* Bordes redondeados */
+}
 
+.dropdown-item {
+  color: #233666 !important; /* Color del texto */
+  padding: 10px 20px !important; /* Espaciado interno */
+}
 
+.dropdown-item:hover {
+  background-color: #1ea6c6 !important; /* Fondo al pasar el mouse */
+  color: white !important; /* Color del texto al pasar el mouse */
+}
 
+.dropdown-item:active {
+  background-color: #1ea6c6 !important; /* Cambia este color al que prefieras */
+  color: white !important; /* Color del texto al seleccionar */
+}
 
 
