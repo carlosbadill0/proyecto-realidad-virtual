@@ -19,7 +19,7 @@
           <hr class="custom-hr">
     </div>
 
-<div class="row">
+<div class="row" style="color: #233666">
     <div class="col-6">
         <h3 ><i class="bi bi-card-text"></i> Datos del expositor</h3>
         {% for expositor in expositores %}
@@ -32,27 +32,29 @@
             {% endif %}
         {% endfor %}
         <br>
+        
     </div>
 
     <div class="col-6">
         <form method="POST" action="{% url 'elegir_evaluacion' expositor_seleccionado.id %}">
             {% csrf_token %}
             <h3><i class="bi bi-card-text"></i> Datos del evaluador</h3>
-            <label for="fecha-evaluacion">Fecha de Evaluación</label>
+            <label for="fecha-evaluacion" style="color: #233666">Fecha de Evaluación</label>
             <input type="date" id="fecha-evaluacion" name="fecha_evaluacion" required>
             
-            <label for="nombre-evaluador">Nombre del evaluador</label>
-            <input type="text" id="nombre-evaluador" name="nombre_evaluador" required>
+            <label for="nombre-evaluador" style="color: #233666">Nombre del evaluador</label>
+            <input type="text" id="nombre-evaluador" name="nombre_evaluador" value="{{ nombre_usuario }}" required>
             
-            <label for="evaluacion">Evaluación</label>
-            <select id="evaluacion" name="evaluacion_id" required>
+            <h3 class="mt-3"> <i class="bi bi-folder-plus"></i> Casos de estrés de la evaluación</h3>
+            
+            <label for="evaluacion" style="color: #233666">Evaluación</label>
+            <select class="mb-2" id="evaluacion" name="evaluacion_id" required>
                 <option value="">Seleccionar evaluación</option>
                 {% for evaluation in evaluations %}
                 <option value="{{ evaluation.id }}">{{ evaluation.nombre }}</option>
                 {% endfor %}
             </select>
 
-            <h3>Casos de estrés de la evaluación</h3>
             <div class="stress-cases" id="stress-cases" >
                 <!-- Los escenarios se actualizarán aquí -->
             </div>
@@ -62,7 +64,7 @@
             {% for expositor in expositores %}
                 {% if expositor.id == expositor_seleccionado.id %}
                     <div class="button">
-                        <button class="btn btn-custom2 evaluarExpositorBtn" data-id="{{ expositor.id }}">
+                        <button class="btn btn-custom2 evaluarExpositorBtn mb-3" data-id="{{ expositor.id }}">
                             Evaluar expositor
                             <i class="bi bi-clipboard-pulse"></i>
                         </button>
@@ -76,6 +78,17 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const fechaEvaluacionInput = document.getElementById("fecha-evaluacion");
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses empiezan desde 0
+        const year = today.getFullYear();
+        const todayString = `${year}-${month}-${day}`;
+        fechaEvaluacionInput.value = todayString;
+    });
+
     // Manejo del botón de evaluación
     $(document).ready(function () {
         $('#evaluarExpositorBtn').click(function () {
@@ -131,5 +144,6 @@
     {{ scenarios_by_evaluation|safe }}
 </script>
 </body>
+{% include 'footer.html' %}
 </html>
 {% endblock %}

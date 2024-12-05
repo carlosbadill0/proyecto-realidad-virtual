@@ -129,3 +129,84 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+function parseDate(dateString) {
+  // Intenta convertir cadenas comunes (como DD/MM/YYYY o YYYY-MM-DD) en objetos Date
+  const parts = dateString.split(/[-/]/); // Admite '-' o '/' como separador
+  if (parts.length === 3) {
+      if (parts[0].length === 4) {
+          // Formato: YYYY-MM-DD
+          return new Date(parts[0], parts[1] - 1, parts[2]);
+      } else {
+          // Formato: DD/MM/YYYY
+          return new Date(parts[2], parts[1] - 1, parts[0]);
+      }
+  }
+  return new Date(dateString); // Último recurso: confiar en el constructor Date
+}
+
+function sortTable(column, order) {
+const table = document.querySelector('table tbody');
+const rows = Array.from(table.rows);
+
+rows.sort((a, b) => {
+    let aText = a.querySelector(`td[data-column="${column}"]`).textContent.trim();
+    let bText = b.querySelector(`td[data-column="${column}"]`).textContent.trim();
+
+    if (column === 'date') {
+        aText = parseDate(aText);
+        bText = parseDate(bText);
+    }
+
+    if (order === 'asc') {
+        return aText > bText ? 1 : -1;
+    } else {
+        return aText < bText ? 1 : -1;
+    }
+});
+
+rows.forEach(row => table.appendChild(row));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const table = document.getElementById('evaluationTable');
+    const noResultsMessage = document.getElementById('noResultsMessage');
+
+    if (searchInput && table && noResultsMessage) {
+        const rows = table.getElementsByTagName('tr');
+
+        searchInput.addEventListener('input', function() {
+            const filter = searchInput.value.toLowerCase();
+            let hasResults = false;
+
+            for (let i = 1; i < rows.length; i++) { // Start from 1 to skip table header
+                let cells = rows[i].getElementsByTagName('td');
+                let match = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j] && cells[j].getAttribute('data-column') === 'expositor') {
+                        if (cells[j].innerText.toLowerCase().indexOf(filter) > -1) {
+                            match = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (match) {
+                    rows[i].style.display = '';
+                    hasResults = true;
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+
+            if (hasResults) {
+                noResultsMessage.style.display = 'none';
+            } else {
+                noResultsMessage.style.display = 'block';
+            }
+        });
+    }
+});
+

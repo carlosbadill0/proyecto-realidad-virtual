@@ -13,6 +13,8 @@ from django.utils import timezone # type: ignore
 from django.views.decorators.csrf import csrf_exempt # type: ignore
 from django.views.decorators.http import require_http_methods # type: ignore
 from django.core.paginator import Paginator # type: ignore
+from django.db.models import Q, F, Value
+from django.db.models.functions import Concat
 
 from .forms import (EvaluacionForm, EvaluacionRealizadaForm, ExpositorForm,
                     PracticanteForm, UserForm)
@@ -178,14 +180,35 @@ def mostrar_frecuencia_cardiaca(request):
 
 
 #usuarios
+from django.db.models import Q, F, Value
+from django.db.models.functions import Concat
+
 def listar_usuarios(request):
-    usuarios = User.objects.all()
-    grupos = Group.objects.all()
-    contexto = {
-        'usuarios': usuarios,
-        'grupos': grupos
-    }
-    return render(request, 'listar_usuarios.html', contexto)
+    query = request.GET.get('q', '')
+    sort_by = request.GET.get('sort_by', 'first_name')
+    order = request.GET.get('order', 'asc')
+
+    usuarios = User.objects.annotate(
+        full_name=Concat(F('first_name'), Value(' '), F('last_name'))
+    )
+
+    if query:
+        usuarios = usuarios.filter(full_name__icontains=query)
+
+    if order == 'desc':
+        sort_by = '-' + sort_by
+
+    usuarios = usuarios.order_by(sort_by)
+    paginator = Paginator(usuarios, 5)  
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'listar_usuarios.html', {
+        'page_obj': page_obj,
+        'query': query,
+        'sort_by': sort_by,
+        'order': order,
+    })
 
 def crear_usuario(request):
     if request.method == 'GET':
@@ -245,8 +268,25 @@ def eliminar_usuario(request, id):
 
 #evaluaciones
 def lista_evaluaciones(request):
-    evaluaciones = Evaluacion.objects.all()
+    query = request.GET.get('q', '')
+    sort_by = request.GET.get('sort_by', 'nombre')
+    order = request.GET.get('order', 'asc')
+
+    if query:
+        evaluaciones = Evaluacion.objects.filter(nombre__icontains=query)
+    else:
+        evaluaciones = Evaluacion.objects.all()
+
+    if order == 'desc':
+        sort_by = '-' + sort_by
+
+    evaluaciones = evaluaciones.order_by(sort_by)
+    
     scenarios = Scenario.objects.all()
+    paginator = Paginator(evaluaciones, 5)  # Mostrar 10 evaluaciones por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     if request.method == 'POST':
         form = EvaluacionForm(request.POST)
         if form.is_valid():
@@ -258,9 +298,12 @@ def lista_evaluaciones(request):
         form = EvaluacionForm()
 
     return render(request, 'disenar.html', {
-        'evaluaciones': evaluaciones,
+        'page_obj': page_obj,
         'form': form,
         'scenarios': scenarios,
+        'query': query,
+        'sort_by': sort_by,
+        'order': order,
     })
 
 def detalle_evaluacion(request, pk):
@@ -380,19 +423,33 @@ def is_evaluator(user):
 
 #expositores
 def lista_expositores(request):
-    query = request.GET.get('q')
+    query = request.GET.get('q', '')
+    sort_by = request.GET.get('sort_by', 'nombre')
+    order = request.GET.get('order', 'asc')
+    
     if query:
         expositores = Expositores.objects.filter(nombre__icontains=query)
     else:
         expositores = Expositores.objects.all()
         
-    expositores = Expositores.objects.all()
+    if order == 'desc':
+        sort_by = '-' + sort_by
+        
+        
+    expositores = expositores.order_by(sort_by)
+        
     evaluations = Evaluacion.objects.all()
-    paginator = Paginator(expositores, 5)  # Mostrar 8 evaluaciones por página
+    paginator = Paginator(expositores, 5) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    return render(request, 'lista_expositores.html', {'expositores': expositores, 'evaluations': evaluations, 'page_obj': page_obj})
+    return render(request, 'lista_expositores.html', {
+        'page_obj': page_obj,
+        'evaluations': evaluations, 
+        'query': query,
+        'sort_by': sort_by,
+        'order': order,
+    })
 
 def detalle_expositor(request, pk):
     expositor = get_object_or_404(Expositores, pk=pk)
@@ -431,7 +488,7 @@ def elegir_evaluacion(request, pk):
     expositor_seleccionado = get_object_or_404(Expositores, pk=pk)
     expositores = Expositores.objects.all()
     evaluations = Evaluacion.objects.all()
-    scenarios_by_evaluation = {  ##linea para mostrar los escenarios de cada evaluacion al elegir una evaluacion
+    scenarios_by_evaluation = {
         evaluation.id: list(evaluation.scenarios.values('function_name', 'duration', 'tag_name'))
         for evaluation in evaluations
     }
@@ -448,15 +505,15 @@ def elegir_evaluacion(request, pk):
             observacion_inicial=observacion_inicial,
             evaluacion_aplicada_id=evaluacion_id
         )
-        
 
         return redirect('evaluar_expositor', id=expositor_seleccionado.id, id_evaluacion=evaluacion_realizada.id)
 
     return render(request, 'elegirEvaluacion.html', {
         'expositor_seleccionado': expositor_seleccionado,
         'expositores': expositores,
-        'scenarios_by_evaluation' : scenarios_by_evaluation,
-        'evaluations': evaluations
+        'scenarios_by_evaluation': scenarios_by_evaluation,
+        'evaluations': evaluations,
+        'nombre_usuario': request.user.get_full_name()  # Pasar el nombre completo del usuario
     })
 
 
@@ -556,16 +613,31 @@ def evaluar_expositor(request, id, id_evaluacion):
     
 #evaluaciones realizadas
 def listar_evaluaciones_realizadas(request):
-    evaluaciones_realizadas = EvaluacionRealizada.objects.all()
-    paginator = Paginator(evaluaciones_realizadas, 5)  # Mostrar 8 evaluaciones por página
+    query = request.GET.get('q', '')
+    sort_by = request.GET.get('sort_by', 'fecha_evaluacion')
+    order = request.GET.get('order', 'asc')
 
+    evaluaciones_realizadas = EvaluacionRealizada.objects.all()
+
+    if query:
+        evaluaciones_realizadas = evaluaciones_realizadas.filter(expositor__nombre__icontains=query)
+
+    if order == 'desc':
+        sort_by = '-' + sort_by.lstrip('-')
+    else:
+        sort_by = sort_by.lstrip('-')
+
+    evaluaciones_realizadas = evaluaciones_realizadas.order_by(sort_by)
+    paginator = Paginator(evaluaciones_realizadas, 5)  # Mostrar 5 evaluaciones por página
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+
     return render(request, 'listar_evaluaciones_realizadas.html', {
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'query': query,
+        'sort_by': sort_by,
+        'order': order,
     })
- 
 def detalle_evaluacionRealizada(request, pk):
     evaluacion = get_object_or_404(EvaluacionRealizada, pk=pk)
     data = {
