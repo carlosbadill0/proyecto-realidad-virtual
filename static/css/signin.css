@@ -8,7 +8,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100vh;
+  height: 110vh;
 }
 
 .left-section {
@@ -17,6 +17,7 @@ body {
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
+  border: 1px solid #233666 !important;
 }
 
 .left-section img {

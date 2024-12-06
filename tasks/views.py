@@ -203,11 +203,14 @@ def listar_usuarios(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    grupos = Group.objects.all()
+
     return render(request, 'listar_usuarios.html', {
         'page_obj': page_obj,
         'query': query,
         'sort_by': sort_by,
         'order': order,
+        'grupos': grupos,
     })
 
 def crear_usuario(request):
@@ -812,3 +815,6 @@ def exportar_evaluacion_excel(request, pk):
     response['Content-Disposition'] = f'attachment; filename=evaluacion_{pk}.xlsx'
     wb.save(response)
     return response
+
+def acerca_de(request):
+    return render(request, 'acerca_de.html')

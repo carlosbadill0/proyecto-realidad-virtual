@@ -27,7 +27,9 @@
   
   .modal-header .close {
     color: #ffffff;
+    background-color: #1EA6C6;
   }
+
   
   .modal-body {
     padding: 20px;
@@ -61,5 +63,30 @@
   
   .modal-body .col {
     margin-top: 10px;
+  }
+  
+  #verScenarios {
+    margin-top: 10px;
+  }
+  
+  #verScenarios .list-group-item {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+  .list-group-item {
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .list-group-item:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.02);
+  }
+  
+  .form-label {
+    font-size: 1.2rem;
+    font-weight: bold;
   }
   

@@ -17,6 +17,28 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     {% block extra_css %}{% endblock %}
+
+    <style>
+      header {
+        overflow: hidden; /* Evita desbordamientos */
+      }
+    
+      header img {
+        height: 50px; /* Tamaño fijo */
+        width: auto; /* Mantener proporciones */
+        max-width: 100%; /* Garantizar que no exceda el contenedor */
+      }
+    
+      /* Controlar el contenedor */
+      .fixed-image-container {
+        height: 50px; /* Tamaño fijo del contenedor */
+        width: auto; /* Adaptarse al contenido */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden; /* Evitar desbordamientos */
+      }
+    </style>
   </head>
   <body>
     <header class="py-2 mb-2 border-bottom">
@@ -24,33 +46,32 @@
         <div class="col-1">
           <button id="toggle-sidebar" class="btn btn-custom3 btn-left-absolute">☰</button>
         </div>
-        <div class="col-9">
-      <div class="container-fluid d-flex justify-content-between align-items-center mt-2">
-        {% load static %}
-
-        <img
-          src="{% static 'images/logo-ubb.png' %}"
-          alt="Logo"
-          style="height: 2rem; width: auto;"
-        />
-        <form class="search-bar">
-          <img
-            src="{% static 'images/Recurso2.png' %}"
-            alt="Logo"
-            width="200px"
-          />
-        </form>
-      </div>
+        <div class="col-9 fixed-col">
+          <div class="container-fluid d-flex justify-content-between align-items-center mt-2">
+            {% load static %}
+            <div class="fixed-image-container">
+              <img
+                src="{% static 'images/logo-ubb.png' %}"
+                alt="Logo"
+              />
+            </div>
+            <form class="search-bar">
+              <div class="fixed-image-container">
+                <img
+                  src="{% static 'images/Recurso2.png' %}"
+                  alt="Logo"
+                />
+              </div>
+            </form>
+          </div>
         </div>
-      <div class="col-2 mt-4 text-start">
-        {% if user.is_authenticated %}
+        <div class="col-2 mt-2 text-center">
+          {% if user.is_authenticated %}
             <a class="dropdown-item bi bi-box-arrow-left" href="/logout"> Cerrar sesión</a>
-            {% endif %}
+          {% endif %}
+        </div>
       </div>
-      </div>
-    </div>
-    </header>      
-
+    </header>
     <div class="sidebar">
       <!-- User Profile Section -->
       {% comment %} <div class="user-info">
@@ -90,6 +111,7 @@
           <a
             class="nav-link {% if request.path == '/expositores/' %}fw-bold{% endif %}"
             href="/expositores/"
+           
             ><i class="bi bi-people"></i> Expositores</a
           >
         </li>
@@ -101,13 +123,10 @@
           >
         </li>
 
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            href="/administrar/"
-            ><i class="bi bi-info-circle"></i> Acerca de</a
-          >
-        </li>
+        <a class="nav-link {% if request.path == '/acerca-de/' %}fw-bold{% endif %}" href="{% url 'acerca_de' %}">
+          <i class="bi bi-info-circle"></i> Acerca de
+        </a>
+      </li>
       </ul>
    
     </div>

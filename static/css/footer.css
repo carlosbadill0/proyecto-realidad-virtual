@@ -31,7 +31,7 @@ footer {
 .btn-custom2 {
   background-color: #1ea6c6; /* Color de fondo */
   color: white; /* Color del texto */
-  border: none; /* Sin borde */
+  border: 1px solid #1ea6c6 !important;
 }
 .btn-custom2:hover {
   background-color: #1ea6c6; /* Mismo color que el estado normal */
