@@ -236,7 +236,7 @@ footer {
 .btn-custom2 {
   background-color: #1ea6c6; /* Color de fondo */
   color: white; /* Color del texto */
-  border: none; /* Sin borde */
+  border: 1px solid #1ea6c6 !important; /* Sin borde */
 }
 .btn-custom2:hover {
   background-color: #2188A1 !important; /* Mismo color que el estado normal */
@@ -252,6 +252,17 @@ footer {
     background-color: #246A7C !important;
     color: white !important; /* Mismo color que el estado normal */
     }
+
+.btn-custom4 {
+      background-color: #1ea6c6 !important;
+      color: white !important;
+      border: 1px solid #1ea6c6 !important;
+  }
+
+.btn-custom4:hover {
+      background-color: #2188A1 !important;
+      color: white !important; /* Mismo color que el estado normal */
+      }
 
 /* Color para las etiquetas */
 form label {

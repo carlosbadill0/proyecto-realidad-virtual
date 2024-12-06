@@ -103,32 +103,36 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
   });
-
-  // Borrar evaluación
-  document.querySelectorAll(".borrarEvaluacionBtn").forEach(function (button) {
-    button.addEventListener("click", function () {
-      var url = this.getAttribute("data-url");
-      var borrarEvaluacionModal = new bootstrap.Modal(document.getElementById("borrarEvaluacionModal"));
-      document.getElementById("confirmarBorrarBtn").onclick = function () {
-        fetch(url, {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              location.reload();
-            } else {
-              alert("Error al borrar la evaluación.");
-            }
-          });
+  document.addEventListener("DOMContentLoaded", function () {
+    const confirmarBorrarBtn = document.getElementById("confirmarBorrarBtn");
+    if (confirmarBorrarBtn) {
+      confirmarBorrarBtn.onclick = function () {
+        const csrfTokenElement = document.querySelector("[name=csrfmiddlewaretoken]");
+        if (csrfTokenElement) {
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": csrfTokenElement.value,
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                location.reload();
+              } else {
+                alert("Error al borrar la evaluación.");
+              }
+            });
+        } else {
+          console.error("El token CSRF no se encontró en el DOM.");
+        }
       };
-      borrarEvaluacionModal.show();
-    });
+    } else {
+      console.error("El botón confirmarBorrarBtn no se encontró en el DOM.");
+    }
   });
 });
+  
 
 function parseDate(dateString) {
   // Intenta convertir cadenas comunes (como DD/MM/YYYY o YYYY-MM-DD) en objetos Date

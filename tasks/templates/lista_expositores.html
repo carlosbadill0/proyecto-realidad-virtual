@@ -156,9 +156,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
+        <div class="col-1"></div>
+        <div class="col-10 text-center">
         <h5 class="modal-title" id="crearExpositorModalLabel">
           Crear Expositor
         </h5>
+        </div>
+        <div class="col-1">
         <button
           type="button"
           class="close"
@@ -167,12 +171,13 @@
         >
           <span aria-hidden="true">&times;</span>
         </button>
+        </div>
       </div>
       <div class="modal-body">
         <form id="crearExpositorForm">
           <div class="container">
             <div class="row">
-              <div class="col-md-6">
+              <div class="col">
                 <div class="form-group">
                   <label for="nombre">Nombre</label>
                   <input
@@ -182,24 +187,19 @@
                     name="nombre"
                   />
                 </div>
+              </div>
+              <div class="col">
                 <div class="form-group">
-                  <label for="fecha_ingreso">Fecha de Ingreso</label>
+                  <label for="carrera">Carrera</label>
                   <input
-                    type="date"
+                    type="text"
                     class="form-control"
-                    id="fecha_ingreso"
-                    name="fecha_ingreso"
+                    id="carrera"
+                    name="carrera"
                   />
                 </div>
-                <div class="form-group">
-                  <label for="fecha_nacimiento">Fecha de Nacimiento</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    id="fecha_nacimiento"
-                    name="fecha_nacimiento"
-                  />
-                </div>
+              </div>
+              <div class="col">
                 <div class="form-group">
                   <label for="edad">Edad</label>
                   <input
@@ -210,6 +210,45 @@
                     required
                   />
                 </div>
+              </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                <div class="form-group">
+                  <label for="fecha_ingreso">Fecha de Ingreso</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="fecha_ingreso"
+                    name="fecha_ingreso"
+                  />
+                </div>
+                </div>
+                <div class="col">
+                <div class="form-group">
+                  <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="fecha_nacimiento"
+                    name="fecha_nacimiento"
+                  />
+                </div>
+                </div>
+                <div class="col">
+                <div class="form-group">
+                  <label for="semestre_academico">Semestre Académico</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="semestre_academico"
+                    name="semestre_academico"
+                  />
+                </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
                 <div class="form-group">
                   <label for="genero">Género</label>
                   <input
@@ -220,25 +259,7 @@
                   />
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="semestre_academico">Semestre Académico</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="semestre_academico"
-                    name="semestre_academico"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="carrera">Carrera</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="carrera"
-                    name="carrera"
-                  />
-                </div>
+              <div class="col">
                 <div class="form-group">
                   <label for="observacion_inicial">Observación Inicial</label>
                   <textarea
@@ -247,19 +268,28 @@
                     name="observacion_inicial"
                   ></textarea>
                 </div>
+              </div>
+              </div>
+          </div>
+        </div>
+              <div class="modal-footer flex-nowrap p-0">
+                <button
+                type="button"
+                class="btn btn-lg btn-custom fs-6 text-decoration-none col-6 py-3 m-0 rounded-0"
+                data-dismiss="modal"
+              >
+                Cancelar
+              </button>
                 <button
                   type="button"
-                  class="btn btn-custom2"
+                  class="btn btn-lg btn-custom4 fs-6 text-decoration-none col-6 py-3 m-0 rounded-0"
                   id="crearExpositorBtn"
                 >
                   Guardar
                 </button>
               </div>
-            </div>
           </div>
         </form>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -275,9 +305,13 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
+            <div class="col-1"></div>
+            <div class="col-10 text-center">
             <h5 class="modal-title" id="verExpositorModalLabel">
-              Detalles del Expositor
+              Información sobre el expositor
             </h5>
+            </div>
+            <div class="col-1">
             <button
               type="button"
               class="close"
@@ -286,9 +320,11 @@
             >
               <span aria-hidden="true">&times;</span>
             </button>
+            </div>
           </div>
           <div class="modal-body">
             <div class="row">
+              <div class="col">
               <div class="form-group">
                 <label for="verNombre">Nombre</label>
                 <input
@@ -298,7 +334,35 @@
                   readonly
                 />
               </div>
+              </div>
               <div class="col">
+              
+                <div class="form-group">
+                  <label for="verCarrera">Carrera</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="verCarrera"
+                    readonly
+                  />
+                </div>
+
+              </div>
+              <div class="col">
+              <div class="form-group">
+                <label for="verEdad">Edad</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="verEdad"
+                  readonly
+                />
+              </div>
+              </div>
+            </div>
+              <div class="row">
+              <div class="col">
+
                 <div class="form-group">
                   <label for="verFechaIngreso">Fecha de Ingreso</label>
                   <input
@@ -307,32 +371,6 @@
                     id="verFechaIngreso"
                     readonly
                   />
-                </div>
-                <div class="form-group">
-                  <label for="verEdad">Edad</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="verEdad"
-                    readonly
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="verSemestreAcademico">Semestre Académico</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="verSemestreAcademico"
-                    readonly
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="verObservacionInicial">Observación Inicial</label>
-                  <textarea
-                    class="form-control"
-                    id="verObservacionInicial"
-                    readonly
-                  ></textarea>
                 </div>
               </div>
               <div class="col">
@@ -345,6 +383,42 @@
                     readonly
                   />
                 </div>
+              </div>
+              <div class="col">
+                <div class="form-group">
+                  <label for="verSemestreAcademico">Semestre Académico</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="verSemestreAcademico"
+                    readonly
+                  />
+                </div>
+              </div>
+              </div>
+              <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label for="verObservacionInicial">Observación Inicial</label>
+                  <textarea
+                    class="form-control"
+                    id="verObservacionInicial"
+                    readonly
+                  ></textarea>
+                </div>
+                
+              </div>
+              <div class="col">
+                <div class="form-group">
+                  <label for="verObservacionFinal">Observación Final</label>
+                  <textarea
+                    class="form-control"
+                    id="verObservacionFinal"
+                    readonly
+                  ></textarea>
+                </div>
+              </div>
+              <div class="col">
                 <div class="form-group">
                   <label for="verGenero">Género</label>
                   <input
@@ -354,23 +428,8 @@
                     readonly
                   />
                 </div>
-                <div class="form-group">
-                  <label for="verCarrera">Carrera</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="verCarrera"
-                    readonly
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="verObservacionFinal">Observación Final</label>
-                  <textarea
-                    class="form-control"
-                    id="verObservacionFinal"
-                    readonly
-                  ></textarea>
-                </div>
+                
+              </div>
               </div>
             </div>
           </div>
@@ -391,9 +450,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
+        <div class="col-1"></div>
+        <div class="col-10 text-center">
         <h5 class="modal-title" id="editarExpositorModalLabel">
           Editar Expositor
         </h5>
+        </div>
+        <div class="col-1">
         <button
           type="button"
           class="close"
@@ -402,6 +465,7 @@
         >
           <span aria-hidden="true">&times;</span>
         </button>
+        </div>
       </div>
       <div class="modal-body">
         <form id="editarExpositorForm">
@@ -418,15 +482,19 @@
                   name="nombre"
                 />
               </div>
+            </div>
+            <div class="col">
               <div class="form-group">
-                <label for="editarFechaIngreso">Fecha de Ingreso</label>
+                <label for="editarCarrera">Carrera</label>
                 <input
-                  type="date"
+                  type="text"
                   class="form-control"
-                  id="editarFechaIngreso"
-                  name="fecha_ingreso"
+                  id="editarCarrera"
+                  name="carrera"
                 />
               </div>
+            </div>
+            <div class="col">
               <div class="form-group">
                 <label for="EditarEdad">Edad</label>
                 <input
@@ -436,25 +504,20 @@
                   name="edad"
                 />
               </div>
-              <div class="form-group">
-                <label for="editarSemestre_academico">Semestre Académico</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="editarSemestre_academico"
-                  name="semestre_academico"
-                />
-              </div>
-              <div class="form-group">
-                <label for="editarObservacion_inicial">Observación Inicial</label>
-                <textarea
-                  class="form-control"
-                  id="editarObservacion_inicial"
-                  name="observacion_inicial"
-                ></textarea>
-              </div>
             </div>
-
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="editarFechaIngreso">Fecha de Ingreso</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="editarFechaIngreso"
+                  name="fecha_ingreso"
+                />
+            </div>
+            </div>
             <div class="col">
               <div class="form-group">
                 <label for="editarFecha_nacimiento">Fecha de Nacimiento</label>
@@ -465,24 +528,31 @@
                   name="fecha_nacimiento"
                 />
               </div>
+            </div>
+            <div class="col">
               <div class="form-group">
-                <label for="editarGenero">Género</label>
+                <label for="editarSemestre_academico">Semestre Académico</label>
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
-                  id="editarGenero"
-                  name="genero"
+                  id="editarSemestre_academico"
+                  name="semestre_academico"
                 />
               </div>
-              <div class="form-group">
-                <label for="editarCarrera">Carrera</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="editarCarrera"
-                  name="carrera"
-                />
+            </div>
+          </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label for="editarObservacion_inicial">Observación Inicial</label>
+                  <textarea
+                    class="form-control"
+                    id="editarObservacion_inicial"
+                    name="observacion_inicial"
+                  ></textarea>
+                </div>
               </div>
+              <div class="col">
               <div class="form-group">
                 <label for="editarObservacion_final">Observación Final</label>
                 <textarea
@@ -491,16 +561,36 @@
                   name="observacion_final"
                 ></textarea>
               </div>
+              </div>
+              <div class="col">
+                <div class="form-group">
+                  <label for="editarGenero">Género</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editarGenero"
+                    name="genero"
+                  />
+                </div>
+                </div>
             </div>
           </div>
-
+          <div class="modal-footer flex-nowrap p-0">
+            <button
+            type="button"
+            class="btn btn-lg btn-custom fs-6 text-decoration-none col-6 py-3 m-0 rounded-0"
+            data-dismiss="modal"
+          >
+            Cancelar
+          </button>
           <button
             type="button"
-            class="btn btn-custom2"
+            class="btn btn-lg btn-custom4 fs-6 text-decoration-none col-6 py-3 m-0 rounded-0"
             id="editarExpositorBtn"
           >
             Guardar
           </button>
+          </div>
         </form>
       </div>
     </div>
@@ -520,9 +610,13 @@ aria-hidden="true"
 <div class="modal-dialog" role="document">
   <div class="modal-content">
     <div class="modal-header">
+      <div class="col-1"></div>
+      <div class="col-10">
       <h5 class="modal-title text-center" id="borrarExpositorModalLabel">
-        Borrar Expositor
+        Eliminar expositor
       </h5>
+      </div>
+      <div class="col-1">
       <button
         type="button"
         class="close"
@@ -531,19 +625,28 @@ aria-hidden="true"
       >
         <span aria-hidden="true">&times;</span>
       </button>
-    </div>
-    <div class="modal-body text-center">
-      <h5>¿Estás seguro de que quieres borrar a <strong id="nombreExpositorBorrar"></strong>?</j5>
-      <div class="d-flex justify-content-end">
-        <button
-          type="button"
-          class="btn btn-danger"
-          id="borrarExpositorBtn"
-        >
-          Borrar
-        </button>
       </div>
     </div>
+    <div class="modal-body text-center">
+      <h4 style="color: #233666;">¿Está seguro de que quiere borrar al expositor:  <strong id="nombreExpositorBorrar"></strong>?</h4>
+      <h6 style="color: #2C3E50" class="mb-0">Esta acción no se puede deshacer</h6>
+    </div>
+        <div class="modal-footer flex-nowrap p-0">
+          <button
+            type="button"
+            class="btn btn-lg btn-custom fs-6 text-decoration-none col-6 py-3 m-0 rounded-0"
+            data-dismiss="modal"
+          >
+            Cancelar
+          </button>
+        <button
+          type="button"
+          class="btn btn-lg btn-delete fs-6 text-decoration-none col-6 py-3 m-0 rounded-0"
+          id="borrarExpositorBtn"
+        >
+          Eliminar
+        </button>
+      </div>
   </div>
 </div>
 </div>
