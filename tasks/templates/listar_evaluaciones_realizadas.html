@@ -63,6 +63,7 @@
               <th>Fecha</th>
               <th>Acciones</th>
               <th>Exportar excel</th>
+              <th>Video</th>
             </tr>
           </thead>
           <tbody class="text-center">
@@ -99,6 +100,16 @@
                   class="btn btn-excel bi bi-file-earmark-excel"
                   onclick="window.location.href='{% url 'exportar_evaluacion_excel' evaluacion.id %}'"
                 ></button>
+              </td>
+              <td>
+                {% if evaluacion.video_evaluacion %}
+                <a href="{{ evaluacion.video_evaluacion.url }}" class="btn btn-download bi bi-download" download>
+                  <i class="fas fa-download"></i>
+                  Descargar Video
+                </a>
+                {% else %}
+                No disponible
+                {% endif %}
               </td>
             </tr>
             {% endfor %}
