@@ -228,11 +228,11 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Transmisión en vivo</h5>
-                <video id="player-view" autoplay playsinline></video>
+                <button id="startCapture" class="btn btn-custom">Iniciar Transmisión</button>
+                <video id="liveVideo" autoplay></video>
               </div>
             </div>
           </div>
-          <video id="liveVideo" width="100%" height="400px" autoplay></video>
         </div>
 
         <div class="container content">
@@ -743,33 +743,30 @@
         }
       });
     
-      {% comment %} document
-        .getElementById("startCapture")
-        .addEventListener("click", async function () {
-          try {
-            const stream = await navigator.mediaDevices.getDisplayMedia({
-              video: true,
-            });
-            const videoElement = document.getElementById("liveVideo");
-            videoElement.srcObject = stream;
-          } catch (err) {
-            console.error("Error: " + err);
-          }
-        }); {% endcomment %}
-    
-      {% comment %} document
-        .getElementById("startCapture2")
-        .addEventListener("click", async function () {
-          try {
-            const stream = await navigator.mediaDevices.getDisplayMedia({
-              video: true,
-            });
-            const videoElement = document.getElementById("liveVideo2");
-            videoElement.srcObject = stream;
-          } catch (err) {
-            console.error("Error: " + err);
-          }
-        }); {% endcomment %}
+      document.getElementById("startCapture").addEventListener("click", async function () {
+        try {
+          const stream = await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+          });
+          const videoElement = document.getElementById("liveVideo");
+          videoElement.srcObject = stream;
+        } catch (err) {
+          console.error("Error: " + err);
+        }
+      });
+
+      document.getElementById("startCapture2").addEventListener("click", async function () {
+        try {
+          const stream = await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+          });
+          const videoElement = document.getElementById("liveVideo2");
+          videoElement.srcObject = stream;
+        } catch (err) {
+          console.error("Error: " + err);
+        }
+      });
+
     </script>
   </body>
   {% include 'footer.html' %}
