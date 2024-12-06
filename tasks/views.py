@@ -15,6 +15,7 @@ from django.views.decorators.http import require_http_methods # type: ignore
 from django.core.paginator import Paginator # type: ignore
 from django.db.models import Q, F, Value
 from django.db.models.functions import Concat
+from django.core.files.base import ContentFile
 
 from .forms import (EvaluacionForm, EvaluacionRealizadaForm, ExpositorForm,
                     PracticanteForm, UserForm)
@@ -554,10 +555,15 @@ def evaluar_expositor(request, id, id_evaluacion):
     escenarios = evaluacion_realizada.evaluacion_aplicada.scenarios.all()
     evaluaciones = EvaluacionRealizada.objects.filter(expositor=expositor_seleccionado)
     ultima_evaluacion = evaluaciones.last() if evaluaciones.exists() else None
-    
+
     if request.method == 'POST':
         tiempo_total = request.POST.get('tiempo_total')
         observacion_final = request.POST.get('observacion_final')
+
+        # Guardar el video
+        if 'video' in request.FILES:
+            video_file = request.FILES['video']
+            evaluacion_realizada.video_evaluacion.save(f"evaluacion_{evaluacion_realizada.id}.mp4", video_file)
 
         # Convertir tiempo_total a timedelta
         tiempo_total_seconds = int(tiempo_total)
@@ -571,7 +577,6 @@ def evaluar_expositor(request, id, id_evaluacion):
         return render(request, 'mensaje_realizado.html')  # Redirigir a la plantilla intermedia
 
     if request.GET.get('format') == 'json':
-        
         def convert_to_seconds(time_str):
             h, m = map(int, time_str.split(':'))
             return h * 3600 + m * 60
@@ -613,12 +618,13 @@ def evaluar_expositor(request, id, id_evaluacion):
         'evaluaciones': evaluaciones,
         'ultima_evaluacion': ultima_evaluacion,
     })
+       
     
 #evaluaciones realizadas
 def listar_evaluaciones_realizadas(request):
     query = request.GET.get('q', '')
     sort_by = request.GET.get('sort_by', 'fecha_evaluacion')
-    order = request.GET.get('order', 'asc')
+    order = request.GET.get('order', 'desc')  # Cambiar a 'desc' por defecto
 
     evaluaciones_realizadas = EvaluacionRealizada.objects.all()
 
@@ -641,6 +647,8 @@ def listar_evaluaciones_realizadas(request):
         'sort_by': sort_by,
         'order': order,
     })
+    
+    
 def detalle_evaluacionRealizada(request, pk):
     evaluacion = get_object_or_404(EvaluacionRealizada, pk=pk)
     data = {
