@@ -143,7 +143,7 @@ def recibir_frecuencia(request):
             return JsonResponse({'status': 'error', 'message': f'Frecuencia y evaluationId deben ser enteros: {str(e)}'})
 
         if frecuencia is not None:
-            if 0 <= frecuencia <= 220:  # Rango típico de frecuencia cardíaca
+            if 30 <= frecuencia <= 150:  # Rango típico de frecuencia cardíaca
                 if guardar_datos:
                     # Guardar la frecuencia en el modelo
                     ecg_data = ECGData2(bpm=frecuencia, idEvaluacion_id=evaluation_id)
