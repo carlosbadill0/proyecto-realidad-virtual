@@ -97,6 +97,9 @@ def signup(request):
                 'error': 'Formulario inválido.'
             })
     
+def inicio(request):
+    return render(request, 'inicio.html')
+    
 def signin(request):
     if request.method == 'GET':
         return render(request, 'signin.html', {
