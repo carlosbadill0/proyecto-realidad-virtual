@@ -19,6 +19,9 @@ from django.urls import path # type: ignore
 from tasks import views 
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path
+from tasks.views import CustomPasswordResetView
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -83,7 +86,16 @@ urlpatterns = [
     path('api/verificar/', views.verificar_guardado, name='verificar_guardado'),
     path('exportar_evaluacion/<int:pk>/', views.exportar_evaluacion_excel, name='exportar_evaluacion_excel'),
     path('acerca-de/', views.acerca_de, name='acerca_de'),
- ]
+    
+    ## recuperar contraseña o cambiar contraseña
+    path('password_reset/', CustomPasswordResetView.as_view(), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
+    
+    ##no borrar, es para probar el envio de datos con la api de sendgrid
+    path('send-test-email/', views.send_test_email, name='send_test_email'),
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

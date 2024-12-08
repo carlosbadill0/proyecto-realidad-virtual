@@ -16,6 +16,10 @@ from django.core.paginator import Paginator # type: ignore
 from django.db.models import Q, F, Value
 from django.db.models.functions import Concat
 from django.core.files.base import ContentFile
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.views import PasswordResetView
+from django.urls import reverse_lazy
+from django.core.mail import send_mail
 
 from .forms import (EvaluacionForm, EvaluacionRealizadaForm, ExpositorForm,
                     PracticanteForm, UserForm)
@@ -836,3 +840,24 @@ def exportar_evaluacion_excel(request, pk):
 
 def acerca_de(request):
     return render(request, 'acerca_de.html')
+
+def send_test_email(request):
+    subject = 'Correo de prueba'
+    message = 'Este es un correo de prueba enviado desde Django usando SendGrid.'
+    from_email = 'correo.pruebas.proyectoubb@gmail.com'
+    recipient_list = ['chechobailarap@gmail.com']
+    
+    send_mail(subject, message, from_email, recipient_list)
+    
+    return HttpResponse('Correo de prueba enviado.')
+
+
+class CustomPasswordResetView(PasswordResetView):
+    form_class = PasswordResetForm
+    template_name = 'password_reset.html'
+    email_template_name = 'password_reset_email.html'
+    html_email_template_name = 'password_reset_email.html'  # Asegúrate de incluir esta línea
+    success_url = reverse_lazy('password_reset_done')
+    
+    def get_subject(self):
+        return 'Contraseña restablecida en EasyFlow'
