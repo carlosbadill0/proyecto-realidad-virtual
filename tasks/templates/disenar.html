@@ -313,12 +313,12 @@
             <div class="col">
             <div class="form-group">
               <label for="verFecha">Fecha</label>
-              <input
+              <textarea
                 type="date"
                 class="form-control"
                 id="verFecha"
                 readonly
-              />
+              ></textarea>
             </div>
             </div>
             </div>
@@ -537,7 +537,14 @@
           $("#editarScenariosIds").val(scenariosIds.join(","));
         }
 
+      function formatDateToDDMMYYYY(dateString) {
+
+      const [year, month, day] = dateString.split("-");
+      return `${day}/${month}/${year}`; // Reorganiza en formato dd/mm/aaaa
+      }
+
         $("#crearBtn").click(function () {
+          
           updateEditOrderField();
           console.log("Datos enviados:", $("#crearForm").serialize()); // Verifica los datos enviados
           $.ajax({
@@ -556,6 +563,17 @@
               alert("Error al crear la evaluación.");
             },
           });
+        });
+
+        
+
+        $("#crearModal").on("show.bs.modal", function () {
+          const today = new Date();
+          const day = String(today.getDate()).padStart(2, "0"); // Obtener el día
+          const month = String(today.getMonth() + 1).padStart(2, "0"); // Obtener el mes (0-11)
+          const year = today.getFullYear(); // Obtener el año
+          const formattedDate = `${year}-${month}-${day}`; // Formato 'YYYY-MM-DD'
+          $("#fecha").val(formattedDate); // Asignar la fecha actual
         });
 
         $("#editarModal").on("show.bs.modal", function (event) {
@@ -653,7 +671,7 @@
             success: function (data) {
               $("#verNombre").text(data.nombre);
               $("#verDescripcion").text(data.descripcion);
-              $("#verFecha").text(data.fecha);
+              $("#verFecha").text(formatDateToDDMMYYYY(data.fecha)); 
               $("#verScenarios").empty();
               data.selected_scenarios.forEach(function (scenario) {
                 $("#verScenarios").append(`<li>${scenario.nombre}</li>`);

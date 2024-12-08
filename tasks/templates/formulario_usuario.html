@@ -68,6 +68,30 @@
         </form>
         <br>
     </div>
+    <script>
+        document.getElementById('id_username').addEventListener('input', function (e) {
+            let value = e.target.value.replace(/[^\dKk]/g, ''); // Permitir dígitos y la letra 'k'
+            if (value.length > 2) value = value.slice(0, 2) + '.' + value.slice(2);
+            if (value.length > 6) value = value.slice(0, 6) + '.' + value.slice(6);
+            if (value.length > 10) value = value.slice(0, 10) + '-' + value.slice(10, 11);
+            e.target.value = value;
+        });
+        
+        document.getElementById('id_username').addEventListener('keydown', function (e) {
+            if (e.key === 'Backspace' || e.key === 'Delete') {
+                let value = e.target.value.replace(/[^\dKk]/g, ''); // Permitir dígitos y la letra 'k'
+                if (value.length <= 2) {
+                    e.target.value = value;
+                } else if (value.length <= 5) {
+                    e.target.value = value.slice(0, 2) + '.' + value.slice(2);
+                } else if (value.length <= 8) {
+                    e.target.value = value.slice(0, 2) + '.' + value.slice(2, 5) + '.' + value.slice(5);
+                } else {
+                    e.target.value = value.slice(0, 2) + '.' + value.slice(2, 5) + '.' + value.slice(5, 8) + '-' + value.slice(8, 9);
+                }
+            }
+        });
+    </script>
 </body>
 {% include 'footer.html' %}
 </html>
