@@ -78,10 +78,12 @@
   .list-group-item {
     border-radius: 10px;
     transition: all 0.3s ease-in-out;
+    color: #233666;
+    background-color:  #6CC4D3;
   }
   
   .list-group-item:hover {
-    background-color: #f8f9fa;
+    background-color: #6CC4D3;
     transform: scale(1.02);
   }
   
@@ -89,4 +91,5 @@
     font-size: 1.2rem;
     font-weight: bold;
   }
+  
   

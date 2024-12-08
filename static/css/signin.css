@@ -4,11 +4,18 @@ body {
   font-family: 'Arial', sans-serif;
 }
 
-.container {
+footer {
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #233666;
+  padding: 15px 0;
+  font-size: 18px;
+  color: #233666;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 110vh;
+  /* Cambié a center */
+  align-items: center; /* Alinea verticalmente al centro */
+  text-align: left; /* El texto también alineado en el centro */
+  z-index: 1000;
 }
 
 .left-section {
@@ -85,3 +92,14 @@ body {
 .custom-link a:hover {
   text-decoration: underline;
 }
+
+.btn-custom2 {
+  background-color: #1ea6c6; /* Color de fondo */
+  color: white; /* Color del texto */
+  border: 1px solid #1ea6c6 !important; /* Sin borde */
+}
+.btn-custom2:hover {
+  background-color: #2188A1 !important; /* Mismo color que el estado normal */
+  color: white !important; 
+  }
+

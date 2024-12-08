@@ -7,60 +7,116 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/signin.css' %}">
-  <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
   <title>Iniciar sesión</title>
- 
+  <style>       
+     .about-section {
+        background-color: #f8f9fa;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        html, body {
+          height: 100%;
+          margin: 0;
+          overflow: hidden; /* Deshabilita el scroll en la ventana */
+      }
+      
+      </style>
 </head>
 <body>
-  <div class="container">
-    <div class="left-section">
-      <img src="{% static 'images/prueba4.png' %}" alt="imagen" width="350" height="474" />
-      
-    </div>
-    <div class="right-section">
-      <img src="{% static 'images/recurso1.png' %} " alt="imagen" class="text-center" width="280" height="150"/>
-      <h6 class="text-center" style="color: #1ea6c6;">Por favor, ingrese sus credenciales</h6>
-      <form action="{% url 'signin' %}" method="POST">
-        {{ error }}
-        {% csrf_token %}
-
-        <div class="mb-3">
-          <label for="username" class="form-label">Usuario</label>
-          <input type="text" name="username" id="username" class="form-control" placeholder="RUT" />
+  <header class="py-2 mb-2 border-bottom">
+    <div class="row">
+      <div class="col-1">
+      </div>
+      <div class="col-9 fixed-col">
+        <div class="container-fluid d-flex justify-content-between align-items-center mt-2">
+          {% load static %}
+          <div class="fixed-image-container">
+            <img
+              src="{% static 'images/logo-ubb.png' %}"
+              alt="Logo"
+              class="tamano2"
+            />
+          </div>
+          <form class="search-bar">
+            <div class="fixed-image-container">
+              <img
+                src="{% static 'images/Recurso2.png' %}"
+                alt="Logo"
+                class="tamano1"
+              />
+            </div>
+          </form>
         </div>
-
-        <div class="mb-3">
-          <label for="password" class="form-label">Contraseña</label>
-          <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" />
-        </div>
-
-        <button type="submit" class="btn btn-custom2 text-end">Iniciar sesión</button>
-      </form>
+      </div>
+      <div class="col-2 mt-2 text-center">
+      </div>
     </div>
-  </div>
+  </header>
+  <div class="row m-3"></div>
+  <div class="row m-5"></div>
+  <div class="row m-5"></div>
+  <div class="container mt-5 mb-5">
+    <div class="row about-section mb-5">
+        <div class="col text-center">
+          <img src="{% static 'images/prueba4.png' %}" alt="imagen" width="350" height="474" />
+        </div>
+        <div class="col">
+           <img src="{% static 'images/recurso1.png' %}" alt="imagen" class="text-center" width="250" height="150"/>
+          <div class="row">
+          <h6 class="text-center" style="color: #1ea6c6;">Por favor, ingrese sus credenciales</h6>
+          <form action="{% url 'signin' %}" method="POST">
+            {{ error }}
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="username" class="form-label">Usuario</label>
+              <input type="text" name="username" id="username" class="form-control" placeholder="RUT" />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Contraseña</label>
+              <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" />
+            </div>
+            <button type="submit" class="btn btn-custom2 text-end">Iniciar sesión</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="footer-content text-center">
+        <h6>
+          © I+D 24-19 - “Desarrollo de entorno de realidad virtual como prototipo de simulación para la realización de exposiciones orales en estudiantes universitarios y la caracterización de parámetros de la fluidez del habla y reactividad fisiológica”.
+        </h6>
+        <br>
+        </div>
+      </div>
+    </footer>
+    
+
   <script>
     document.getElementById('username').addEventListener('input', function (e) {
-      let value = e.target.value.replace(/[^\dKk]/g, ''); // Permitir dígitos y la letra 'k'
-      if (value.length > 2) value = value.slice(0, 2) + '.' + value.slice(2);
-      if (value.length > 6) value = value.slice(0, 6) + '.' + value.slice(6);
-      if (value.length > 10) value = value.slice(0, 10) + '-' + value.slice(10, 11);
-      e.target.value = value;
-  });
-  
-  document.getElementById('username').addEventListener('keydown', function (e) {
-      if (e.key === 'Backspace' || e.key === 'Delete') {
-          let value = e.target.value.replace(/[^\dKk]/g, ''); // Permitir dígitos y la letra 'k'
-          if (value.length <= 2) {
-              e.target.value = value;
-          } else if (value.length <= 5) {
-              e.target.value = value.slice(0, 2) + '.' + value.slice(2);
-          } else if (value.length <= 8) {
-              e.target.value = value.slice(0, 2) + '.' + value.slice(2, 5) + '.' + value.slice(5);
-          } else {
-              e.target.value = value.slice(0, 2) + '.' + value.slice(2, 5) + '.' + value.slice(5, 8) + '-' + value.slice(8, 9);
-          }
-      }
-  });
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 2) value = value.slice(0, 2) + '.' + value.slice(2);
+        if (value.length > 6) value = value.slice(0, 6) + '.' + value.slice(6);
+        if (value.length > 10) value = value.slice(0, 10) + '-' + value.slice(10, 11);
+        e.target.value = value;
+    });
+
+    document.getElementById('username').addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 2) {
+                e.target.value = value;
+            } else if (value.length <= 5) {
+                e.target.value = value.slice(0, 2) + '.' + value.slice(2);
+            } else if (value.length <= 8) {
+                e.target.value = value.slice(0, 2) + '.' + value.slice(2, 5) + '.' + value.slice(5);
+            } else {
+                e.target.value = value.slice(0, 2) + '.' + value.slice(2, 5) + '.' + value.slice(5, 8) + '-' + value.slice(8, 9);
+            }
+        }
+    });
   </script>
 </body>
 </html>
