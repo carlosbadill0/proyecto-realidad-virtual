@@ -46,6 +46,9 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("verEvaluacionModal")
           );
           verEvaluacionModal.show();
+        })
+        .catch((error) => {
+          console.error("Error al obtener los detalles de la evaluación:", error);
         });
     });
   });
@@ -54,82 +57,123 @@ document.addEventListener("DOMContentLoaded", function () {
     button.addEventListener("click", function () {
       var url = this.getAttribute("data-url");
       fetch(url)
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("La respuesta de la red no fue satisfactoria.");
+          }
+          return response.json();
+        })
         .then((data) => {
-          const editarEvaluacionId =
-            document.getElementById("editarEvaluacionId");
-          if (editarEvaluacionId) editarEvaluacionId.value = data.id;
-
           const editarExpositor = document.getElementById("editarExpositor");
-          if (editarExpositor) editarExpositor.value = data.expositor;
-
           const editarEvaluador = document.getElementById("editarEvaluador");
+          const editarFechaEvaluacion = document.getElementById("editarFechaEvaluacion");
+          const editarObservacionInicial = document.getElementById("editarObservacionInicial");
+          const editarObservacionFinal = document.getElementById("editarObservacionFinal");
+          const editarTiempoExposicion = document.getElementById("editarTiempoExposicion");
+          const editarVideoEvaluacion = document.getElementById("editarVideoEvaluacion");
+          const editarEvaluacionAplicada = document.getElementById("editarEvaluacionAplicada");
+
+          if (editarExpositor) editarExpositor.value = data.expositor;
           if (editarEvaluador) editarEvaluador.value = data.nombre_evaluador;
+          if (editarFechaEvaluacion) editarFechaEvaluacion.value = data.fecha_evaluacion;
+          if (editarObservacionInicial) editarObservacionInicial.value = data.observacion_inicial;
+          if (editarObservacionFinal) editarObservacionFinal.value = data.observacion_final;
+          if (editarTiempoExposicion) editarTiempoExposicion.value = data.tiempo_exposicion;
+          if (editarVideoEvaluacion) editarVideoEvaluacion.value = data.video_evaluacion;
+          if (editarEvaluacionAplicada) editarEvaluacionAplicada.value = data.evaluacion_aplicada;
 
-          const editarFechaEvaluacion = document.getElementById(
-            "editarFechaEvaluacion"
-          );
-          if (editarFechaEvaluacion)
-            editarFechaEvaluacion.value = data.fecha_evaluacion;
-
-          const editarObservacionInicial = document.getElementById(
-            "editarObservacionInicial"
-          );
-          if (editarObservacionInicial)
-            editarObservacionInicial.value = data.observacion_inicial;
-
-          const editarObservacionFinal = document.getElementById(
-            "editarObservacionFinal"
-          );
-          if (editarObservacionFinal)
-            editarObservacionFinal.value = data.observacion_final;
-
-          const editarTiempoExposicion = document.getElementById(
-            "editarTiempoExposicion"
-          );
-          if (editarTiempoExposicion)
-            editarTiempoExposicion.value = data.tiempo_exposicion;
-
-          const editarVideoEvaluacion = document.getElementById(
-            "editarVideoEvaluacion"
-          );
-          if (editarVideoEvaluacion)
-            editarVideoEvaluacion.value = data.video_evaluacion;
-
-          var editarEvaluacionModal = new bootstrap.Modal(
-            document.getElementById("editarEvaluacionModal")
-          );
+          var editarEvaluacionModal = new bootstrap.Modal(document.getElementById("editarEvaluacionModal"));
           editarEvaluacionModal.show();
+        })
+        .catch((error) => {
+          console.error("Error al obtener los detalles de la evaluación:", error);
         });
     });
   });
-  document.addEventListener("DOMContentLoaded", function () {
-    const confirmarBorrarBtn = document.getElementById("confirmarBorrarBtn");
-    if (confirmarBorrarBtn) {
-      confirmarBorrarBtn.onclick = function () {
-        const csrfTokenElement = document.querySelector("[name=csrfmiddlewaretoken]");
-        if (csrfTokenElement) {
-          fetch(url, {
-            method: "POST",
-            headers: {
-              "X-CSRFToken": csrfTokenElement.value,
-            },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                location.reload();
-              } else {
-                alert("Error al borrar la evaluación.");
-              }
-            });
-        } else {
-          console.error("El token CSRF no se encontró en el DOM.");
-        }
-      };
+
+  // guardar cambios
+  document.getElementById("guardarCambiosBtn").addEventListener("click", function () {
+    var id = document.querySelector(".editarEvaluacionBtn").getAttribute("data-id");
+    var url = `/evaluaciones_realizadas/${id}/editar/`;
+    var expositor = document.getElementById("editarExpositor");
+    var nombre_evaluador = document.getElementById("editarEvaluador");
+    var fecha_evaluacion = document.getElementById("editarFechaEvaluacion");
+    var observacion_inicial = document.getElementById("editarObservacionInicial");
+    var observacion_final = document.getElementById("editarObservacionFinal");
+    var tiempo_exposicion = document.getElementById("editarTiempoExposicion");
+    var video_evaluacion = document.getElementById("editarVideoEvaluacion");
+    var evaluacion_aplicada = document.getElementById("editarEvaluacionAplicada");
+
+  
+    if (expositor && nombre_evaluador && fecha_evaluacion && observacion_inicial && observacion_final && tiempo_exposicion && video_evaluacion && evaluacion_aplicada) {
+      var formData = new FormData();
+      formData.append('expositor', expositor.value);
+      formData.append('nombre_evaluador', nombre_evaluador.value);
+      formData.append('fecha_evaluacion', fecha_evaluacion.value);
+      formData.append('observacion_inicial', observacion_inicial.value);
+      formData.append('observacion_final', observacion_final.value);
+      formData.append('tiempo_exposicion', tiempo_exposicion.value);
+      formData.append('video_evaluacion', video_evaluacion.value);
+      formData.append('evaluacion_aplicada', evaluacion_aplicada.value);
+      formData.append('csrfmiddlewaretoken', document.querySelector("[name=csrfmiddlewaretoken]").value);
+
+      fetch(url, {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert("Error al guardar los cambios.");
+            console.error(data.errors); // Log the errors for debugging
+          }
+        })
+        .catch((error) => {
+          console.error("Error al guardar los cambios:", error);
+        });
     } else {
-      console.error("El botón confirmarBorrarBtn no se encontró en el DOM.");
+      console.error("Falta uno o más elementos.");
     }
+  });
+
+  // borrar evaluación
+  document.querySelectorAll(".borrarEvaluacionBtn").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var id = this.getAttribute("data-id");
+      var url = this.getAttribute("data-url");
+      document.getElementById("confirmarBorrarBtn").setAttribute("data-id", id);
+      document.getElementById("confirmarBorrarBtn").setAttribute("data-url", url);
+
+      var borrarEvaluacionModal = new bootstrap.Modal(document.getElementById("borrarEvaluacionModal"));
+      borrarEvaluacionModal.show();
+    });
+  });
+
+  // Handle confirm delete button click
+  document.getElementById("confirmarBorrarBtn").addEventListener("click", function () {
+    var id = this.getAttribute("data-id");
+    var url = this.getAttribute("data-url");
+    var csrfmiddlewaretoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": csrfmiddlewaretoken,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          location.reload();
+        } else {
+          alert("Error al borrar la evaluación.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error al borrar la evaluación:", error);
+      });
   });
 });
   

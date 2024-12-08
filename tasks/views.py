@@ -661,6 +661,7 @@ def detalle_evaluacionRealizada(request, pk):
     }
     return JsonResponse(data)
 
+@csrf_exempt
 def editar_evaluacionRealizada(request, pk):
     evaluacion = get_object_or_404(EvaluacionRealizada, pk=pk)
     if request.method == 'POST':
@@ -672,8 +673,18 @@ def editar_evaluacionRealizada(request, pk):
             return JsonResponse({'success': False, 'errors': form.errors})
     else:
         form = EvaluacionRealizadaForm(instance=evaluacion)
-    return render(request, 'editar_evaluacion.html', {'form': form})   
+        return JsonResponse({
+            'expositor': evaluacion.expositor.id,  # Use ID instead of name
+            'nombre_evaluador': evaluacion.nombre_evaluador,
+            'fecha_evaluacion': evaluacion.fecha_evaluacion,
+            'observacion_inicial': evaluacion.observacion_inicial,
+            'observacion_final': evaluacion.observacion_final,
+            'tiempo_exposicion': evaluacion.tiempo_exposicion,
+            'video_evaluacion': evaluacion.video_evaluacion.url if evaluacion.video_evaluacion else None,
+            'evaluacion_aplicada': evaluacion.evaluacion_aplicada.id,  # Use ID instead of string
+        })
 
+@csrf_exempt
 def borrar_evaluacionRealizada(request, pk):
     evaluacion = get_object_or_404(EvaluacionRealizada, pk=pk)
     if request.method == "POST":

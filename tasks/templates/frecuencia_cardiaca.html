@@ -525,7 +525,7 @@
             evaluationId: parseInt(evaluationId),
           })
           .then((response) => {
-            console.log("Datos enviados correctamente:", response.data);
+           // console.log("Datos enviados correctamente:", response.data);
           })
           .catch((error) => {
             console.error("Error al enviar datos:", error);
@@ -544,7 +544,7 @@
           .then(response => response.json())
           .then(data => {
             if (data.status === 'success') {
-              console.log('Respuesta del servidor:', data);
+             // console.log('Respuesta del servidor:', data);
               const frecuencia = data.value;
               const tiempoActual = new Date(data.timestamp);
               document.getElementById('frecuencia').textContent = frecuencia + ' BPM';
@@ -671,7 +671,7 @@
               backButton.disabled = true; // Bloquear el botón de volver atrás
               iniciarGuardado(); // Iniciar guardado de pulsos
           
-              console.log("Evaluación iniciada");
+             // console.log("Evaluación iniciada");
           
               // Mostrar mensaje de grabación en curso
               const recordingMessage = document.createElement("div");
@@ -683,8 +683,7 @@
               recordingMessage.style.right = "10px";
               recordingMessage.style.zIndex = "1000";
               document.body.appendChild(recordingMessage);
-          
-              console.log("Mensaje de grabación en curso mostrado");
+      
           
               // Iniciar grabación de pantalla
               navigator.mediaDevices.getDisplayMedia({
@@ -698,38 +697,32 @@
           
                 mediaRecorder.ondataavailable = (e) => {
                   chunks.push(e.data);
-                  console.log("Datos de video disponibles");
                 };
           
                 mediaRecorder.onstart = () => {
-                  console.log("Grabación iniciada");
+
                 };
           
                 mediaRecorder.onstop = (e) => {
-                  console.log("Grabación detenida");
                   const blob = new Blob(chunks, { type: "video/mp4" });
                   const file = new File([blob], "evaluacion.mp4", { type: "video/mp4" });
                   const dataTransfer = new DataTransfer();
                   dataTransfer.items.add(file);
                   videoInput.files = dataTransfer.files;
           
-                  console.log("Archivo de video creado y asignado al input");
           
                   // Eliminar mensaje de grabación en curso
                   const recordingMessage = document.getElementById("recordingMessage");
                   if (recordingMessage) {
                     document.body.removeChild(recordingMessage);
-                    console.log("Mensaje de grabación en curso eliminado");
                   }
           
                   // Enviar el formulario
                   document.getElementById("evaluacionForm").submit();
-                  console.log("Formulario enviado");
                 };
           
                 mediaRecorder.start();
                 window.mediaRecorder = mediaRecorder;
-                console.log("Grabación de video iniciada");
               }).catch((error) => {
                 console.error("Error al acceder a la pantalla: ", error);
                 alert("No se pudo acceder a la pantalla para grabar. Por favor, asegúrate de que has otorgado los permisos necesarios.");
@@ -742,18 +735,14 @@
               backButton.disabled = false; // Desbloquear el botón de volver atrás
               detenerGuardado(); // Detener guardado de pulsos
           
-              console.log("Evaluación finalizada");
-          
               // Detener grabación de video
               window.mediaRecorder.stop();
-              console.log("Grabación de video detenida");
           
               // Calcular tiempo total
               const now = new Date();
               const elapsedTime = Math.floor((now - startTime) / 1000);
               document.getElementById("tiempo_total").value = elapsedTime;
           
-              console.log("Tiempo total calculado: " + elapsedTime + " segundos");
             }
         });
         

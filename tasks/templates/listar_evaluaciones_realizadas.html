@@ -77,7 +77,7 @@
                 <button
                   class="btn btn-edit bi bi-pencil-square editarEvaluacionBtn"
                   data-id="{{ evaluacion.id }}"
-                  data-url="{% url 'detalle_evaluacionRealizada' evaluacion.id %}"
+                  data-url="{% url 'editar_evaluacionRealizada' evaluacion.id %}"
                 >
                   <i class="fas fa-edit"></i>
                 </button>
@@ -238,70 +238,47 @@
             <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
           <div class="modal-body">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="editarExpositor">Expositor</label>
-                  <input
-                    type="text"
-                    id="editarExpositor"
-                    class="form-control mb-2"
-                  />
+            <form id="editarEvaluacionForm" method="POST">
+              {% csrf_token %}
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="editarExpositor">Expositor</label>
+                    <input type="text" id="editarExpositor" name="expositor" class="form-control mb-2" />
+                  </div>
+                  <div class="form-group">
+                    <label for="editarEvaluador">Evaluador</label>
+                    <input type="text" id="editarEvaluador" name="nombre_evaluador" class="form-control mb-2" />
+                  </div>
+                  <div class="form-group">
+                    <label for="editarFechaEvaluacion">Fecha de Evaluación</label>
+                    <input type="date" id="editarFechaEvaluacion" name="fecha_evaluacion" class="form-control mb-2" />
+                  </div>
+                  <div class="form-group">
+                    <label for="editarEvaluacionAplicada">Evaluación Aplicada</label>
+                    <input type="text" id="editarEvaluacionAplicada" name="evaluacion_aplicada" class="form-control mb-2" readonly />
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label for="editarEvaluador">Evaluador</label>
-                  <input
-                    type="text"
-                    id="editarEvaluador"
-                    class="form-control mb-2"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="editarFechaEvaluacion">Fecha de Evaluación</label>
-                  <input
-                    type="date"
-                    id="editarFechaEvaluacion"
-                    class="form-control mb-2"
-                  />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="editarObservacionInicial"
-                    >Observación Inicial</label
-                  >
-                  <textarea
-                    id="editarObservacionInicial"
-                    class="form-control mb-2"
-                  ></textarea>
-                </div>
-                <div class="form-group">
-                  <label for="editarObservacionFinal">Observación Final</label>
-                  <textarea
-                    id="editarObservacionFinal"
-                    class="form-control mb-2"
-                  ></textarea>
-                </div>
-                <div class="form-group">
-                  <label for="editarTiempoExposicion"
-                    >Tiempo de Exposición</label
-                  >
-                  <input
-                    type="text"
-                    id="editarTiempoExposicion"
-                    class="form-control mb-2"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="editarVideoEvaluacion">Video de Evaluación</label>
-                  <input
-                    type="text"
-                    id="editarVideoEvaluacion"
-                    class="form-control mb-2"
-                  />
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="editarObservacionInicial">Observación Inicial</label>
+                    <textarea id="editarObservacionInicial" name="observacion_inicial" class="form-control mb-2"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="editarObservacionFinal">Observación Final</label>
+                    <textarea id="editarObservacionFinal" name="observacion_final" class="form-control mb-2"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="editarTiempoExposicion">Tiempo de Exposición</label>
+                    <input type="text" id="editarTiempoExposicion" name="tiempo_exposicion" class="form-control mb-2" />
+                  </div>
+                  <div class="form-group">
+                    <label for="editarVideoEvaluacion">Video de Evaluación</label>
+                    <input type="text" id="editarVideoEvaluacion" name="video_evaluacion" class="form-control mb-2" />
+                  </div>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn-custom" style="border-radius: 15px;" data-bs-dismiss="modal" aria-label="Close">Cerrar</button>
