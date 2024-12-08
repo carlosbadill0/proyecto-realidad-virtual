@@ -240,8 +240,7 @@ def crear_usuario(request):
                     selected_group_name = form.cleaned_data.get('group')
                     group = Group.objects.get(name=selected_group_name)
                     user.groups.add(group)
-
-                    login(request, user)  # Iniciar sesión con el nuevo usuario
+  # Iniciar sesión con el nuevo usuario
                     return redirect('listar_usuarios')
                 except Exception as e:
                     return render(request, 'formulario_usuario.html', {

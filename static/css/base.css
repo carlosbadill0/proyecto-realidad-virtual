@@ -12,8 +12,65 @@ header {
     z-index: 1000;
     background-color: #6CC4D3;
     color: white;
-    height: 10vh; /* Altura relativa para el header */
+    height: 12vh; /* Altura relativa para el header */
+    overflow: hidden;
 }
+
+header a:hover{
+    color: #233666;
+    background-color: #6CC4D3;
+    text-decoration: none;
+}
+header a{
+    color: white;
+    text-decoration: none;
+}
+
+.posicion-a {
+    position: fixed; /* Fija el enlace en la pantalla */
+    top: 6%; /* Centra el enlace verticalmente */
+    left: 90%; /* Centra el enlace horizontalmente */
+    transform: translate(-50%, -50%); /* Ajusta el punto de referencia al centro */
+    font-size: 2.4vh; /* Tamaño de fuente */
+    color: white; /* Color del texto */
+    max-width: 100%; /* Limita el tamaño máximo */
+    max-height: 100%; /* Limita el tamaño máximo */
+}
+
+
+
+header img {
+    position: fixed; /* La imagen no se moverá con el contenido */
+    transform: translate(-50%, -50%); /* Ajusta el punto de referencia al centro */
+    width: auto; /* Mantiene el ancho original */
+    height: auto; /* Mantiene la altura original */
+    max-width: 100%; /* Limita el tamaño máximo */
+    max-height: 100%; /* Limita el tamaño máximo */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    
+  }
+.tamano1{
+    top: 6%; /* Centra la imagen verticalmente */
+    left: 55%; /* Centra la imagen horizontalmente */
+    width: 20.8vh; /* Ajusta el ancho relativo a la altura de la pantalla */
+    height: auto; /* Mantiene las proporciones originales de la imagen */
+  }
+.tamano2{
+    top: 6%; /* Centra la imagen verticalmente */
+    left: 20%; /* Centra la imagen horizontalmente */
+    width: 32.8vh; /* Ajusta el ancho relativo a la altura de la pantalla */
+    height: auto; /* Mantiene las proporciones originales de la imagen */
+  }
+
+  /* Controlar el contenedor */
+.fixed-image-container {
+    height: 50px; /* Tamaño fijo del contenedor */
+    width: auto; /* Adaptarse al contenido */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Evitar desbordamientos */
+  }
 
 
 .sidebar {
@@ -23,7 +80,6 @@ header {
     top: 10vh; /* Comienza después del header */
     left: 0;
     background-color: #F0F8FF;
-    padding-top: 2vh;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
@@ -35,15 +91,15 @@ header {
 .sidebar a {
     padding: 1vh 1.5vw;
     text-decoration: none;
-    font-size: 1.8vh;
-    color: #000;
+    font-size: 3.2vh;
+    color: #233666;
     display: block;
     width: 100%;
 }
 
 
 .sidebar a:hover {
-    background-color: #2188A1;
+    background-color: #6CC4D3;
     color: #fff;
 }
 
@@ -52,25 +108,25 @@ header {
 }
 
 .avatar {
-    width: 5vh;
-    height: 5vh;
-    border-radius: 50%;
-    display: block;
-    margin: 0 auto;
+    position: relative;
+    top: 16%; /* Centra la imagen verticalmente */
+    left: 0%; /* Centra la imagen horizontalmente */
+    width: 11.8vh; /* Ajusta el ancho relativo a la altura de la pantalla */
+    height: auto; /* Mantiene las proporciones originales de la imagen */
 }
 
 .user-info {
     text-align: center;
-    margin-bottom: 2vh;
 }
 
 .user-info h6 {
-    margin: 1vh 0 0.5vh;
-    color: black;
+    font-size: 3.4vh;
+    color: #233666;
 }
 
 .user-info p {
     margin: 0;
+    font-size: 2.4vh;
     color: gray;
 }
 
@@ -116,9 +172,9 @@ form.search-bar input {
   }
 
 #toggle-sidebar {
-    position: relative;
-    left: 20px !important;
-    top: 1.5vh !important;
+    position: fixed;
+    left: 2.5% !important;
+    top: 6% !important;
     z-index: 1100;
     background-color:  #6CC4D3;
     color: white;
@@ -127,6 +183,8 @@ form.search-bar input {
     border-radius: 0.5vh;
     cursor: pointer;
     font-weight: bold;
+    font-size: 2.8vh;
+    transform: translate(-50%, -50%); /* Ajusta el punto de referencia al centro */
 }
 
 

@@ -18,27 +18,7 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     {% block extra_css %}{% endblock %}
 
-    <style>
-      header {
-        overflow: hidden; /* Evita desbordamientos */
-      }
     
-      header img {
-        height: 50px; /* Tamaño fijo */
-        width: auto; /* Mantener proporciones */
-        max-width: 100%; /* Garantizar que no exceda el contenedor */
-      }
-    
-      /* Controlar el contenedor */
-      .fixed-image-container {
-        height: 50px; /* Tamaño fijo del contenedor */
-        width: auto; /* Adaptarse al contenido */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden; /* Evitar desbordamientos */
-      }
-    </style>
   </head>
   <body>
     <header class="py-2 mb-2 border-bottom">
@@ -53,6 +33,7 @@
               <img
                 src="{% static 'images/logo-ubb.png' %}"
                 alt="Logo"
+                class="tamano2"
               />
             </div>
             <form class="search-bar">
@@ -60,6 +41,7 @@
                 <img
                   src="{% static 'images/Recurso2.png' %}"
                   alt="Logo"
+                  class="tamano1"
                 />
               </div>
             </form>
@@ -67,21 +49,13 @@
         </div>
         <div class="col-2 mt-2 text-center">
           {% if user.is_authenticated %}
-            <a class="dropdown-item bi bi-box-arrow-left" href="/logout"> Cerrar sesión</a>
+            <a class=" bi bi-box-arrow-left posicion-a " href="/logout"> Cerrar sesión</a>
           {% endif %}
         </div>
       </div>
     </header>
     <div class="sidebar">
       <!-- User Profile Section -->
-      {% comment %} <div class="user-info">
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
-          alt="User Avatar"
-          class="avatar"
-        />
-        <h6>Monitoreo de realidad virtual</h6>
-      </div> {% endcomment %}
 
       <!-- Navigation Links -->
        <br>
@@ -128,7 +102,21 @@
         </a>
       </li>
       </ul>
-   
+
+      <div><hr></div>
+    
+      <div class="user-info mt-0">
+        <img
+          src="{% static 'images/prueba4.png' %}"
+          alt="User Avatar"
+          class="avatar"
+        />
+        <h6 class="text-center">{{ user.first_name }} {{ user.last_name }}</h6>
+        <p>{{ user.username }}</p>
+        <p>{{ user.email }}</p>
+        <p>{{ user.groups.first.name }}</p>
+      </div>
+      
     </div>
 
     <div class="content">
