@@ -16,6 +16,12 @@ document.addEventListener("DOMContentLoaded", function () {
           if (verFechaEvaluacion)
             verFechaEvaluacion.value = data.fecha_evaluacion;
 
+          const verEvaluacionAplicada = document.getElementById(
+            "verEvaluacionAplicada"
+          );
+          if (verEvaluacionAplicada)
+            verEvaluacionAplicada.value = data.evaluacion_aplicada;
+
           const verObservacionInicial = document.getElementById(
             "verObservacionInicial"
           );
