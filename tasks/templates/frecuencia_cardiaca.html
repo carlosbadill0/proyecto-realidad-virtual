@@ -432,10 +432,10 @@
       let timerInterval;
       let chart;
       let frecuenciaInterval;
-      const serverUrlPost = "http://10.10.8.68:127/api/frecuencia/"; // Cambiar a localhost
-      const serverUrlGet = "http://10.10.8.68:127/api/ultima_frecuencia/"; // Cambiar a localhost
+      const serverUrlPost = "http://192.168.1.13:127/api/frecuencia/"; // Cambiar a localhost
+      const serverUrlGet = "http://192.168.1.13:127/api/ultima_frecuencia/"; // Cambiar a localhost
       const evaluacionId = "{{ evaluacion.id }}";
-      console.log(evaluacionId);
+      //console.log(evaluacionId);
     
       function updateProgressBar() {
         const progressValues = { 1: 33, 2: 66, 3: 100 };
