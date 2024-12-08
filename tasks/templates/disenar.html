@@ -323,10 +323,17 @@
             </div>
             </div>
             <div class="form-group">
-              <label for="verScenarios">Escenarios</label>
-            
-              <li style="color:#233666; border-radius: #6CC4D3;" id="verScenarios" class="list-group"></li>
-              
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Nombre del Escenario</th>
+                    <th>Duración</th>
+                  </tr>
+                </thead>
+                <tbody id="verScenarios">
+                  <!-- Los escenarios se agregarán aquí dinámicamente -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -680,7 +687,12 @@
               $("#verFecha").text(formatDateToDDMMYYYY(data.fecha)); 
               $("#verScenarios").empty();
               data.selected_scenarios.forEach(function (scenario) {
-                $("#verScenarios").append(`<ul><span>${scenario.nombre}<span><ul>`);
+                $("#verScenarios").append(
+                  `<tr>
+                    <td>${scenario.nombre}</td>
+                    <td>${scenario.duration}</td>
+                  </tr>`
+                );
               });
             },
           });

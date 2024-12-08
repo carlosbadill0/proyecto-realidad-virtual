@@ -7,11 +7,22 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../static/css/estilos.css" />
     {% load static %}
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
     <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/footer.css' %}" />
     <link rel="stylesheet" href="{% static 'css/home.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    
+
     {% block extra_css %}{% endblock %}
+    <style>
+      a {
+        color: #233666;
+      }
+      a:hover {
+        color: #233666;
+        text-decoration: none;
+      }
+    </style>
   </head>
   <body>
     <h3 style="color: #233666; text-align: left; margin-top: -45px">
@@ -150,14 +161,19 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
+            <div class="col-1"></div>
+            <div class="col-10 text-center">
             <h5 class="modal-title" id="verEvaluacionModalLabel">
-              Ver Evaluación
+              Ver Detalles de la Evaluación
             </h5>
+            </div>
+            <div class="col-1">
             <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-md-6">
+              <div class="col">
                 <div class="form-group">
                   <label for="verExpositor">Expositor</label>
                   <input
@@ -167,6 +183,8 @@
                     class="form-control mb-2"
                   />
                 </div>
+              </div>
+              <div class="col">
                 <div class="form-group">
                   <label for="verEvaluador">Evaluador</label>
                   <input
@@ -176,6 +194,8 @@
                     class="form-control mb-2"
                   />
                 </div>
+              </div>
+              <div class="col">
                 <div class="form-group">
                   <label for="verFechaEvaluacion">Fecha de Evaluación</label>
                   <input
@@ -186,7 +206,9 @@
                   />
                 </div>
               </div>
-              <div class="col-md-6">
+            </div>
+            <div class="row">
+              <div class="col">
                 <div class="form-group">
                   <label for="verObservacionInicial">Observación Inicial</label>
                   <textarea
@@ -195,6 +217,8 @@
                     class="form-control mb-2"
                   ></textarea>
                 </div>
+              </div>
+              <div class="col">
                 <div class="form-group">
                   <label for="verObservacionFinal">Observación Final</label>
                   <textarea
@@ -203,6 +227,10 @@
                     class="form-control mb-2"
                   ></textarea>
                 </div>
+              </div>
+            </div>
+              <div class="row">
+                <div class="col">
                 <div class="form-group">
                   <label for="verTiempoExposicion">Tiempo de Exposición</label>
                   <input
@@ -212,12 +240,26 @@
                     class="form-control mb-2"
                   />
                 </div>
-                <div id="verVideoEvaluacion"></div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <label for="verEvaluacionAplicada">Evaluación Aplicada</label>
+                    <input
+                      type="text"
+                      id="verEvaluacionAplicada"
+                      readonly
+                      class="form-control mb-2"
+                    />
+                  </div>
+                </div>
+                <div class="col">
+                <h6 style="color: #233666;">Video de evaluación realizada: </h6>
+                <div style="color: #233666;" id="verVideoEvaluacion"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
     </div>
 
     <!-- Editar Evaluación Modal -->
@@ -232,68 +274,90 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
+            <div class="col-1"></div>
+            <div class="col-10 text-center">
             <h5 class="modal-title" id="editarEvaluacionModalLabel">
               Editar Evaluación
             </h5>
+            </div>
+            <div class="col-1">
             <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
           </div>
           <div class="modal-body">
             <form id="editarEvaluacionForm" method="POST">
               {% csrf_token %}
               <div class="row">
-                <div class="col-md-6">
+                <div class="col">
                   <div class="form-group">
                     <label for="editarExpositor">Expositor</label>
-                    <input type="text" id="editarExpositor" name="expositor" class="form-control mb-2" />
-                  </div>
-                  <div class="form-group">
-                    <label for="editarEvaluador">Evaluador</label>
-                    <input type="text" id="editarEvaluador" name="nombre_evaluador" class="form-control mb-2" />
-                  </div>
-                  <div class="form-group">
-                    <label for="editarFechaEvaluacion">Fecha de Evaluación</label>
-                    <input type="date" id="editarFechaEvaluacion" name="fecha_evaluacion" class="form-control mb-2" />
-                  </div>
-                  <div class="form-group">
-                    <label for="editarEvaluacionAplicada">Evaluación Aplicada</label>
-                    <input type="text" id="editarEvaluacionAplicada" name="evaluacion_aplicada" class="form-control mb-2" readonly />
+                    <input type="text" id="editarExpositor" name="expositor" readonly class="form-control mb-2" />
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col">
+                  <div class="form-group">
+                    <label for="editarEvaluador">Evaluador</label>
+                    <input type="text" id="editarEvaluador" name="nombre_evaluador" readonly class="form-control mb-2" />
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <label for="editarFechaEvaluacion">Fecha de Evaluación</label>
+                    <input type="date" id="editarFechaEvaluacion" name="fecha_evaluacion" readonly class="form-control mb-2" />
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label for="editarEvaluacionAplicada">Evaluación Aplicada</label>
+                    <input type="text" id="editarEvaluacionAplicada" name="evaluacion_aplicada" readonly class="form-control mb-2" readonly />
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <label for="editarTiempoExposicion">Tiempo de Exposición</label>
+                    <input type="text" id="editarTiempoExposicion" name="tiempo_exposicion" readonly class="form-control mb-2" />
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <label for="editarVideoEvaluacion">Video de Evaluación</label>
+                    <input type="text" id="editarVideoEvaluacion" name="video_evaluacion" readonly class="form-control mb-2" />
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
                   <div class="form-group">
                     <label for="editarObservacionInicial">Observación Inicial</label>
-                    <textarea id="editarObservacionInicial" name="observacion_inicial" class="form-control mb-2"></textarea>
+                    <textarea id="editarObservacionInicial" name="observacion_inicial" readonly class="form-control mb-2"></textarea>
                   </div>
+                </div>
+                <div class="col">
                   <div class="form-group">
                     <label for="editarObservacionFinal">Observación Final</label>
                     <textarea id="editarObservacionFinal" name="observacion_final" class="form-control mb-2"></textarea>
-                  </div>
-                  <div class="form-group">
-                    <label for="editarTiempoExposicion">Tiempo de Exposición</label>
-                    <input type="text" id="editarTiempoExposicion" name="tiempo_exposicion" class="form-control mb-2" />
-                  </div>
-                  <div class="form-group">
-                    <label for="editarVideoEvaluacion">Video de Evaluación</label>
-                    <input type="text" id="editarVideoEvaluacion" name="video_evaluacion" class="form-control mb-2" />
                   </div>
                 </div>
               </div>
             </form>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn-custom" style="border-radius: 15px;" data-bs-dismiss="modal" aria-label="Close">Cerrar</button>
+          <div class="modal-footer" style="padding: 0%;">
+            <button type="button" class="btn btn-lg btn-custom fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal" aria-label="Close">Cerrar</button>
             <button
               type="button"
-              class="btn btn-custom2"
+              class="btn btn-lg btn-custom4 fs-6 text-decoration-none col-6 py-3 m-0 rounded-0"
               id="guardarCambiosBtn"
             >
-              Guardar cambios
+              Guardar
             </button>
           </div>
         </div>
       </div>
     </div>
 
+  <!-- Eliminar Evaluación Modal -->
     <div
     class="modal fade"
     id="borrarEvaluacionModal"
@@ -305,9 +369,13 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
+          <div class="col-1"></div>
+          <div class="col-10 text-center">
           <h5 class="modal-title" id="borrarEvaluacionModalLabel">
             Eliminar Evaluación
           </h5>
+          </div>
+          <div class="col-1">
           <button
             type="button"
             class="close"
@@ -316,15 +384,16 @@
           >
             <span aria-hidden="true">&times;</span>
           </button>
+          </div>
         </div>
-        <div class="modal-body">
-          <p>¿Estás seguro de que deseas eliminar esta evaluación?</p>
+        <div class="modal-body text-center">
+          <h4 style="color: #233666 ">¿Estás seguro de que quieres borrar esta evaluación?<h4>
+            <h6 style="color: #2C3E50" class="mb-0">Esta acción no se puede deshacer.</h6>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" style="padding: 0%;">
           <button
             type="button"
-            class="btn-custom"
-            style="border-radius: 15px;"
+            class="btn btn-lg btn-custom fs-6 text-decoration-none col py-3 m-0 rounded-0"
             data-bs-dismiss="modal"
             aria-label="Close"
           >
@@ -332,7 +401,7 @@
           </button>
           <button
             type="button"
-            class="btn btn-delete"
+            class="btn btn-lg btn btn-delete fs-6 text-decoration-none col py-3 m-0 rounded-0"
             id="confirmarBorrarBtn"
           >
             Eliminar

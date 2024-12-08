@@ -18,6 +18,14 @@ footer {
   z-index: 1000;
 }
 
+a {
+  color: #233666;
+}
+
+a:hover {
+  color: #1ea6c6;
+}
+
 .left-section {
   flex: 1;
   display: flex;

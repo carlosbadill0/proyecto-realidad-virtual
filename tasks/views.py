@@ -327,7 +327,7 @@ def detalle_evaluacion(request, pk):
             'descripcion': evaluacion.descripcion,
             'fecha': evaluacion.fecha,
             'scenarios': list(evaluacion.scenarios.values_list('function_name', flat=True)),
-            'selected_scenarios': [{'id': scenario.id, 'nombre': scenario.function_name} for scenario in selected_scenarios],
+            'selected_scenarios': [{'id': scenario.id, 'nombre': scenario.function_name, 'duration': scenario.duration} for scenario in selected_scenarios],
             'available_scenarios': [{'id': scenario.id, 'nombre': scenario.function_name} for scenario in available_scenarios],
         }
         return JsonResponse(data)
@@ -654,11 +654,11 @@ def listar_evaluaciones_realizadas(request):
         'order': order,
     })
     
-    
 def detalle_evaluacionRealizada(request, pk):
     evaluacion = get_object_or_404(EvaluacionRealizada, pk=pk)
     data = {
         'expositor': evaluacion.expositor.nombre,
+        'evaluacion_aplicada': evaluacion.evaluacion_aplicada.nombre,  # Asegúrate de que este campo esté presente
         'nombre_evaluador': evaluacion.nombre_evaluador,
         'fecha_evaluacion': evaluacion.fecha_evaluacion,
         'observacion_inicial': evaluacion.observacion_inicial,
@@ -681,14 +681,14 @@ def editar_evaluacionRealizada(request, pk):
     else:
         form = EvaluacionRealizadaForm(instance=evaluacion)
         return JsonResponse({
-            'expositor': evaluacion.expositor.id,  # Use ID instead of name
+            'expositor': evaluacion.expositor.nombre,  # Use ID instead of name
             'nombre_evaluador': evaluacion.nombre_evaluador,
             'fecha_evaluacion': evaluacion.fecha_evaluacion,
             'observacion_inicial': evaluacion.observacion_inicial,
             'observacion_final': evaluacion.observacion_final,
             'tiempo_exposicion': evaluacion.tiempo_exposicion,
             'video_evaluacion': evaluacion.video_evaluacion.url if evaluacion.video_evaluacion else None,
-            'evaluacion_aplicada': evaluacion.evaluacion_aplicada.id,  # Use ID instead of string
+            'evaluacion_aplicada': evaluacion.evaluacion_aplicada.nombre,  # Use ID instead of string
         })
 
 @csrf_exempt

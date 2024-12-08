@@ -128,7 +128,10 @@ header img {
     margin: 0;
     font-size: 2.4vh;
     color: gray;
+    word-wrap: break-word;
+    white-space: normal;
 }
+
 
 .content {
     margin-left: 20vw;
@@ -225,3 +228,4 @@ form.search-bar input {
         top: 1vh;
     }
 }
+
