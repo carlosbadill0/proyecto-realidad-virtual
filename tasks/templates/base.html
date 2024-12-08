@@ -54,6 +54,7 @@
         </div>
       </div>
     </header>
+    {% if user.is_authenticated %}
     <div class="sidebar">
       <!-- User Profile Section -->
 
@@ -118,7 +119,7 @@
       </div>
       
     </div>
-
+    {% endif %}
     <div class="content">
       <div class="container mt-4 pt-4">{% block content %}{% endblock %}</div>
     </div>
