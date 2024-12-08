@@ -422,6 +422,7 @@
     <br>
 
     {% comment %} <script src="{% static 'js/evaluar.js' %}"></script> {% endcomment %}
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 
     <script>
       // frecuencia_cardiaca.js
@@ -432,9 +433,34 @@
       let timerInterval;
       let chart;
       let frecuenciaInterval;
-      const serverUrlPost = "http://192.168.1.13:127/api/frecuencia/"; // Cambiar a localhost
+      /*const serverUrlPost = "http://192.168.1.13:127/api/frecuencia/"; // Cambiar a localhost
       const serverUrlGet = "http://192.168.1.13:127/api/ultima_frecuencia/"; // Cambiar a localhost
       const evaluacionId = "{{ evaluacion.id }}";
+      */
+
+      function getLocalIP(callback) {
+        const pc = new RTCPeerConnection({iceServers: []});
+        pc.createDataChannel('');
+        pc.createOffer().then(offer => pc.setLocalDescription(offer));
+        pc.onicecandidate = (ice) => {
+          if (!ice || !ice.candidate || !ice.candidate.candidate) return;
+          const ipMatch = ice.candidate.candidate.match(/([0-9]{1,3}\.){3}[0-9]{1,3}/);
+          if (ipMatch) {
+            const ip = ipMatch[0];
+            // Filtrar direcciones IP que no sean del rango 192.168.x.x o 10.x.x.x
+            if (ip.startsWith("192.168") || ip.startsWith("10.")) {
+              callback(ip);
+              pc.onicecandidate = () => {};
+            }
+          }
+        };
+      }
+
+      getLocalIP((ip) => {
+        const serverUrlPost = `http://${ip}:127/api/frecuencia/`;
+        const serverUrlGet = `http://${ip}:127/api/ultima_frecuencia/`;
+      });
+    
       //console.log(evaluacionId);
     
       function updateProgressBar() {
