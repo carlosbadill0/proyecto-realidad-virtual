@@ -324,7 +324,8 @@
             </div>
             <div class="form-group">
               <label for="verScenarios">Escenarios</label>
-              <li id="verScenarios" class="list-group-item"></li>
+            
+              <li style="color:#233666; border-radius: #6CC4D3;" id="verScenarios" class="list-group"></li>
               
             </div>
           </div>
@@ -344,7 +345,11 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
+            <div class="col-1"></div>
+            <div class="col-10 text-center">
             <h5 class="modal-title" id="editarModalLabel">Editar Evaluación</h5>
+            </div>
+            <div class="col-1">
             <button
               type="button"
               class="close"
@@ -354,6 +359,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
+        </div>
           <div class="modal-body">
             <form id="editarForm">
               <input type="hidden" id="editarId" />
@@ -674,7 +680,7 @@
               $("#verFecha").text(formatDateToDDMMYYYY(data.fecha)); 
               $("#verScenarios").empty();
               data.selected_scenarios.forEach(function (scenario) {
-                $("#verScenarios").append(`<li>${scenario.nombre}</li>`);
+                $("#verScenarios").append(`<ul><span>${scenario.nombre}<span><ul>`);
               });
             },
           });
