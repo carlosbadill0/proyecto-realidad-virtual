@@ -841,6 +841,7 @@
             videoElement.srcObject = stream;
           } catch (err) {
             console.error("Error: " + err);
+            alert("Error al iniciar la captura de pantalla: " + err.message);
           }
         } else {
           console.error("La función de captura de pantalla no es compatible con este navegador.");
@@ -858,6 +859,7 @@
             videoElement.srcObject = stream;
           } catch (err) {
             console.error("Error: " + err);
+            alert("Error al iniciar la captura de pantalla: " + err.message);
           }
         } else {
           console.error("La función de captura de pantalla no es compatible con este navegador.");
