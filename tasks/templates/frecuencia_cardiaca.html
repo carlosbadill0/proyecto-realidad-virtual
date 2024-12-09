@@ -842,19 +842,9 @@
           } catch (err) {
             console.error("Error: " + err);
           }
-        } else if (navigator.getDisplayMedia) { // Fallback for older browsers
-          try {
-            const stream = await navigator.getDisplayMedia({
-              video: true,
-            });
-            const videoElement = document.getElementById("liveVideo");
-            videoElement.srcObject = stream;
-          } catch (err) {
-            console.error("Error: " + err);
-          }
         } else {
           console.error("getDisplayMedia is not supported in this browser.");
-          console.error("La función de captura de pantalla no es compatible con este navegador.");
+          alert("La función de captura de pantalla no es compatible con este navegador.");
         }
       });
       
@@ -869,19 +859,9 @@
           } catch (err) {
             console.error("Error: " + err);
           }
-        } else if (navigator.getDisplayMedia) { // Fallback for older browsers
-          try {
-            const stream = await navigator.getDisplayMedia({
-              video: true,
-            });
-            const videoElement = document.getElementById("liveVideo2");
-            videoElement.srcObject = stream;
-          } catch (err) {
-            console.error("Error: " + err);
-          }
         } else {
           console.error("getDisplayMedia is not supported in this browser.");
-          console.error("La función de captura de pantalla no es compatible con este navegador.");
+          alert("La función de captura de pantalla no es compatible con este navegador.");
         }
       });
 
