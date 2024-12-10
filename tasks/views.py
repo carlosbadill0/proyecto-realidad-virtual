@@ -681,15 +681,18 @@ def editar_evaluacionRealizada(request, pk):
     else:
         form = EvaluacionRealizadaForm(instance=evaluacion)
         return JsonResponse({
-            'expositor': evaluacion.expositor.nombre,  # Use ID instead of name
+            'expositor_id': evaluacion.expositor.id,  # Use ID instead of name
+            'expositor_nombre': evaluacion.expositor.nombre,
             'nombre_evaluador': evaluacion.nombre_evaluador,
             'fecha_evaluacion': evaluacion.fecha_evaluacion,
             'observacion_inicial': evaluacion.observacion_inicial,
             'observacion_final': evaluacion.observacion_final,
             'tiempo_exposicion': evaluacion.tiempo_exposicion,
             'video_evaluacion': evaluacion.video_evaluacion.url if evaluacion.video_evaluacion else None,
-            'evaluacion_aplicada': evaluacion.evaluacion_aplicada.nombre,  # Use ID instead of string
+            'evaluacion_aplicada_id': evaluacion.evaluacion_aplicada.id, 
+            'evaluacion_aplicada_nombre': evaluacion.evaluacion_aplicada.nombre,
         })
+
 
 @csrf_exempt
 def borrar_evaluacionRealizada(request, pk):

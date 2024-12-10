@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return response.json();
         })
         .then((data) => {
+          const editarExpositorNombre = document.getElementById("editarExpositorNombre");
           const editarExpositor = document.getElementById("editarExpositor");
           const editarEvaluador = document.getElementById("editarEvaluador");
           const editarFechaEvaluacion = document.getElementById("editarFechaEvaluacion");
@@ -77,17 +78,20 @@ document.addEventListener("DOMContentLoaded", function () {
           const editarObservacionFinal = document.getElementById("editarObservacionFinal");
           const editarTiempoExposicion = document.getElementById("editarTiempoExposicion");
           const editarVideoEvaluacion = document.getElementById("editarVideoEvaluacion");
+          const editarEvaluacionAplicadaNombre = document.getElementById("editarEvaluacionAplicadaNombre");
           const editarEvaluacionAplicada = document.getElementById("editarEvaluacionAplicada");
-
-          if (editarExpositor) editarExpositor.value = data.expositor;
+  
+          if (editarExpositorNombre) editarExpositorNombre.value = data.expositor_nombre;
+          if (editarExpositor) editarExpositor.value = data.expositor_id;
           if (editarEvaluador) editarEvaluador.value = data.nombre_evaluador;
           if (editarFechaEvaluacion) editarFechaEvaluacion.value = data.fecha_evaluacion;
           if (editarObservacionInicial) editarObservacionInicial.value = data.observacion_inicial;
           if (editarObservacionFinal) editarObservacionFinal.value = data.observacion_final;
           if (editarTiempoExposicion) editarTiempoExposicion.value = data.tiempo_exposicion;
           if (editarVideoEvaluacion) editarVideoEvaluacion.value = data.video_evaluacion;
-          if (editarEvaluacionAplicada) editarEvaluacionAplicada.value = data.evaluacion_aplicada;
-
+          if (editarEvaluacionAplicadaNombre) editarEvaluacionAplicadaNombre.value = data.evaluacion_aplicada_nombre;
+          if (editarEvaluacionAplicada) editarEvaluacionAplicada.value = data.evaluacion_aplicada_id;
+  
           var editarEvaluacionModal = new bootstrap.Modal(document.getElementById("editarEvaluacionModal"));
           editarEvaluacionModal.show();
         })
@@ -96,52 +100,49 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
   });
-
-  // guardar cambios
+  
   document.getElementById("guardarCambiosBtn").addEventListener("click", function () {
     var id = document.querySelector(".editarEvaluacionBtn").getAttribute("data-id");
     var url = `/evaluaciones_realizadas/${id}/editar/`;
-    var expositor = document.getElementById("editarExpositor");
-    var nombre_evaluador = document.getElementById("editarEvaluador");
-    var fecha_evaluacion = document.getElementById("editarFechaEvaluacion");
-    var observacion_inicial = document.getElementById("editarObservacionInicial");
-    var observacion_final = document.getElementById("editarObservacionFinal");
-    var tiempo_exposicion = document.getElementById("editarTiempoExposicion");
-    var video_evaluacion = document.getElementById("editarVideoEvaluacion");
-    var evaluacion_aplicada = document.getElementById("editarEvaluacionAplicada");
-
+    var expositor = document.getElementById("editarExpositor").value;
+    var nombre_evaluador = document.getElementById("editarEvaluador").value;
+    var fecha_evaluacion = document.getElementById("editarFechaEvaluacion").value;
+    var observacion_inicial = document.getElementById("editarObservacionInicial").value;
+    var observacion_final = document.getElementById("editarObservacionFinal").value;
+    var tiempo_exposicion = document.getElementById("editarTiempoExposicion").value;
+    var video_evaluacion = document.getElementById("editarVideoEvaluacion").value;
+    var evaluacion_aplicada = document.getElementById("editarEvaluacionAplicada").value;
   
-    if (expositor && nombre_evaluador && fecha_evaluacion && observacion_inicial && observacion_final && tiempo_exposicion && video_evaluacion && evaluacion_aplicada) {
-      var formData = new FormData();
-      formData.append('expositor', expositor.value);
-      formData.append('nombre_evaluador', nombre_evaluador.value);
-      formData.append('fecha_evaluacion', fecha_evaluacion.value);
-      formData.append('observacion_inicial', observacion_inicial.value);
-      formData.append('observacion_final', observacion_final.value);
-      formData.append('tiempo_exposicion', tiempo_exposicion.value);
-      formData.append('video_evaluacion', video_evaluacion.value);
-      formData.append('evaluacion_aplicada', evaluacion_aplicada.value);
-      formData.append('csrfmiddlewaretoken', document.querySelector("[name=csrfmiddlewaretoken]").value);
-
-      fetch(url, {
-        method: "POST",
-        body: formData,
+    var formData = new FormData();
+    formData.append('expositor', expositor);
+    formData.append('nombre_evaluador', nombre_evaluador);
+    formData.append('fecha_evaluacion', fecha_evaluacion);
+    formData.append('observacion_inicial', observacion_inicial);
+    formData.append('observacion_final', observacion_final);
+    formData.append('tiempo_exposicion', tiempo_exposicion);
+    formData.append('video_evaluacion', video_evaluacion);
+    formData.append('evaluacion_aplicada', evaluacion_aplicada);
+    formData.append('csrfmiddlewaretoken', document.querySelector("[name=csrfmiddlewaretoken]").value);
+  
+    fetch(url, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // Cerrar el modal
+          var editarEvaluacionModal = bootstrap.Modal.getInstance(document.getElementById("editarEvaluacionModal"));
+          editarEvaluacionModal.hide();
+          // Opcional: Actualizar la página o la tabla de evaluaciones
+          location.reload();
+        } else {
+          console.error("Error al guardar los cambios:", data.errors);
+        }
       })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            location.reload();
-          } else {
-            alert("Error al guardar los cambios.");
-            console.error(data.errors); // Log the errors for debugging
-          }
-        })
-        .catch((error) => {
-          console.error("Error al guardar los cambios:", error);
-        });
-    } else {
-      console.error("Falta uno o más elementos.");
-    }
+      .catch((error) => {
+        console.error("Error al guardar los cambios:", error);
+      });
   });
 
   // borrar evaluación
