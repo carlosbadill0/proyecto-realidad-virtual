@@ -620,6 +620,10 @@ def evaluar_expositor(request, id, id_evaluacion):
 
     if request.GET.get('format') == 'json':
         def convert_to_seconds(time_str):
+            # Manejar duraciones en formato "10 sec"
+            if 'sec' in time_str:
+                return int(time_str.split()[0])
+            # Manejar duraciones en formato "HH:MM"
             h, m = map(int, time_str.split(':'))
             return h * 3600 + m * 60
 
@@ -659,8 +663,7 @@ def evaluar_expositor(request, id, id_evaluacion):
         'escenarios': escenarios,
         'evaluaciones': evaluaciones,
         'ultima_evaluacion': ultima_evaluacion,
-    })     
-    
+    })  
     
     
 #evaluaciones realizadas
