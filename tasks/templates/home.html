@@ -1,109 +1,112 @@
-
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../../static/css/estilos.css" />
-    <link rel="stylesheet" href="../../static/css/home.css" />
+  {% load static %}
+  {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+    <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/estilos.css" />
+    <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/home.css" />
+  {% else %}
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/home.css' %}" />
+  {% endif %}
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-    {% load static %}
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"
+  ></script>
 </head>
 <body>
-      
-    <h3 style="color: #233666; text-align: left; margin-top: -45px ;"><i class="bi bi-house-door"></i> Inicio</h3> <!-- Elimina el margen superior -->
-    <hr class="custom-hr">
-    <div class="container mt-3">
-      <div class="row section-cards">
-        <div class="col-md-6 section-card">
-          <div class="card-body">
-            <h5 class="card-title">Cantidad de Expositores</h5>
-            <p class="card-text">{{ cantidad_usuarios }}</p>
-          </div>
-        </div>
-        <div class="col-md-5 section-card ">
-          <div class="card-body">
-            <h5 class="card-title">Cantidad de Evaluaciones Realizadas</h5>
-            <p class="card-text">{{ cantidad_evaluaciones_realizadas }}</p>
-          </div>
+  <h3 style="color: #233666; text-align: left; margin-top: -45px;"><i class="bi bi-house-door"></i> Inicio</h3>
+  <hr class="custom-hr">
+  <div class="container mt-3">
+    <div class="row section-cards">
+      <div class="col-md-6 section-card">
+        <div class="card-body">
+          <h5 class="card-title">Cantidad de Expositores</h5>
+          <p class="card-text">{{ cantidad_usuarios }}</p>
         </div>
       </div>
-      <div class="row section-cards">
-        <div class="col-md-6 mt-3 section-card">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Edad de los Expositores</h5>
-              <canvas id="expositoresChart"></canvas>
-            </div>
-          </div>
+      <div class="col-md-5 section-card">
+        <div class="card-body">
+          <h5 class="card-title">Cantidad de Evaluaciones Realizadas</h5>
+          <p class="card-text">{{ cantidad_evaluaciones_realizadas }}</p>
         </div>
-        <div class="col-md-5 mt-3 section-card">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Evaluaciones Aplicadas</h5>
-              <canvas id="evaluacionMasAplicadaChart"></canvas>
-            </div>
-          </div>
-        </div>
-       
       </div>
     </div>
-  </body>
+    <div class="row section-cards">
+      <div class="col-md-6 mt-3 section-card">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Edad de los Expositores</h5>
+            <canvas id="expositoresChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5 mt-3 section-card">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Evaluaciones Aplicadas</h5>
+            <canvas id="evaluacionMasAplicadaChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        var ctx = document.getElementById('expositoresChart').getContext('2d');
-        var expositoresChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: {{ expositores_labels|safe }},
-            datasets: [{
-              label: 'Conteo de Edades de los Expositores',
-              data: {{ expositores_data|safe }},
-              backgroundColor: 'rgba(54, 162, 235, 0.2)',
-              borderColor: 'rgba(54, 162, 235, 1)',
-              borderWidth: 1
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var ctx = document.getElementById('expositoresChart').getContext('2d');
+    var expositoresChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: {{ expositores_labels|safe }},
+        datasets: [{
+          label: 'Conteo de Edades de los Expositores',
+          data: {{ expositores_data|safe }},
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
           }
-        });
+        }
+      }
+    });
 
-        var ctx2 = document.getElementById('evaluacionMasAplicadaChart').getContext('2d');
-        var evaluacionMasAplicadaChart = new Chart(ctx2, {
-          type: 'bar',
-          data: {
-            labels: {{ evaluacion_labels|safe }},
-            datasets: [{
-              label: 'Cantidad de Aplicaciones',
-              data: {{ evaluacion_data|safe }},
-              backgroundColor: 'rgba(255, 99, 132, 0.2)',
-              borderColor: 'rgba(255, 99, 132, 1)',
-              borderWidth: 1
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
+    var ctx2 = document.getElementById('evaluacionMasAplicadaChart').getContext('2d');
+    var evaluacionMasAplicadaChart = new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: {{ evaluacion_labels|safe }},
+        datasets: [{
+          label: 'Cantidad de Aplicaciones',
+          data: {{ evaluacion_data|safe }},
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
           }
-        });
-      });
-    </script>
-    {% include 'footer.html' %}
-    </html>
+        }
+      }
+    });
+  });
+</script>
+{% include 'footer.html' %}
+</html>
 {% endblock %}

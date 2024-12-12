@@ -7,8 +7,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
     <title>EasyFlow</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/signin.css' %}">
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+        <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/signin.css" />
+        <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/base.css" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'css/signin.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    {% endif %}
     <style>       
         body, html {
             height: 100%;
@@ -118,11 +123,19 @@
             <div class="col-9 fixed-col">
                 <div class="container-fluid d-flex justify-content-between align-items-center mt-2">
                     <div class="fixed-image-container">
-                        <img src="{% static 'images/logo-ubb.png' %}" alt="Logo" class="tamano2" />
+                        {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+                            <img src="https://pacheco.chillan.ubiobio.cl/easyflow/static/images/logo-ubb.png" alt="Logo" class="tamano2" />
+                        {% else %}
+                            <img src="{% static 'images/logo-ubb.png' %}" alt="Logo" class="tamano2" />
+                        {% endif %}
                     </div>
                     <form class="search-bar">
                         <div class="fixed-image-container">
-                            <img src="{% static 'images/Recurso1.png' %}" alt="Logo" class="tamano1" />
+                            {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+                                <img src="https://pacheco.chillan.ubiobio.cl/easyflow/static/images/Recurso1.png" alt="Logo" class="tamano1" />
+                            {% else %}
+                                <img src="{% static 'images/Recurso1.png' %}" alt="Logo" class="tamano1" />
+                            {% endif %}
                         </div>
                     </form>
                 </div>
@@ -132,12 +145,16 @@
     </header>
 
     <!-- Contenido principal -->
-    <div class="main-container" style="background-image: url('{% static 'images/inicioFoto.png' %}'); background-position: center 20%;">        <div class="about-section">
+    <div class="main-container" style="background-image: url('{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}https://pacheco.chillan.ubiobio.cl/easyflow/static/images/inicioFoto.png{% else %}{% static 'images/inicioFoto.png' %}{% endif %}'); background-position: center 20%;">        <div class="about-section">
             <h1 class="welcome">Bienvenido a EasyFlow</h1>
             <p class="description">
                 EasyFlow combina realidad virtual e Internet de las Cosas (IoT) para brindar una experiencia inmersiva y detallada en el análisis de la comunicación.
             </p>
-            <a href="{% url 'signin' %}" class="btn">Iniciar sesión</a>
+            {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+                <a href="/easyflow/login/" class="btn">Iniciar sesión</a>
+            {% else %}
+                <a href="{% url 'signin' %}" class="btn">Iniciar sesión</a>
+            {% endif %}
         </div>
     </div>
 

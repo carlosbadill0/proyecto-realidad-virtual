@@ -17,7 +17,11 @@
                 timer: 1000,
                 showConfirmButton: false
             }, function() {
-                window.location.href = "{% url 'lista_expositores' %}";
+                if (window.location.host === 'pacheco.chillan.ubiobio.cl') {
+                    window.location.href = "{% url 'listar_usuarios_easyflow' %}";
+                } else {
+                    window.location.href = "{% url 'listar_usuarios' %}";
+                }
             });
         }
         pregunta();

@@ -29,13 +29,24 @@ urlpatterns = [
     path('logout/', views.signout, name='logout'),
     path('', views.inicio, name='inicio'),
     path('login/', views.signin, name='signin'),
+    path('easyflow/login/', views.signin, name='signin_easyflow'),
+    path('easyflow/logout/', views.signout, name='logout_easyflow'),
+    
 
     # urls usuario
     path('administrar/', views.listar_usuarios, name='listar_usuarios'),
+    path('easyflow/administrar/', views.listar_usuarios, name='listar_usuarios_easyflow'),
+    
     path('usuarios/crear/', views.crear_usuario, name='crear_usuario'),
-    path('usuarios/editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
-    path('usuarios/eliminar/<int:id>/', views.eliminar_usuario, name='borrar_usuario'),
+    path('easyflow/usuarios/crear/', views.crear_usuario, name='crear_usuario'),
 
+    
+    path('usuarios/editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
+    path('easyflow/usuarios/editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
+    
+    path('usuarios/eliminar/<int:id>/', views.eliminar_usuario, name='borrar_usuario'),
+    path('easyflow/usuarios/eliminar/<int:id>/', views.eliminar_usuario, name='borrar_usuario_easyflow'),
+    
     # urls evaluacion
     path('diseñar/', views.lista_evaluaciones, name='lista_evaluaciones'),
     path('evaluaciones_realizadas/', views.listar_evaluaciones_realizadas, name='listar_evaluaciones_realizadas'),
@@ -72,8 +83,11 @@ urlpatterns = [
     
     #url para evaluar a un expositor
     path('evaluar/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
+    path('easyflow/evaluar/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor_easyflow'),
     ## para mandar el json de la evaluacion a oculus
     path('evaluar_expositor/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
+    path('easyflow/evaluar_expositor/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
+    
     
     #urls para la api arduino-web
     path('api/frecuencia/', views.recibir_frecuencia, name='recibir_frecuencia'),
@@ -93,6 +107,12 @@ urlpatterns = [
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
+    
+    # Rutas para el entorno easyflow
+    path('easyflow/password_reset/', CustomPasswordResetView.as_view(), name='password_reset_easyflow'),
+    path('easyflow/password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
+    path('easyflow/reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'), name='password_reset_confirm_easyflow'),
+    path('easyflow/reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete_easyflow'),
     
     ##no borrar, es para probar el envio de datos con la api de sendgrid
     path('send-test-email/', views.send_test_email, name='send_test_email'),

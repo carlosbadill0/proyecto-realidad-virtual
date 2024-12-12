@@ -15,10 +15,12 @@
     />
 
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+      <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/base.css" />
+    {% else %}
+      <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    {% endif %}
     {% block extra_css %}{% endblock %}
-
-    
   </head>
   <body>
     <header class="py-2 mb-2 border-bottom">
@@ -28,90 +30,95 @@
         </div>
         <div class="col-9 fixed-col">
           <div class="container-fluid d-flex justify-content-between align-items-center mt-2">
-            {% load static %}
             <div class="fixed-image-container">
-              <img
-                src="{% static 'images/logo-ubb.png' %}"
-                alt="Logo"
-                class="tamano2"
-              />
+              {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+                <img src="https://pacheco.chillan.ubiobio.cl/easyflow/static/images/logo-ubb.png" alt="Logo" class="tamano2" />
+              {% else %}
+                <img src="{% static 'images/logo-ubb.png' %}" alt="Logo" class="tamano2" />
+              {% endif %}
             </div>
             <form class="search-bar">
               <div class="fixed-image-container">
-                <img
-                  src="{% static 'images/Recurso2.png' %}"
-                  alt="Logo"
-                  class="tamano1"
-                />
+                {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+                  <img src="https://pacheco.chillan.ubiobio.cl/easyflow/static/images/Recurso2.png" alt="Logo" class="tamano1" />
+                {% else %}
+                  <img src="{% static 'images/Recurso2.png' %}" alt="Logo" class="tamano1" />
+                {% endif %}
               </div>
             </form>
           </div>
         </div>
         <div class="col-2 mt-2 text-center">
-          {% if user.is_authenticated %}
-            <a class=" bi bi-box-arrow-left posicion-a " href="/logout"> Cerrar sesión</a>
-          {% endif %}
+          {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+          <a href="{% url 'logout_easyflow' %}" class="btn bi bi-box-arrow-left posicion-a" style="color: white;">
+            Cerrar sesión
+        </a>          {% else %}
+          <a href="{% url 'logout' %}" class="btn" style="color: white;">
+              <i class="bi bi-box-arrow-left"></i> Cerrar sesión
+          </a>          
+        {% endif %}
         </div>
       </div>
     </header>
     {% if user.is_authenticated %}
     <div class="sidebar">
       <!-- User Profile Section -->
-
+    
       <!-- Navigation Links -->
-       <br>
+      <br>
       <ul class="nav flex-column">
         <li class="nav-item">
-          <a
-            class="nav-link {% if request.path == '/home/' %}fw-bold{% endif %}"
-            href="/home/"
-            ><i class="bi bi-house-door"></i> Inicio</a
-          >
+          {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+            <a class="nav-link {% if request.path == '/easyflow/home/' %}fw-bold{% endif %}" href="/easyflow/home/"><i class="bi bi-house-door"></i> Inicio</a>
+          {% else %}
+            <a class="nav-link {% if request.path == '/home/' %}fw-bold{% endif %}" href="{% url 'home' %}"><i class="bi bi-house-door"></i> Inicio</a>
+          {% endif %}
         </li>
         <li class="nav-item">
-          <a
-            class="nav-link {% if request.path == '/evaluaciones_realizadas/' %}fw-bold{% endif %}"
-            href="/evaluaciones_realizadas/"
-            ><i class="bi bi-calendar"></i> Evaluaciones</a
-          >
+          {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+            <a class="nav-link {% if request.path == '/easyflow/evaluaciones_realizadas/' %}fw-bold{% endif %}" href="/easyflow/evaluaciones_realizadas/"><i class="bi bi-calendar"></i> Evaluaciones</a>
+          {% else %}
+            <a class="nav-link {% if request.path == '/evaluaciones_realizadas/' %}fw-bold{% endif %}" href="{% url 'listar_evaluaciones_realizadas' %}"><i class="bi bi-calendar"></i> Evaluaciones</a>
+          {% endif %}
         </li>
         <li class="nav-item">
-          <a
-            class="nav-link {% if request.path == '/diseñar/' %}fw-bold{% endif %}"
-            href="/diseñar/"
-            ><i class="bi bi-pencil-square"></i> Diseñar evaluación</a
-          >
+          {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+            <a class="nav-link {% if request.path == '/easyflow/diseñar/' %}fw-bold{% endif %}" href="/easyflow/diseñar/"><i class="bi bi-pencil-square"></i> Diseñar evaluación</a>
+          {% else %}
+            <a class="nav-link {% if request.path == '/diseñar/' %}fw-bold{% endif %}" href="{% url 'lista_evaluaciones' %}"><i class="bi bi-pencil-square"></i> Diseñar evaluación</a>
+          {% endif %}
         </li>
         <li class="nav-item">
-          <a
-            class="nav-link {% if request.path == '/expositores/' %}fw-bold{% endif %}"
-            href="/expositores/"
-           
-            ><i class="bi bi-people"></i> Expositores</a
-          >
+          {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+            <a class="nav-link {% if request.path == '/easyflow/expositores/' %}fw-bold{% endif %}" href="/easyflow/expositores/"><i class="bi bi-people"></i> Expositores</a>
+          {% else %}
+            <a class="nav-link {% if request.path == '/expositores/' %}fw-bold{% endif %}" href="{% url 'lista_expositores' %}"><i class="bi bi-people"></i> Expositores</a>
+          {% endif %}
         </li>
         <li class="nav-item">
-          <a
-            class="nav-link {% if request.path == '/administrar/' %}fw-bold{% endif %}"
-            href="/administrar/"
-            ><i class="bi bi-gear"></i> Administrar</a
-          >
+          {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+            <a class="nav-link {% if request.path == '/easyflow/administrar/' %}fw-bold{% endif %}" href="/easyflow/administrar/"><i class="bi bi-gear"></i> Administrar</a>
+          {% else %}
+            <a class="nav-link {% if request.path == '/administrar/' %}fw-bold{% endif %}" href="{% url 'listar_usuarios' %}"><i class="bi bi-gear"></i> Administrar</a>
+          {% endif %}
         </li>
-
-        <a class="nav-link {% if request.path == '/acerca-de/' %}fw-bold{% endif %}" href="{% url 'acerca_de' %}">
-          <i class="bi bi-info-circle"></i> Acerca de
-        </a>
-      </li>
+        <li class="nav-item">
+          {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+            <a class="nav-link {% if request.path == '/easyflow/acerca-de/' %}fw-bold{% endif %}" href="/easyflow/acerca-de/"><i class="bi bi-info-circle"></i> Acerca de</a>
+          {% else %}
+            <a class="nav-link {% if request.path == '/acerca-de/' %}fw-bold{% endif %}" href="{% url 'acerca_de' %}"><i class="bi bi-info-circle"></i> Acerca de</a>
+          {% endif %}
+        </li>
       </ul>
-
-      <div><hr></div>
     
+      <div><hr></div>
+          
       <div class="user-info mt-0">
-        <img
-          src="{% static 'images/prueba4.png' %}"
-          alt="User Avatar"
-          class="avatar"
-        />
+        {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+          <img src="https://pacheco.chillan.ubiobio.cl/easyflow/static/images/prueba4.png" alt="User Avatar" class="avatar" />
+        {% else %}
+          <img src="{% static 'images/prueba4.png' %}" alt="User Avatar" class="avatar" />
+        {% endif %}
         <h6 class="text-center">{{ user.first_name }} {{ user.last_name }}</h6>
         <p>{{ user.username }}</p>
         <p class="text-center">{{ user.email }}</p>
@@ -119,6 +126,7 @@
       </div>
       
     </div>
+
     {% endif %}
     <div class="content">
       <div class="container mt-4 pt-4">{% block content %}{% endblock %}</div>

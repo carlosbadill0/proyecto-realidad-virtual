@@ -50,6 +50,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://pacheco.chillan.ubiobio.cl',
+]
+
 # Configuración de la sesión
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Usa la base de datos para almacenar sesiones
 SESSION_COOKIE_NAME = 'sessionid'
@@ -161,6 +165,6 @@ EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'apikey'  # Esto es literal, no tu API key
-EMAIL_HOST_PASSWORD = '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'
+EMAIL_HOST_PASSWORD = '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'
 DEFAULT_FROM_EMAIL = 'correo.pruebas.proyectoubb@gmail.com'
 

@@ -1,18 +1,23 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+        <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/estilos.css">
+    {% else %}
+        <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    {% endif %}
     <title>Formulario de Usuario</title>
 </head>
 <body>
     <div class="container">
         <h3 style="color: #233666; text-align: left; margin-top: -45px"><i class="bi bi-person-add"></i> {{ form.instance.id_usuario|default:"Crear" }} Usuario</h3>
         <hr class="custom-hr">
-        <form method="post">
+        <form method="post" action="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'crear_usuario' %}">
             {% csrf_token %}
             <div class="row">
                 <div class="col-md-6">
@@ -29,7 +34,7 @@
                     <div class="form-group">
                         <label for="id_password1">Contraseña</label>
                         <input type="password" class="form-control" id="id_password1" name="password1" required placeholder="******">
-                        <h6 style="color: #233666; text-align: left; margin-top: 10px"> La contraseña debe contener almenos 6 caracteres</h6>
+                        <h6 style="color: #233666; text-align: left; margin-top: 10px"> La contraseña debe contener al menos 6 caracteres</h6>
                     </div>
                     <div class="form-group">
                         <label for="id_group">Rol</label>
@@ -61,7 +66,7 @@
                 <div class="row">
                   <div class="col text-end">
                     <button type="submit" class="btn btn-custom2 btn-block mt-3">Registrar</button>
-                    <button onclick="location.href='{% url 'listar_usuarios' %}'" class="btn btn-custom btn-block mt-3">Volver</button>
+                    <button onclick="location.href='{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'listar_usuarios' %}'" class="btn btn-custom btn-block mt-3">Volver</button>
                   </div>
                 </div>
               </div>

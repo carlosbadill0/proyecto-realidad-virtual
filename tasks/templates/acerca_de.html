@@ -7,7 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acerca de</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+        <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/estilos.css">
+    {% else %}
+        <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    {% endif %}
     <style>
         .about-section {
             background-color: #f8f9fa;

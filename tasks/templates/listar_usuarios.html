@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
+{% block content %}
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -8,11 +9,13 @@
     {% load static %}
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
    
-    <script src="{% static 'js/filtrar.js' %}"></script>
-    <link rel="stylesheet" href="../../static/css/estilos.css" />
-    <link rel="stylesheet" href="../../static/css/modal.css" />
-    {% load static %}
-    {% block extra_css %}{% endblock %}
+    {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+    <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/estilos.css">
+    <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/modal.css">
+    {% else %}
+      <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+      <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    {% endif %}
   </head>
   <body>
     <h3 style="color: #233666; text-align: left; margin-top: -45px">
@@ -46,9 +49,11 @@
           </div>
         </div>
         <div class="col-md-6 text-right">
-          <a href="{% url 'crear_usuario' %}" class="btn btn-custom2"
-            >Añadir usuario</a
-          >
+          {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+            <a href="/easyflow{% url 'crear_usuario' %}" class="btn btn-custom2">Añadir usuario</a>
+          {% else %}
+            <a href="{% url 'crear_usuario' %}" class="btn btn-custom2">Añadir usuario</a>
+          {% endif %}
         </div>
       </div>
       <div class="table-responsive">
@@ -122,8 +127,9 @@
                     </div>
                   </div>
                   <form
+                    id="editarUsuarioForm{{ usuario.id }}"
                     method="POST"
-                    action="{% url 'editar_usuario' usuario.id %}"
+                    action="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'editar_usuario' usuario.id %}"
                   >
                     {% csrf_token %}
                     <div class="modal-body mb-5">
@@ -183,27 +189,24 @@
                   <div class="modal-header">
                     <div class="col-1"></div>
                     <div class="col-10 text-center">
-                    <h5
-                      class="modal-title"
-                      id="borrarUsuarioModalLabel{{ usuario.id }}"
-                    >
-                      Eliminar Usuario
-                    </h5>
+                      <h5 class="modal-title" id="borrarUsuarioModalLabel{{ usuario.id }}">
+                        Eliminar Usuario
+                      </h5>
                     </div>
                     <div class="col-1">
-                    <button
-                      type="button"
-                      class="close"
-                      data-dismiss="modal"
-                      aria-label="Close"
-                    >
-                      <span aria-hidden="true">&times;</span>
-                    </button>
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
                     </div>
                   </div>
                   <form
                     method="POST"
-                    action="{% url 'borrar_usuario' usuario.id %}"
+                    action="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'borrar_usuario' usuario.id %}"
                   >
                     {% csrf_token %}
                     <div class="modal-body text-center">
@@ -259,92 +262,217 @@
         </nav>
       </div>
     </div>
-      </div>
+    </div>
     
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script> 
-      function parseDate(dateString) {
-        // Intenta convertir cadenas comunes (como DD/MM/YYYY o YYYY-MM-DD) en objetos Date
-        const parts = dateString.split(/[-/]/); // Admite '-' o '/' como separador
-        if (parts.length === 3) {
-            if (parts[0].length === 4) {
-                // Formato: YYYY-MM-DD
-                return new Date(parts[0], parts[1] - 1, parts[2]);
-            } else {
-                // Formato: DD/MM/YYYY
-                return new Date(parts[2], parts[1] - 1, parts[0]);
+    <script>
+      $(document).ready(function () {
+        const isPacheco = window.location.host === 'pacheco.chillan.ubiobio.cl';
+        console.log("isPacheco:", isPacheco);
+    
+        function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === name + "=") {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+              }
             }
+          }
+          return cookieValue;
         }
-        return new Date(dateString); // Último recurso: confiar en el constructor Date
-    }
-
-    function sortTable(column, order) {
-      const table = document.querySelector('table tbody');
-      const rows = Array.from(table.rows);
-  
-      rows.sort((a, b) => {
-          let aText = a.querySelector(`td[data-column="${column}"]`).textContent.trim();
-          let bText = b.querySelector(`td[data-column="${column}"]`).textContent.trim();
-  
-          if (column === 'date') {
+        const csrftoken = getCookie("csrftoken");
+    
+        function csrfSafeMethod(method) {
+          return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
+        }
+    
+        $.ajaxSetup({
+          beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+          },
+        });
+    
+        function parseDate(dateString) {
+          // Intenta convertir cadenas comunes (como DD/MM/YYYY o YYYY-MM-DD) en objetos Date
+          const parts = dateString.split(/[-/]/); // Admite '-' o '/' como separador
+          if (parts.length === 3) {
+            if (parts[0].length === 4) {
+              // Formato: YYYY-MM-DD
+              return new Date(parts[0], parts[1] - 1, parts[2]);
+            } else {
+              // Formato: DD/MM/YYYY
+              return new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+          }
+          return new Date(dateString); // Último recurso: confiar en el constructor Date
+        }
+    
+        function sortTable(column, order) {
+          const table = document.querySelector('table tbody');
+          const rows = Array.from(table.rows);
+    
+          rows.sort((a, b) => {
+            let aText = a.querySelector(`td[data-column="${column}"]`).textContent.trim();
+            let bText = b.querySelector(`td[data-column="${column}"]`).textContent.trim();
+    
+            if (column === 'date') {
               aText = parseDate(aText);
               bText = parseDate(bText);
-          }
-  
-          if (order === 'asc') {
+            }
+    
+            if (order === 'asc') {
               return aText > bText ? 1 : -1;
-          } else {
+            } else {
               return aText < bText ? 1 : -1;
-          }
-      });
-  
-      rows.forEach(row => table.appendChild(row));
-  }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      const searchInput = document.getElementById('searchInput');
-      const table = document.getElementById('userTable');
-      const noResultsMessage = document.getElementById('noResultsMessage');
-  
-      if (searchInput && table && noResultsMessage) {
-          const rows = table.getElementsByTagName('tr');
-  
-          searchInput.addEventListener('input', function() {
+            }
+          });
+    
+          rows.forEach(row => table.appendChild(row));
+        }
+    
+        document.addEventListener('DOMContentLoaded', function() {
+          const searchInput = document.getElementById('searchInput');
+          const table = document.getElementById('userTable');
+          const noResultsMessage = document.getElementById('noResultsMessage');
+    
+          if (searchInput && table && noResultsMessage) {
+            const rows = table.getElementsByTagName('tr');
+    
+            searchInput.addEventListener('input', function() {
               const filter = searchInput.value.toLowerCase();
               let hasResults = false;
-  
+    
               for (let i = 1; i < rows.length; i++) { // Start from 1 to skip table header
-                  let cells = rows[i].getElementsByTagName('td');
-                  let match = false;
-  
-                  for (let j = 0; j < cells.length; j++) {
-                      if (cells[j] && cells[j].getAttribute('data-column') === 'name') {
-                          if (cells[j].innerText.toLowerCase().indexOf(filter) > -1) {
-                              match = true;
-                              break;
-                          }
-                      }
+                let cells = rows[i].getElementsByTagName('td');
+                let match = false;
+    
+                for (let j = 0; j < cells.length; j++) {
+                  if (cells[j] && cells[j].getAttribute('data-column') === 'name') {
+                    if (cells[j].innerText.toLowerCase().indexOf(filter) > -1) {
+                      match = true;
+                      break;
+                    }
                   }
-  
-                  if (match) {
-                      rows[i].style.display = '';
-                      hasResults = true;
-                  } else {
-                      rows[i].style.display = 'none';
-                  }
+                }
+    
+                if (match) {
+                  rows[i].style.display = '';
+                  hasResults = true;
+                } else {
+                  rows[i].style.display = 'none';
+                }
               }
-  
+    
               if (hasResults) {
-                  noResultsMessage.style.display = 'none';
+                noResultsMessage.style.display = 'none';
               } else {
-                  noResultsMessage.style.display = 'block';
+                noResultsMessage.style.display = 'block';
               }
+            });
+          }
+        });
+    
+        $("#editarUsuarioModal").on("show.bs.modal", function (event) {
+          var button = $(event.relatedTarget);
+          var id = button.data("id");
+          var url = "{% url 'editar_usuario' 0 %}".replace("0", id);
+          if (isPacheco) {
+            url = '/easyflow' + url;
+          }
+          console.log("Edit URL:", url);
+          $.ajax({
+            url: url,
+            method: "GET",
+            success: function (data) {
+              console.log("Edit Data:", data);
+              $("#editarId").val(id);
+              $("#editarNombre").val(data.nombre);
+              $("#editarFechaIngreso").val(data.fecha_ingreso);
+              $("#editarFecha_nacimiento").val(data.fecha_nacimiento);
+              $("#EditarEdad").val(data.edad);
+              $("#editarGenero").val(data.genero);
+              $("#editarCarrera").val(data.carrera);
+              $("#editarSemestre_academico").val(data.semestre_academico);
+              $("#editarObservacion_inicial").val(data.observacion_inicial);
+              $("#editarObservacion_final").val(data.observacion_final);
+            },
           });
-      }
-  });
+        });
+    
+        $("#editarUsuarioForm{{ usuario.id }}").on("submit", function (event) {
+          event.preventDefault();
+          var formData = $(this).serializeArray();
+          console.log("Form Data:", formData);
+          var id = $("#editarId").val();
+          var url = "{% url 'editar_usuario' 0 %}".replace("0", id);
+          if (isPacheco) {
+            url = '/easyflow' + url;
+          }
+          console.log("Edit Submit URL:", url);
+          $.ajax({
+            url: url,
+            method: "POST",
+            data: formData,
+            success: function (response) {
+              console.log("Edit Response:", response);
+              if (response.success) {
+                if (isPacheco) {
+                  window.location.href = '/easyflow{% url "listar_usuarios" %}';
+                } else {
+                  window.location.href = '{% url "listar_usuarios" %}';
+                }
+              } else {
+                alert("Error al editar el usuario.");
+              }
+            },
+          });
+        });
+    
+        $("#borrarUsuarioModal").on("show.bs.modal", function (event) {
+          var button = $(event.relatedTarget);
+          var id = button.data("id");
+          var url = "{% url 'borrar_usuario' 0 %}".replace("0", id);
+          if (isPacheco) {
+            url = '/easyflow' + url;
+          }
+          console.log("Delete URL:", url);
+          $("#borrarUsuarioBtn")
+            .off("click")
+            .on("click", function () {
+              console.log("Delete Button Clicked");
+              $.ajax({
+                url: url,
+                method: "POST",
+                data: {
+                  csrfmiddlewaretoken: csrftoken,
+                },
+                success: function (response) {
+                  console.log("Delete Response:", response);
+                  if (response.success) {
+                    if (isPacheco) {
+                      
+                      window.location.href 
+                      = '/easyflow{% url "listar_usuarios" %}';
+                    } else {
+                      window.location.href = '{% url "listar_usuarios" %}';
+                    }
+                  } else {
+                    alert("Error al borrar el usuario.");
+                  }
+                },
+              });
+            });
+        });
+      });
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
@@ -352,5 +480,4 @@
   </body>
   {% include 'footer.html' %}
 </html>
-
 {% endblock %}

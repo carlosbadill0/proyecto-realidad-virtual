@@ -16,12 +16,18 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 
-    <link rel="stylesheet" href="../../static/css/home.css" />
-    <link rel="stylesheet" href="../../static/css/base.css">
-
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
-    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+      <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/home.css">
+      <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/base.css">
+      <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/estilos.css">
+      <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/modal.css">
+    {% else %}
+      <link rel="stylesheet" href="{% static 'css/home.css' %}">
+      <link rel="stylesheet" href="{% static 'css/base.css' %}">
+      <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+      <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    {% endif %}
     {% block extra_css %}{% endblock %}
   </head>
 
@@ -597,7 +603,6 @@
   </div>
 </div>
 
-
     <!-- Borrar Expositor Modal -->
 <div
 class="modal fade"
@@ -654,10 +659,12 @@ aria-hidden="true"
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../../static/js/filtrar.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script>
       $(document).ready(function () {
+        const isPacheco = window.location.host === 'pacheco.chillan.ubiobio.cl';
+        console.log("isPacheco:", isPacheco);
+    
         function getCookie(name) {
           let cookieValue = null;
           if (document.cookie && document.cookie !== "") {
@@ -673,11 +680,11 @@ aria-hidden="true"
           return cookieValue;
         }
         const csrftoken = getCookie("csrftoken");
-      
+    
         function csrfSafeMethod(method) {
           return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
         }
-      
+    
         $.ajaxSetup({
           beforeSend: function (xhr, settings) {
             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -685,12 +692,15 @@ aria-hidden="true"
             }
           },
         });
-      
+    
         $("#verExpositorModal").on("show.bs.modal", function (event) {
           var button = $(event.relatedTarget);
           var id = button.data("id");
           var url = "{% url 'detalle_expositor' 0 %}".replace("0", id);
-      
+          if (isPacheco) {
+            url = '/easyflow' + url;
+          }
+    
           $.ajax({
             url: url,
             method: "GET",
@@ -707,7 +717,7 @@ aria-hidden="true"
             },
           });
         });
-      
+    
         $("#crearExpositorModal").on("show.bs.modal", function () {
           const today = new Date();
           const day = String(today.getDate()).padStart(2, "0"); // Obtener el día
@@ -716,10 +726,14 @@ aria-hidden="true"
           const formattedDate = `${year}-${month}-${day}`; // Formato 'YYYY-MM-DD'
           $("#fecha_ingreso").val(formattedDate); // Asignar la fecha actual
         });
-      
+    
         $("#crearExpositorBtn").click(function () {
+          var url = '{% url "crear_expositor" %}';
+          if (isPacheco) {
+            url = '/easyflow' + url;
+          }
           $.ajax({
-            url: '{% url "crear_expositor" %}',
+            url: url,
             method: "POST",
             data: $("#crearExpositorForm").serialize(),
             success: function (response) {
@@ -732,11 +746,14 @@ aria-hidden="true"
             },
           });
         });
-      
+    
         $("#editarExpositorModal").on("show.bs.modal", function (event) {
           var button = $(event.relatedTarget);
           var id = button.data("id");
           var url = "{% url 'detalle_expositor' 0 %}".replace("0", id);
+          if (isPacheco) {
+            url = '/easyflow' + url;
+          }
           $.ajax({
             url: url,
             method: "GET",
@@ -754,10 +771,13 @@ aria-hidden="true"
             },
           });
         });
-      
+    
         $("#editarExpositorBtn").click(function () {
           var id = $("#editarId").val();
           var url = "{% url 'editar_expositor' 0 %}".replace("0", id);
+          if (isPacheco) {
+            url = '/easyflow' + url;
+          }
           $.ajax({
             url: url,
             method: "POST",
@@ -771,16 +791,19 @@ aria-hidden="true"
             },
           });
         });
-      
+    
         $("#borrarExpositorModal").on("show.bs.modal", function (event) {
           var button = $(event.relatedTarget);
           var nombreExpositor = button.data("nombre"); // Obtener el nombre del expositor
           var id = button.data("id");
           var url = "{% url 'borrar_expositor' 0 %}".replace("0", id);
-      
+          if (isPacheco) {
+            url = '/easyflow' + url;
+          }
+    
           // Establecer el nombre del expositor en el modal
           $("#nombreExpositorBorrar").text(nombreExpositor);
-      
+    
           $("#borrarExpositorBtn")
             .off("click")
             .on("click", function () {
@@ -797,7 +820,7 @@ aria-hidden="true"
               });
             });
         });
-      
+    
         $(".evaluarExpositorBtn").click(function () {
           var expositorId = $(this).data("id");
           var evaluacionId = $("#evaluacion").val();
@@ -806,99 +829,105 @@ aria-hidden="true"
               "0/0",
               expositorId + "/" + evaluacionId
             );
+            if (isPacheco) {
+              url = '/easyflow' + url;
+            }
             window.location.href = url;
           } else {
             alert("Por favor, selecciona una evaluación.");
           }
         });
-      
+    
         $(".evaluacionPantallaBtn").click(function () {
           var id = $(this).data("id");
           var url = "{% url 'elegir_evaluacion' 0 %}".replace("0", id);
+          if (isPacheco) {
+            url = '/easyflow' + url;
+          }
           window.location.href = url;
         });
       });
-
+    
       function parseDate(dateString) {
         // Intenta convertir cadenas comunes (como DD/MM/YYYY o YYYY-MM-DD) en objetos Date
         const parts = dateString.split(/[-/]/); // Admite '-' o '/' como separador
         if (parts.length === 3) {
-            if (parts[0].length === 4) {
-                // Formato: YYYY-MM-DD
-                return new Date(parts[0], parts[1] - 1, parts[2]);
-            } else {
-                // Formato: DD/MM/YYYY
-                return new Date(parts[2], parts[1] - 1, parts[0]);
-            }
+          if (parts[0].length === 4) {
+            // Formato: YYYY-MM-DD
+            return new Date(parts[0], parts[1] - 1, parts[2]);
+          } else {
+            // Formato: DD/MM/YYYY
+            return new Date(parts[2], parts[1] - 1, parts[0]);
+          }
         }
         return new Date(dateString); // Último recurso: confiar en el constructor Date
-    }
-
-    function sortTable(column, order) {
-      const table = document.querySelector('table tbody');
-      const rows = Array.from(table.rows);
-  
-      rows.sort((a, b) => {
+      }
+    
+      function sortTable(column, order) {
+        const table = document.querySelector('table tbody');
+        const rows = Array.from(table.rows);
+    
+        rows.sort((a, b) => {
           let aText = a.querySelector(`td[data-column="${column}"]`).textContent.trim();
           let bText = b.querySelector(`td[data-column="${column}"]`).textContent.trim();
-  
+    
           if (column === 'date') {
-              aText = parseDate(aText);
-              bText = parseDate(bText);
+            aText = parseDate(aText);
+            bText = parseDate(bText);
           }
-  
+    
           if (order === 'asc') {
-              return aText > bText ? 1 : -1;
+            return aText > bText ? 1 : -1;
           } else {
-              return aText < bText ? 1 : -1;
+            return aText < bText ? 1 : -1;
           }
-      });
-  
-      rows.forEach(row => table.appendChild(row));
-  }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      const searchInput = document.getElementById('searchInput');
-      const table = document.getElementById('userTable');
-      const noResultsMessage = document.getElementById('noResultsMessage');
-  
-      if (searchInput && table && noResultsMessage) {
-          const rows = table.getElementsByTagName('tr');
-  
-          searchInput.addEventListener('input', function() {
-              const filter = searchInput.value.toLowerCase();
-              let hasResults = false;
-  
-              for (let i = 1; i < rows.length; i++) { // Start from 1 to skip table header
-                  let cells = rows[i].getElementsByTagName('td');
-                  let match = false;
-  
-                  for (let j = 0; j < cells.length; j++) {
-                      if (cells[j] && cells[j].getAttribute('data-column') === 'name') {
-                          if (cells[j].innerText.toLowerCase().indexOf(filter) > -1) {
-                              match = true;
-                              break;
-                          }
-                      }
-                  }
-  
-                  if (match) {
-                      rows[i].style.display = '';
-                      hasResults = true;
-                  } else {
-                      rows[i].style.display = 'none';
-                  }
-              }
-  
-              if (hasResults) {
-                  noResultsMessage.style.display = 'none';
-              } else {
-                  noResultsMessage.style.display = 'block';
-              }
-          });
+        });
+    
+        rows.forEach(row => table.appendChild(row));
       }
-  });
-    </script>  
+    
+      document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const table = document.getElementById('userTable');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+    
+        if (searchInput && table && noResultsMessage) {
+          const rows = table.getElementsByTagName('tr');
+    
+          searchInput.addEventListener('input', function() {
+            const filter = searchInput.value.toLowerCase();
+            let hasResults = false;
+    
+            for (let i = 1; i < rows.length; i++) { // Start from 1 to skip table header
+              let cells = rows[i].getElementsByTagName('td');
+              let match = false;
+    
+              for (let j = 0; j < cells.length; j++) {
+                if (cells[j] && cells[j].getAttribute('data-column') === 'name') {
+                  if (cells[j].innerText.toLowerCase().indexOf(filter) > -1) {
+                    match = true;
+                    break;
+                  }
+                }
+              }
+    
+              if (match) {
+                rows[i].style.display = '';
+                hasResults = true;
+              } else {
+                rows[i].style.display = 'none';
+              }
+            }
+    
+            if (hasResults) {
+              noResultsMessage.style.display = 'none';
+            } else {
+              noResultsMessage.style.display = 'block';
+            }
+          });
+        }
+      });
+    </script>
   </body>
   {% include 'footer.html' %} {% endblock %}
 </html>

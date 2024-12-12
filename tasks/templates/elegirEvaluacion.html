@@ -7,8 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Evaluación</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/elegirEvaluacion.css' %}">
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+        <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/elegirEvaluacion.css">
+        <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/estilos.css">
+    {% else %}
+        <link rel="stylesheet" href="{% static 'css/elegirEvaluacion.css' %}">
+        <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    {% endif %}
     {% block extra_css %}{% endblock %}
 </head>
 <body> 
@@ -36,8 +41,7 @@
     </div>
 
     <div class="col-6">
-        <form method="POST" action="{% url 'elegir_evaluacion' expositor_seleccionado.id %}">
-            {% csrf_token %}
+        <form method="POST" action="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'elegir_evaluacion' expositor_seleccionado.id %}">            {% csrf_token %}
             <h3><i class="bi bi-card-text"></i> Datos del evaluador</h3>
             <label for="fecha-evaluacion" style="color: #233666">Fecha de Evaluación</label>
             <input type="date" id="fecha-evaluacion" name="fecha_evaluacion" required>
@@ -64,7 +68,7 @@
             {% for expositor in expositores %}
                 {% if expositor.id == expositor_seleccionado.id %}
                     <div class="button">
-                        <button class="btn btn-custom2 evaluarExpositorBtn mb-3" data-id="{{ expositor.id }}">
+                        <button class="btn btn-custom2 evaluarExpositorBtn mb-3" data-id="{{ expositor.id }}" id="evaluarExpositorBtn{{ expositor.id }}">
                             Evaluar expositor
                             <i class="bi bi-clipboard-pulse"></i>
                         </button>
@@ -78,7 +82,6 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-
     document.addEventListener("DOMContentLoaded", function() {
         const fechaEvaluacionInput = document.getElementById("fecha-evaluacion");
         const today = new Date();
@@ -91,27 +94,28 @@
 
     // Manejo del botón de evaluación
     $(document).ready(function () {
-        $('#evaluarExpositorBtn').click(function () {
-            var expositorId = $('#expositorId').val();
-            var evaluacionId = $('#evaluacionId').val();
-            var url = "{% url 'evaluar_expositor' 0 0 %}".replace('0', expositorId).replace('0', evaluacionId);
-    
-            $.ajax({
-                url: url,
-                method: 'GET',
-                success: function (data) {
-                    console.log(data);
-                    // Aquí puedes manejar el JSON recibido, por ejemplo, mostrarlo en la consola o procesarlo de alguna manera
-                },
-                error: function (error) {
-                    console.error('Error al obtener los datos de la evaluación:', error);
+        $('.evaluarExpositorBtn').click(function () {
+            var expositorId = $(this).data('id');
+            var evaluacionId = $('#evaluacion').val();
+            if (evaluacionId) {
+                var url = "{% url 'evaluar_expositor' 0 0 %}".replace('0/0', expositorId + '/' + evaluacionId);
+                if (window.location.host === 'pacheco.chillan.ubiobio.cl') {
+                    url = '/easyflow' + url;
+                } else {
+                    url = url;
                 }
-            });
+                window.location.href = url;
+            } else {
+                alert('Por favor, selecciona una evaluación.');
+            }
         });
 
         $('.evaluacionPantallaBtn').click(function () {
             var id = $(this).data('id');
             var url = "{% url 'elegir_evaluacion' 0 %}".replace('0', id);
+            if (window.location.host === 'pacheco.chillan.ubiobio.cl') {
+                url = '/easyflow' + url;
+            }
             window.location.href = url;
         });
     });
@@ -138,7 +142,6 @@
 
     // Inicializar escenarios al cargar la página si ya hay una evaluación seleccionada
     document.getElementById('evaluacion').addEventListener('change', updateScenarios);
-    
 </script>
 <script type="application/json" id="scenarios-by-evaluation">
     {{ scenarios_by_evaluation|safe }}

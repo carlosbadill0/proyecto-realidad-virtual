@@ -5,13 +5,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../static/css/estilos.css" />
     {% load static %}
+
+     {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+    <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/estilos.css" />
+    <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/modal.css" />
+    <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/home.css" />
+    <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/base.css" />
+
+     {% else %}
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
     <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
     <link rel="stylesheet" href="{% static 'css/home.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
-    
+    {%endif%}
 
     {% block extra_css %}{% endblock %}
     <style>
@@ -76,26 +83,26 @@
             <tr>
               <td>{{ evaluacion.expositor }}</td>
               <td>{{ evaluacion.nombre_evaluador }}</td>
-              <td>{{ evaluacion.fecha_evaluacion|date:"d/m/Y"  }}</td>
+              <td>{{ evaluacion.fecha_evaluacion|date:"d/m/Y" }}</td>
               <td>
                 <button
                   class="btn btn-view bi bi-eye verEvaluacionBtn"
                   data-id="{{ evaluacion.id }}"
-                  data-url="{% url 'detalle_evaluacionRealizada' evaluacion.id %}"
+                  data-url="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'detalle_evaluacionRealizada' evaluacion.id %}"
                 >
                   <i class="fas fa-eye"></i>
                 </button>
                 <button
                   class="btn btn-edit bi bi-pencil-square editarEvaluacionBtn"
                   data-id="{{ evaluacion.id }}"
-                  data-url="{% url 'editar_evaluacionRealizada' evaluacion.id %}"
+                  data-url="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'editar_evaluacionRealizada' evaluacion.id %}"
                 >
                   <i class="fas fa-edit"></i>
                 </button>
                 <button
                   class="btn btn-delete bi bi-trash borrarEvaluacionBtn"
                   data-id="{{ evaluacion.id }}"
-                  data-url="{% url 'borrar_evaluacionRealizada' evaluacion.id %}"
+                  data-url="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'borrar_evaluacionRealizada' evaluacion.id %}"
                 >
                   <i class="fas fa-trash-alt"></i>
                 </button>
@@ -103,18 +110,18 @@
               <td>
                 <button
                   class="btn btn-excel bi bi-file-earmark-excel"
-                  onclick="window.location.href='{% url 'exportar_evaluacion_excel' evaluacion.id %}'"
+                  onclick="window.location.href='{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'exportar_evaluacion_excel' evaluacion.id %}'"
                 ></button>
               </td>
               <td>
                 {% if evaluacion.video_evaluacion %}
-                <a href="{{ evaluacion.video_evaluacion.url }}" class="btn btn-download bi bi-download" download>
+                <a href="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{{ evaluacion.video_evaluacion.url }}{% else %}{{ evaluacion.video_evaluacion.url }}{% endif %}" class="btn btn-download bi bi-download" download>
                   <i class="fas fa-download"></i>
                   Descargar Video
                 </a>
-                {% else %}
+              {% else %}
                 No disponible
-                {% endif %}
+              {% endif %}
               </td>
             </tr>
             {% endfor %}
@@ -413,7 +420,11 @@
     </div>
   </div>
 
+    {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+    <script src="https://pacheco.chillan.ubiobio.cl/easyflow/static/js/evaluacionesRealizadas.js"></script>
+    {% else %}
     <script src="{% static 'js/evaluacionesRealizadas.js' %}"></script>
+    {% endif %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

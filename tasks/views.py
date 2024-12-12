@@ -20,6 +20,7 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.views import PasswordResetView
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
+from django.urls import reverse
 
 from .forms import (EvaluacionForm, EvaluacionRealizadaForm, ExpositorForm,
                     PracticanteForm, UserForm)
@@ -115,12 +116,18 @@ def signin(request):
             })
         else:
             login(request, user)
-            return redirect('home')
+            if request.get_host() == 'pacheco.chillan.ubiobio.cl':
+                return redirect('/easyflow' + reverse('home'))
+            else:
+                return redirect(reverse('home'))
 
 def signout(request):
     logout(request)
-    return redirect('signin')
-
+    if request.get_host() == 'pacheco.chillan.ubiobio.cl':
+        return redirect('/easyflow' + reverse('signin'))
+    else:
+        return redirect(reverse('signin'))
+    
 
 ultima_frecuencia = None
 
@@ -188,9 +195,6 @@ def mostrar_frecuencia_cardiaca(request):
 
 
 #usuarios
-from django.db.models import Q, F, Value
-from django.db.models.functions import Concat
-
 def listar_usuarios(request):
     query = request.GET.get('q', '')
     sort_by = request.GET.get('sort_by', 'first_name')
@@ -207,11 +211,17 @@ def listar_usuarios(request):
         sort_by = '-' + sort_by
 
     usuarios = usuarios.order_by(sort_by)
-    paginator = Paginator(usuarios, 5)  
+    paginator = Paginator(usuarios, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     grupos = Group.objects.all()
+
+    # Verificar el host y ajustar la URL de redirección en consecuencia
+    if request.get_host() == 'pacheco.chillan.ubiobio.cl':
+        redirect_url = 'listar_usuarios_easyflow'
+    else:
+        redirect_url = 'listar_usuarios'
 
     return render(request, 'listar_usuarios.html', {
         'page_obj': page_obj,
@@ -219,7 +229,9 @@ def listar_usuarios(request):
         'sort_by': sort_by,
         'order': order,
         'grupos': grupos,
+        'redirect_url': redirect_url,
     })
+
 
 def crear_usuario(request):
     if request.method == 'GET':
@@ -247,11 +259,15 @@ def crear_usuario(request):
                     selected_group_name = form.cleaned_data.get('group')
                     group = Group.objects.get(name=selected_group_name)
                     user.groups.add(group)
-  # Iniciar sesión con el nuevo usuario
-                    return redirect('listar_usuarios')
+
+                    # Verificar el host y ajustar la URL de redirección en consecuencia
+                    if request.get_host() == 'pacheco.chillan.ubiobio.cl':
+                        return redirect('listar_usuarios_easyflow')
+                    else:
+                        return redirect('listar_usuarios')
                 except Exception as e:
                     return render(request, 'formulario_usuario.html', {
-                                                'form': form,
+                        'form': form,
                         'error': 'El usuario ya existe o hubo un problema al crearlo.'
                     })
             else:
@@ -263,17 +279,33 @@ def crear_usuario(request):
 
 def editar_usuario(request, id):
     usuario = get_object_or_404(User, id=id)
-    grupo_id = request.POST.get('grupo')
-    grupo = Group.objects.get(id=grupo_id)
-    usuario.groups.clear()
-    usuario.groups.add(grupo)
-    usuario.save()
-    return redirect('listar_usuarios') 
+    if request.method == 'POST':
+        grupo_id = request.POST.get('grupo')
+        grupo = Group.objects.get(id=grupo_id)
+        usuario.groups.clear()
+        usuario.groups.add(grupo)
+        usuario.save()
+
+        # Verificar el host y ajustar la URL de redirección en consecuencia
+        if request.get_host() == 'pacheco.chillan.ubiobio.cl':
+            return redirect('listar_usuarios_easyflow')
+        else:
+            return redirect('listar_usuarios')
+
+    # Si no es POST, renderizar el formulario de edición
+    grupos = Group.objects.all()
+    return render(request, 'editar_usuario.html', {'usuario': usuario, 'grupos': grupos})
+
 
 def eliminar_usuario(request, id):
     usuario = get_object_or_404(User, id=id)
     usuario.delete()
-    return redirect('listar_usuarios')
+
+    # Verificar el host y ajustar la URL de redirección en consecuencia
+    if request.get_host() == 'pacheco.chillan.ubiobio.cl':
+        return redirect('listar_usuarios_easyflow')
+    else:
+        return redirect('listar_usuarios')
 
 
 #evaluaciones
@@ -580,7 +612,11 @@ def evaluar_expositor(request, id, id_evaluacion):
         evaluacion_realizada.observacion_final = observacion_final
         evaluacion_realizada.save()
 
-        return render(request, 'mensaje_realizado.html')  # Redirigir a la plantilla intermedia
+        # Verificar el host y ajustar la URL de redirección en consecuencia
+        if request.get_host() == 'pacheco.chillan.ubiobio.cl':
+            return render(request, 'mensaje_realizado.html')  # Redirigir a la plantilla intermedia
+        else:
+            return render(request, 'mensaje_realizado.html')  # Redirigir a la plantilla intermedia
 
     if request.GET.get('format') == 'json':
         def convert_to_seconds(time_str):
@@ -623,8 +659,9 @@ def evaluar_expositor(request, id, id_evaluacion):
         'escenarios': escenarios,
         'evaluaciones': evaluaciones,
         'ultima_evaluacion': ultima_evaluacion,
-    })
-       
+    })     
+    
+    
     
 #evaluaciones realizadas
 def listar_evaluaciones_realizadas(request):

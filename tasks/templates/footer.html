@@ -13,8 +13,11 @@
     />
     <title>Footer Fijo</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
-
+    {% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}
+      <link rel="stylesheet" href="https://pacheco.chillan.ubiobio.cl/easyflow/static/css/footer.css" />
+    {% else %}
+      <link rel="stylesheet" href="{% static 'css/footer.css' %}" />
+    {% endif %}
     {% block extra_css %}{% endblock %}
   </head>
   <body>   
@@ -24,7 +27,6 @@
           © I+D 24-19 - “Desarrollo de entorno de realidad virtual como prototipo de simulación para la realización de exposiciones orales en estudiantes universitarios y la caracterización de parámetros de la fluidez del habla y reactividad fisiológica”.
         </h6>
         <br>
-        </div>
       </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
