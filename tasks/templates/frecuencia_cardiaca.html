@@ -241,7 +241,7 @@
           </div>
         </div>
 
-        <div class="container content">
+        <div class="container content" style="margin-top: -45px;">
         <!-- Etapa 3: Evaluación -->
         <div
           id="stage-3"
@@ -427,7 +427,6 @@
     </div>
     <br>
 
-    {% comment %} <script src="{% static 'js/evaluar.js' %}"></script> {% endcomment %}
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 
     <script>
@@ -439,10 +438,11 @@
       let timerInterval;
       let chart;
       let frecuenciaInterval;
-      /*const serverUrlPost = "http://192.168.1.13:127/api/frecuencia/"; // Cambiar a localhost
-      const serverUrlGet = "http://192.168.1.13:127/api/ultima_frecuencia/"; // Cambiar a localhost
-      const evaluacionId = "{{ evaluacion.id }}";
-      */
+
+      function getApiUrl(endpoint) {
+        const isPacheco = window.location.host === 'pacheco.chillan.ubiobio.cl';
+        return isPacheco ? `/easyflow${endpoint}` : endpoint;
+      }
 
       function getLocalIP(callback) {
         const pc = new RTCPeerConnection({iceServers: []});
@@ -462,12 +462,22 @@
         };
       }
 
-      getLocalIP((ip) => {
-        const serverUrlPost = `http://${ip}:127/api/frecuencia/`;
-        const serverUrlGet = `http://${ip}:127/api/ultima_frecuencia/`;
+      document.addEventListener("DOMContentLoaded", function() {
+        let serverUrlPost;
+        let serverUrlGet;
+        const isPacheco = window.location.host === 'pacheco.chillan.ubiobio.cl';
+        if(isPacheco ){
+          const serverUrlPost = `https://190.13.177.173:127/easyflow/api/frecuencia/`;
+          const serverUrlGet = `https://190.13.177.173:127/easyflow//api/ultima_frecuencia/`;
+          
+        }else{
+          getLocalIP((ip) => {
+            const serverUrlPost = `http://${ip}:127/api/frecuencia/`;
+            const serverUrlGet = `http://${ip}:127/api/ultima_frecuencia/`;
+          });
+        }
+
       });
-    
-      //console.log(evaluacionId);
     
       function updateProgressBar() {
         const progressValues = { 1: 33, 2: 66, 3: 100 };
@@ -524,10 +534,10 @@
       }
     
       function iniciarGuardado() {
+        const url = getApiUrl('/api/iniciar_guardado/');
         axios
-          .post("/api/iniciar_guardado/")
+          .post(url)
           .then((response) => {
-            console.log("Guardado iniciado:", response.data);
             // Llamar a obtenerFrecuencia cuando el estado pase a iniciado
             obtenerFrecuencia();
             frecuenciaInterval = setInterval(obtenerFrecuencia, 1000);
@@ -538,10 +548,10 @@
       }
     
       function detenerGuardado() {
+        const url = getApiUrl('/api/detener_guardado/');
         axios
-          .post("/api/detener_guardado/")
+          .post(url)
           .then((response) => {
-            console.log("Guardado detenido:", response.data);
             // Detener la obtención de frecuencia cuando el estado vuelva a falso
             clearInterval(frecuenciaInterval);
           })
@@ -551,16 +561,17 @@
       }
     
       function enviarDatosAlServidor(bpm, evaluationId) {
+        const url = getApiUrl('/api/frecuencia/');
         axios
-          .post("/api/frecuencia/", {
+          .post(url, {
             bpm: parseInt(bpm),
             evaluationId: parseInt(evaluationId),
           })
           .then((response) => {
-           // console.log("Datos enviados correctamente:", response.data);
+
           })
           .catch((error) => {
-            console.error("Error al enviar datos:", error);
+
             if (error.response) {
               console.error("Detalles del error:", error.response);
             } else if (error.request) {
@@ -572,11 +583,12 @@
       }
     
       function obtenerFrecuencia() {
-        fetch('/ultima_frecuencia2/')  // Asegúrate de que esta URL esté definida en Django
+        const url = getApiUrl('/ultima_frecuencia2/');
+
+        fetch(url)  // Asegúrate de que esta URL esté definida en Django
           .then(response => response.json())
           .then(data => {
             if (data.status === 'success') {
-             // console.log('Respuesta del servidor:', data);
               const frecuencia = data.value;
               const tiempoActual = new Date(data.timestamp);
               document.getElementById('frecuencia').textContent = frecuencia + ' BPM';
@@ -873,7 +885,6 @@
         }
       });
 
-      
     </script>
   </body>
   {% include 'footer.html' %}

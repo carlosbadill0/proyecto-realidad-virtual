@@ -81,6 +81,14 @@ urlpatterns = [
     path('obtener_datos/', views.obtener_datos, name='obtener_datos'),
     path('ultima_frecuencia2/', views.get_latest_ecg2, name='get_latest_ecg2'),
     
+    path('easyflow/api/frecuencia/', views.recibir_frecuencia, name='recibir_frecuencia_easyflow'),
+    path('easyflow/api/ultima_frecuencia2/', views.obtener_frecuencia, name='obtener_frecuencia_easyflow'),
+    path('easyflow/api/iniciar_guardado/', views.iniciar_guardado, name='iniciar_guardado_easyflow'),
+    path('easyflow/api/detener_guardado/', views.detener_guardado, name='detener_guardado_easyflow'),
+    path('easyflow/api/estado_guardado/', views.estado_guardado, name='estado_guardado_easyflow'),
+    path('easyflow/api/obtener_id_evaluacion/', views.obtener_id_evaluacionRealizada, name='obtener_id_evaluacion_easyflow'),
+
+    
     #url para evaluar a un expositor
     path('evaluar/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor'),
     path('easyflow/evaluar/<int:id>/<int:id_evaluacion>/', views.evaluar_expositor, name='evaluar_expositor_easyflow'),
