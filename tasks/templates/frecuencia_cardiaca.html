@@ -467,13 +467,14 @@
         let serverUrlGet;
         const isPacheco = window.location.host === 'pacheco.chillan.ubiobio.cl';
         if(isPacheco ){
-          const serverUrlPost = `https://190.13.177.173:127/easyflow/api/frecuencia/`;
-          const serverUrlGet = `https://190.13.177.173:127/easyflow//api/ultima_frecuencia/`;
+           serverUrlPost = `https://190.13.177.173:127/easyflow/api/frecuencia/`;
+           serverUrlGet = `https://190.13.177.173:127/easyflow//api/ultima_frecuencia/`;
           
         }else{
           getLocalIP((ip) => {
-            const serverUrlPost = `http://${ip}:127/api/frecuencia/`;
-            const serverUrlGet = `http://${ip}:127/api/ultima_frecuencia/`;
+             serverUrlPost = `http://${ip}:127/api/frecuencia/`;
+             serverUrlGet = `http://${ip}:127/api/ultima_frecuencia/`;
+             
           });
         }
 

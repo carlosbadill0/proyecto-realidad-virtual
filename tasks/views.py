@@ -865,7 +865,21 @@ def exportar_evaluacion_excel(request, pk):
     ws.append(headers)
 
     # Escribir datos de la evaluación
-    for pulso in pulsos:
+    if pulsos.exists():
+        for pulso in pulsos:
+            row = [
+                evaluacion.nombre_evaluador,
+                evaluacion.evaluacion_aplicada.nombre,
+                evaluacion.expositor.nombre,
+                ", ".join([scenario.function_name for scenario in evaluacion.evaluacion_aplicada.scenarios.all()]),
+                evaluacion.fecha_evaluacion,
+                evaluacion.fecha_evaluacion.strftime("%H:%M:%S"),
+                pulso.bpm,
+                pulso.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            ]
+            ws.append(row)
+    else:
+        # Si no hay pulsos, agregar una fila con los datos de la evaluación y dejar las columnas de pulsaciones y timestamp vacías
         row = [
             evaluacion.nombre_evaluador,
             evaluacion.evaluacion_aplicada.nombre,
@@ -873,8 +887,8 @@ def exportar_evaluacion_excel(request, pk):
             ", ".join([scenario.function_name for scenario in evaluacion.evaluacion_aplicada.scenarios.all()]),
             evaluacion.fecha_evaluacion,
             evaluacion.fecha_evaluacion.strftime("%H:%M:%S"),
-            pulso.bpm,
-            pulso.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            "",  # Columna de pulsaciones vacía
+            ""   # Columna de timestamp vacía
         ]
         ws.append(row)
 
@@ -883,6 +897,7 @@ def exportar_evaluacion_excel(request, pk):
     response['Content-Disposition'] = f'attachment; filename=evaluacion_{pk}.xlsx'
     wb.save(response)
     return response
+
 
 def acerca_de(request):
     return render(request, 'acerca_de.html')
