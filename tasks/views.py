@@ -1,5 +1,6 @@
 import json
 import openpyxl # type: ignore
+import pytz # type: ignore
 from collections import Counter
 from datetime import timedelta
 
@@ -21,6 +22,8 @@ from django.contrib.auth.views import PasswordResetView
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
 from django.urls import reverse
+from django.db import transaction
+
 
 from .forms import (EvaluacionForm, EvaluacionRealizadaForm, ExpositorForm,
                     PracticanteForm, UserForm)
@@ -159,9 +162,10 @@ def recibir_frecuencia(request):
         if frecuencia is not None:
             if 30 <= frecuencia <= 150:  # Rango típico de frecuencia cardíaca
                 if guardar_datos:
-                    # Guardar la frecuencia en el modelo
-                    ecg_data = ECGData2(bpm=frecuencia, idEvaluacion_id=evaluation_id)
-                    ecg_data.save()
+                    with transaction.atomic():
+                        # Guardar la frecuencia en el modelo
+                        ecg_data = ECGData2(bpm=frecuencia, idEvaluacion_id=evaluation_id)
+                        ecg_data.save()
                 
                 ultima_frecuencia = frecuencia  # Actualiza la variable global
                 print(f"ultima_frecuencia actualizada: {ultima_frecuencia}")  # Agrega esta línea para depuración
@@ -176,6 +180,7 @@ def recibir_frecuencia(request):
         # Agregar depuración para capturar el error exacto
         print(f"Error interno del servidor: {str(e)}")
         return JsonResponse({'status': 'error', 'message': f'Error interno del servidor: {str(e)}'})
+
 
 @require_http_methods(["GET"])
 def obtener_frecuencia(request):
@@ -842,6 +847,8 @@ def listar_datos(request):
     datos = ECGData2.objects.all()
     return render(request, 'listardatosecgdata2.html', {'datos': datos})
 
+
+
 def exportar_evaluacion_excel(request, pk):
     evaluacion = get_object_or_404(EvaluacionRealizada, pk=pk)
     pulsos = ECGData2.objects.filter(idEvaluacion_id=pk)
@@ -864,9 +871,14 @@ def exportar_evaluacion_excel(request, pk):
     ]
     ws.append(headers)
 
+    # Obtener la zona horaria local
+    local_tz = timezone.get_current_timezone()
+
     # Escribir datos de la evaluación
     if pulsos.exists():
         for pulso in pulsos:
+            # Convertir el timestamp a la hora local
+            local_timestamp = pulso.timestamp.astimezone(local_tz)
             row = [
                 evaluacion.nombre_evaluador,
                 evaluacion.evaluacion_aplicada.nombre,
@@ -875,7 +887,7 @@ def exportar_evaluacion_excel(request, pk):
                 evaluacion.fecha_evaluacion,
                 evaluacion.fecha_evaluacion.strftime("%H:%M:%S"),
                 pulso.bpm,
-                pulso.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+                local_timestamp.strftime("%Y-%m-%d %H:%M:%S")
             ]
             ws.append(row)
     else:
