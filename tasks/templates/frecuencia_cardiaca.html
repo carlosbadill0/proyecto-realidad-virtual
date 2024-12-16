@@ -119,7 +119,7 @@
         left: 0;
         width: 100%;
         font-size: 0.8rem;
-        color: #233666;
+        color: #233666 !important;
       }
 
       .stage-name {
@@ -128,7 +128,7 @@
         z-index: 1;
         width: 33.3%; /* Cada nombre ocupa un tercio de la barra */
         text-align: center;
-        color: #233666;
+        color: #233666 !important;
       }
 
       /* Estilos para dispositivos móviles pequeños */
@@ -138,14 +138,22 @@
   </head>
   <body>
     <div>
-      <h3 style="color: #233666; text-align: left; margin-top: -45px">
+      <div class="row" style="margin-top: -45px;">
+        <div class="col-4 mt-1">
+      <h3 style="color: #233666; text-align: left;">
         <i class="bi bi-clipboard-pulse"></i> Proceso de evaluación
       </h3>
+        </div>
+        <div class="col mt-1 text-start">
+          <button id="toggleProgressBar" class="btn btn-custom"><i class="bi bi-eye-slash"></i> Ocultar barra de progreso</button>
+        </div>
+      </div>
+      <!-- Botón para esconder/mostrar la barra de progreso -->
       <hr class="custom-hr">
     </div>
     <div style="margin-top: -10px">
       <!-- Barra de Progreso -->
-      <div class="container mt-3">
+      <div id="progressContainer" class="container mt-3">
         <div class="progress" style="position: relative; height: 30px">
           <div
             id="progress-bar"
@@ -171,7 +179,7 @@
         <div id="stage-1" class="stage-container">
           <div class="row align-items-left">
             <div class="col-md-6">
-              <h3><i class="bi bi-card-checklist"></i> Instrucciones de uso</h3>
+              <h3><i class="bi bi-card-checklist" style="color: #233666;"></i> Instrucciones de uso</h3>
             </div>
             <div class="col-md-6 text-end">
               <button id="nextStage1" class="btn btn-custom2 mt-2 mb-2">
@@ -184,10 +192,11 @@
             <div class="col-md-4">
               <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title" style="color: #233666">Paso 1</h5>
-                  <p class="card-text text-center">
-                    Encienda los dispositivos de monitoreo (visores y sensores).
-                  </p>
+                  <h5 class="card-title" style="color: #233666"><i class="bi bi-check-all"></i> Paso 1</h5>
+                  <h6 class="card-text text-center">
+                    Encienda y/o conecte los dispositivos de monitoreo (visores y sensores).
+                  </h6>
+                  <p class="card-text text-center">Utilice los cables tipo C de 3 Mts.</p>
                 </div>
               </div>
             </div>
@@ -195,20 +204,58 @@
             <div class="col-md-4">
               <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title" style="color: #233666" >Paso 2</h5>
-                  <p class="card-text text-center">
+                  <h5 class="card-title" style="color: #233666" ><i class="bi bi-check-all"></i> Paso 2</h5>
+                  <h6 class="card-text text-center">
                     Inicie la aplicación dentro del visor.
-                  </p>
+                  </h6>
+                  <p class="card-text text-center">Aplicación llamada UBB Project VR.</p>
                 </div>
               </div>
             </div>
             <div class="col-md-4">
               <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title" style="color: #233666" >Paso 3</h5>
-                  <p class="card-text text-center">
+                  <h5 class="card-title" style="color: #233666" ><i class="bi bi-check-all"></i> Paso 3</h5>
+                  <h6 class="card-text text-center">
                     Compruebe la conexión del sensor de frecuencia.
-                  </p>
+                  </h6>
+                  <p class="card-text text-center">Verifique conexiones del cable EMG y/o cable tipo C.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title" style="color: #233666"><i class="bi bi-check-all"></i> Paso 4</h5>
+                  <h6 class="card-text text-center">
+                    Conecte los electrodos al expositor.
+                  </h6>
+                  <p class="card-text text-center">Asegure el cable EMG con cinta adhesiva para evitar datos erróneos.</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title" style="color: #233666" ><i class="bi bi-check-all"></i> Paso 5</h5>
+                  <h6 class="card-text text-center">
+                    Acople la caja de monitoreo al expositor.
+                  </h6>
+                  <p class="card-text text-center">Busque un lugar donde el movimiento de la caja sea reducido.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title" style="color: #233666" > <i class="bi bi-check-all"></i> Paso 6</h5>
+                  <h6 class="card-text text-center">
+                    Compruebe movilidad del expositor.
+                  </h6>
+                  <p class="card-text text-center">luego de configurar el espacio seguro verifique que las conexiones no interfieran en la movilidad.</p>
                 </div>
               </div>
             </div>
@@ -241,7 +288,7 @@
           </div>
         </div>
 
-        <div class="container content" style="margin-top: -45px;">
+        <div class="container content" style="margin-top: -30px;">
         <!-- Etapa 3: Evaluación -->
         <div
           id="stage-3"
@@ -249,8 +296,8 @@
           style="display: flex; margin-top: 3px"
         >
           <div class="row align-items-left">
-            <div class="col-md-6">
-              <h3><i class="bi bi-heart-pulse"></i> Evaluación del expositor</h3>
+            <div class="col-md-5">
+              <h3 style="color: #233666"><i class="bi bi-heart-pulse"></i> Evaluación del expositor</h3>
             </div>
             <div class="col-md-6 text-end">
               <button id="prevStage3" class="btn btn-custom mt-2">
@@ -265,6 +312,7 @@
                 Iniciar evaluación
               </button>
             </div>
+            <div class="col-md-1"></div>
           </div>
           <div class="row mt-2">
                 <div class="row mb-4">
@@ -279,41 +327,55 @@
                         </button>
                       </div> {% endcomment %}
                       
-                      <div class="col-md-12 mt-5 section-card">
+                      <div class="col-md-12 mt-2 section-card">
                         <div class="card">
                           <div class="card-body">
-                            <h5 class="card-title">Visor</h5>
-                            <button id="startCapture2" class="btn btn-custom">
+                            <h6 class="card-title text-center"><i class="bi bi-headset-vr" style="color: #233666;"></i> Perspectiva del expositor</h6>
+                            <button id="startCapture2" class="btn btn-custom mb-2">
                               Iniciar Transmisión
                             </button>
                             <video id="liveVideo2" autoplay></video>
                           </div>
                         </div>
                       </div>
-                      <div class="mt-3">
-                        {% for expositor in expositores %} {% if expositor.id == expositor_seleccionado.id %}
-                        <label for="nombre_expositor" class="form-label"
-                          >Nombre Expositor</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="nombre_expositor"
-                          value="{{ expositor.nombre }}"
-                        />
-                        {% endif %} {% endfor %}
-                      </div>
-                      <div class="mt-3">
-                        <form
-                          method="POST"
-                          action="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'evaluar_expositor' expositor_seleccionado.id evaluacion.id %}"
-                        >
-                          {% csrf_token %}
-                          <label for="tiempo-exposicion" class="form-label"
-                            >Tiempo de Exposición</label
-                          >
-                          <div id="timer" class="form-control">0m 2s</div>
-                        </form>
+                      <div class="row">
+                        <div class="col-3">
+                          <div class="mt-2">
+                            <form
+                              method="POST"
+                              action="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'evaluar_expositor' expositor_seleccionado.id evaluacion.id %}"
+                            >
+                              {% csrf_token %}
+                              <label for="tiempo-exposicion" class="form-label" style="color: #233666"
+                                >Tiempo</label
+                              >
+                              <div id="timer" class="form-control">0m 2s</div>
+                            </form>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="mt-2">
+                            {% for expositor in expositores %} {% if expositor.id == expositor_seleccionado.id %}
+                            <label for="nombre_expositor" class="form-label" style="color: #233666"
+                              >Nombre Expositor</label
+                            >
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="nombre_expositor"
+                              value="{{ expositor.nombre }}"
+                              readonly
+                            />
+                            {% endif %} {% endfor %}
+                          </div>
+                        </div>
+                        <div class="col-3">
+                          <div class="info-box mt-2">
+                            <label for="fecha-evaluacion" style="color: #233666">Fecha de Evaluación</label>
+                            <input type="date" class="form-control mt-2" id="fecha-evaluacion" name="fecha_evaluacion" required readonly>
+                          </div>
+
+                        </div>
                       </div>
                     </div>
 
@@ -364,31 +426,7 @@
                         </form>
                       </div>
 
-                      <div class="info-box">
-                        <label for="fecha_evaluacion" class="form-label"
-                          >Fecha de Evaluación</label
-                        >
-                        <input
-                          type="date"
-                          class="form-control"
-                          id="fecha_evaluacion"
-                          value="2024-08-20"
-                        />
-                      </div>
 
-                      <div class="info-box">
-                        {% for evaluacion in evaluaciones %} {% if evaluacion.id == ultima_evaluacion.id %} {% if evaluacion.expositor_id == expositor_seleccionado.id %}
-                        <label for="nombre_evaluador" class="form-label"
-                          >Nombre del Evaluador</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="nombre_evaluador"
-                          value="{{ evaluacion.nombre_evaluador }}"
-                        />
-                        {% endif %} {% endif %} {% endfor %}
-                      </div>
 
                       <div class="info-box">
 
@@ -401,7 +439,7 @@
                           aria-controls="evaluaciones"
                           style="border-radius: 20px; padding: 6px 14px; font-size: 12px;"
                         >
-                          Mostrar/Ocultar Evaluaciones
+                          Mostrar evaluaciones
                       </button>
                         
                         <div class="collapse mt-2" id="evaluaciones">
@@ -426,10 +464,35 @@
       </div>
     </div>
     <br>
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>    
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 
     <script>
+      document.getElementById("toggleProgressBar").addEventListener("click", function () {
+        const progressContainer = document.getElementById("progressContainer");
+        const isHidden = progressContainer.style.display === "none";
+        progressContainer.style.display = isHidden ? "block" : "none";
+        this.innerHTML = isHidden ? '<i class="bi bi-eye-slash"></i> Ocultar barra de progreso' : '<i class="bi bi-eye"></i> Mostrar barra de progreso';
+    
+        // Ajustar el estilo de los elementos para ocupar más espacio
+        const mainContainer = document.querySelector(".main-container");
+        if (isHidden) {
+          mainContainer.style.height = "calc(100vh - 30px)"; // Ajusta según sea necesario
+        } else {
+          mainContainer.style.height = "100vh";
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", function() {
+        const fechaEvaluacionInput = document.getElementById("fecha-evaluacion");
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses empiezan desde 0
+        const year = today.getFullYear();
+        const todayString = `${year}-${month}-${day}`;
+        fechaEvaluacionInput.value = todayString;
+    });
       // frecuencia_cardiaca.js
     
       let currentStage = 1;
