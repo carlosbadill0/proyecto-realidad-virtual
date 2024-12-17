@@ -22,7 +22,7 @@ from django.contrib.auth.views import PasswordResetView
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
 from django.urls import reverse
-from django.db import transaction
+from django.db import DatabaseError, transaction
 
 
 from .forms import (EvaluacionForm, EvaluacionRealizadaForm, ExpositorForm,
@@ -762,33 +762,50 @@ def iniciar_guardado(request):
 
 @csrf_exempt
 def recibir_datos(request):
-        if request.method == 'POST':
-            try:
-                data = json.loads(request.body)
-                bpm = data.get('bpm')
-                evaluation_id = data.get('evaluationId')
-                
-                # Convertir bpm y evaluation_id a enteros si no lo son
-                try:
-                    bpm = int(bpm)
-                    evaluation_id = int(evaluation_id)
-                except ValueError as e:
-                    return JsonResponse({'status': 'error', 'message': f'bpm y evaluationId deben ser enteros: {str(e)}'})
- 
-                # Agregar depuración para verificar los valores antes de guardar
-                print(f"Datos recibidos - BPM: {bpm}, Evaluation ID: {evaluation_id}")
+    try:
+        data = json.loads(request.body)
+        
+        # Validar existencia de claves en JSON
+        if 'bpm' not in data or 'evaluationId' not in data:
+            return JsonResponse({'status': 'error', 'message': 'El JSON no contiene bpm o evaluationId'})
 
-                ecg_data = ECGData2(bpm=bpm, idEvaluacion_id=evaluation_id)
-                ecg_data.save()
+        bpm = data.get('bpm')
+        evaluation_id = data.get('evaluationId')
+
+        # Validar existencia y conversión de datos
+        if bpm is None or evaluation_id is None:
+            return JsonResponse({'status': 'error', 'message': 'bpm o evaluationId faltan en la solicitud'})
+        
+        try:
+            bpm = int(bpm)
+            evaluation_id = int(evaluation_id)
+        except ValueError as e:
+            return JsonResponse({'status': 'error', 'message': f'bpm y evaluationId deben ser enteros: {str(e)}'})
+
+        print(f"Datos recibidos - BPM: {bpm}, Evaluation ID: {evaluation_id}")
+
+        # Validar rango de bpm
+        if 30 <= bpm <= 150:
+            try:
+                with transaction.atomic():
+                    ecg_data = ECGData2(bpm=bpm, idEvaluacion_id=evaluation_id)
+                    ecg_data.save()
+                    print(f"Datos guardados: {ecg_data}")
                 return JsonResponse({'status': 'success'})
-            except json.JSONDecodeError as e:
-                return JsonResponse({'status': 'error', 'message': f'JSON inválido: {str(e)}'})
-            except Exception as e:
-                import traceback
-                print(f"Error interno del servidor: {str(e)}")
-                print(traceback.format_exc())  # Esto te da un traceback más detallado
-                return JsonResponse({'status': 'error', 'message': f'Error interno del servidor: {str(e)}'})
-        return JsonResponse({'status': 'error', 'message': 'Método de solicitud inválido'})
+            except DatabaseError as e:
+                print(f"Error de base de datos: {str(e)}")
+                return JsonResponse({'status': 'error', 'message': f'Error de base de datos: {str(e)}'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'BPM fuera de rango'})
+    except json.JSONDecodeError as e:
+        print(f"JSON inválido: {str(e)}")
+        return JsonResponse({'status': 'error', 'message': f'JSON inválido: {str(e)}'})
+    except Exception as e:
+        print(f"Error inesperado: {str(e)}")
+        import traceback
+        print(traceback.format_exc())
+        return JsonResponse({'status': 'error', 'message': f'Error inesperado: {str(e)}'})
+
 
 @csrf_exempt
 def verificar_guardado(request):
