@@ -256,8 +256,8 @@
               <div class="row">
                 <div class="col">
                   <div class="form-group">
-                    <label for="verGenero">Género</label>
-                    <select class="form-control" id="verGenero" name="verGenero" placeholder="Elegir Género">
+                    <label for="genero">Género</label>
+                    <select class="form-control" id="genero" name="genero" placeholder="Elegir Género">
                       <option value="">Seleccione género</option>
                       <option value="femenino">Femenino</option>
                       <option value="masculino">Masculino</option>
@@ -571,12 +571,11 @@
               <div class="col">
                 <div class="form-group">
                   <label for="editarGenero">Género</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="editarGenero"
-                    name="genero"
-                  />
+                  <select class="form-control" id="editarGenero" name="genero">
+                    <option value="femenino" {% if expositor.genero == "femenino" %}selected{% endif %}>Femenino</option>
+                    <option value="masculino" {% if expositor.genero == "masculino" %}selected{% endif %}>Masculino</option>
+                    <option value="prefiero_no_decir" {% if expositor.genero == "prefiero_no_decir" %}selected{% endif %}>Prefiero no decir</option>
+                  </select>
                 </div>
                 </div>
             </div>
