@@ -213,7 +213,7 @@
                     class="form-control"
                     id="edad"
                     name="edad"
-                    required
+                    readonly
                   />
                 </div>
               </div>
@@ -231,15 +231,15 @@
                 </div>
                 </div>
                 <div class="col">
-                <div class="form-group">
-                  <label for="fecha_nacimiento">Fecha de Nacimiento</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    id="fecha_nacimiento"
-                    name="fecha_nacimiento"
-                  />
-                </div>
+                  <div class="form-group">
+                    <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="fecha_nacimiento"
+                      name="fecha_nacimiento"
+                    />
+                  </div>
                 </div>
                 <div class="col">
                 <div class="form-group">
@@ -255,15 +255,15 @@
               </div>
               <div class="row">
                 <div class="col">
-                <div class="form-group">
-                  <label for="genero">Género</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="genero"
-                    name="genero"
-                  />
-                </div>
+                  <div class="form-group">
+                    <label for="verGenero">Género</label>
+                    <select class="form-control" id="verGenero" name="verGenero" placeholder="Elegir Género">
+                      <option value="">Seleccione género</option>
+                      <option value="femenino">Femenino</option>
+                      <option value="masculino">Masculino</option>
+                      <option value="prefiero_no_decir">Prefiero no decir</option>
+                    </select>
+                  </div>
               </div>
               <div class="col">
                 <div class="form-group">
@@ -926,6 +926,24 @@ aria-hidden="true"
             }
           });
         }
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const fechaNacimientoInput = document.getElementById("fecha_nacimiento");
+        const edadInput = document.getElementById("edad");
+    
+        fechaNacimientoInput.addEventListener("change", function () {
+          const fechaNacimiento = new Date(this.value);
+          const hoy = new Date();
+          let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+          const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+    
+          if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+            edad--;
+          }
+    
+          edadInput.value = edad;
+        });
       });
     </script>
   </body>
