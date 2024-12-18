@@ -76,6 +76,8 @@
               <th>Acciones</th>
               <th>Exportar excel</th>
               <th>Video</th>
+              <th>Descargar audio</th>
+              <th>Subir audio</th>
             </tr>
           </thead>
           <tbody class="text-center">
@@ -122,6 +124,30 @@
               {% else %}
                 No disponible
               {% endif %}
+              </td>
+              <td>
+                {% if evaluacion.audio_evaluacion %}
+                  <a href="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{{ evaluacion.audio_evaluacion.url }}{% else %}{{ evaluacion.audio_evaluacion.url }}{% endif %}" class="btn btn-download bi bi-download" download>
+                    <i class="fas fa-download"></i>
+                    Descargar Audio
+                  </a>
+                {% else %}
+                  No disponible
+                {% endif %}
+              </td>
+              <td>
+                <form method="POST" action="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'subir_audio_evaluacion' evaluacion.id %}" enctype="multipart/form-data" class="d-flex flex-column align-items-start">
+                  {% csrf_token %}
+                  <div class="mb-2">
+                    <input type="file" class="form-control" name="audio_evaluacion" accept="audio/*" required>
+                  </div>
+                  <div class="text-center w-100">
+                    <button type="submit" class="btn btn-upload bi bi-upload" style="background-color: #1ea6c6; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; transition: background-color 0.3s ease;">
+                      <i class="fas fa-upload"></i>
+                      Subir Audio
+                    </button>
+                  </div>
+                </form>
               </td>
             </tr>
             {% endfor %}

@@ -124,6 +124,10 @@ urlpatterns = [
     
     ##no borrar, es para probar el envio de datos con la api de sendgrid
     path('send-test-email/', views.send_test_email, name='send_test_email'),
+    
+    path('evaluaciones_realizadas/<int:id>/subir_audio/', views.subir_audio_evaluacion, name='subir_audio_evaluacion'),
+    path('easyflow/evaluaciones_realizadas/<int:id>/subir_audio/', views.subir_audio_evaluacion, name='subir_audio_evaluacion'),
+
 ]
 
 if settings.DEBUG:

@@ -23,7 +23,7 @@ from django.urls import reverse_lazy
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.db import DatabaseError, transaction
-
+from django.contrib import messages
 
 from .forms import (EvaluacionForm, EvaluacionRealizadaForm, ExpositorForm,
                     PracticanteForm, UserForm)
@@ -951,3 +951,25 @@ class CustomPasswordResetView(PasswordResetView):
     
     def get_subject(self):
         return 'Contraseña restablecida en EasyFlow'
+
+def subir_audio_evaluacion(request, id):
+    if request.method == 'POST':
+        evaluacion = get_object_or_404(EvaluacionRealizada, id=id)
+        if 'audio_evaluacion' in request.FILES:
+            audio_file = request.FILES['audio_evaluacion']
+            evaluacion.audio_evaluacion.save(f"evaluacion_{evaluacion.id}.mp3", audio_file)
+            messages.success(request, 'Audio subido exitosamente.')
+        else:
+            messages.error(request, 'No se proporcionó ningún archivo.')
+        
+        # Verificar el host y ajustar la URL de redirección en consecuencia
+        if request.get_host() == 'pacheco.chillan.ubiobio.cl':
+            return redirect('/easyflow/evaluaciones_realizadas/')
+        else:
+            return redirect('listar_evaluaciones_realizadas')
+    else:
+        messages.error(request, 'Método no permitido.')
+        if request.get_host() == 'pacheco.chillan.ubiobio.cl':
+            return redirect('/easyflow/evaluaciones_realizadas/')
+        else:
+            return redirect('listar_evaluaciones_realizadas')

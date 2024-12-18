@@ -162,7 +162,7 @@ class EvaluacionRealizada(models.Model):
     tiempo_exposicion = models.CharField(max_length=8, default='00:00:00')  # Valor predeterminado
     video_evaluacion = models.FileField(upload_to='videos/', blank=True, null=True)
     evaluacion_aplicada = models.ForeignKey('Evaluacion', on_delete=models.CASCADE)
-
+    audio_evaluacion = models.FileField(upload_to='audios/', null=True, blank=True)
     def __str__(self):
         return f"Evaluación de {self.expositor} por {self.nombre_evaluador} el {self.fecha_evaluacion}"
 
