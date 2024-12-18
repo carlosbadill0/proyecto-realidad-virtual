@@ -37,7 +37,7 @@
     <div class="container mt-4">
       <div class="row mb-3">
         <div class="col-md-6 d-flex align-items-center">
-          <form method="GET" action="{% url 'lista_evaluaciones' %}" class="d-flex">
+          <form method="GET" action="{% if request.get_host == 'pacheco.chillan.ubiobio.cl' %}/easyflow{% endif %}{% url 'lista_evaluaciones' %}" class="d-flex">
             <input
               type="text"
               id="searchInput"
